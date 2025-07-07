@@ -1,0 +1,54 @@
+{
+  "name": "Giant Badger",
+  "size": "Medium",
+  "type": "beast",
+  "alignment": "unaligned",
+  "armorClass": 10,
+  "armorType": "",
+  "hitPoints": 13,
+  "hitDice": "2d8 + 4",
+  "speed": "30 ft., burrow 10 ft.",
+  "abilities": {
+    "strength": 13,
+    "dexterity": 10,
+    "constitution": 15,
+    "intelligence": 2,
+    "wisdom": 12,
+    "charisma": 5
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Darkvision 30 ft.,  Passive Perception 11",
+  "languages": "--",
+  "challenge": "1/4 (50 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Keen Smell",
+      "uses": "",
+      "description": "The badger has advantage on Wisdom (Perception) checks that rely on smell."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The badger makes two attacks: one with its bite and one with its claws."
+    },
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) piercing damage."
+    },
+    {
+      "name": "Claws",
+      "uses": "",
+      "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 6 (2d4 + 1) slashing damage."
+    }
+  ],
+  "legendaryActions": []
+}

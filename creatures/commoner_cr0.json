@@ -1,0 +1,38 @@
+{
+  "name": "Commoner",
+  "size": "Medium",
+  "type": "humanoid",
+  "alignment": "any",
+  "armorClass": 10,
+  "armorType": "",
+  "hitPoints": 4,
+  "hitDice": "1d8",
+  "speed": "30 ft.",
+  "abilities": {
+    "strength": 10,
+    "dexterity": 10,
+    "constitution": 10,
+    "intelligence": 10,
+    "wisdom": 10,
+    "charisma": 10
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 10",
+  "languages": "Any one language (usually Common)",
+  "challenge": "0 (10 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [],
+  "actions": [
+    {
+      "name": "Club",
+      "uses": "",
+      "description": "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 2 (1d4) bludgeoning damage."
+    }
+  ],
+  "legendaryActions": []
+}

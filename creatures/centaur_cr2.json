@@ -1,0 +1,59 @@
+{
+  "name": "Centaur",
+  "size": "Large",
+  "type": "monstrosity",
+  "alignment": "neutral good",
+  "armorClass": 12,
+  "armorType": "",
+  "hitPoints": 45,
+  "hitDice": "6d10 + 12",
+  "speed": "50 ft.",
+  "abilities": {
+    "strength": 18,
+    "dexterity": 14,
+    "constitution": 14,
+    "intelligence": 9,
+    "wisdom": 13,
+    "charisma": 11
+  },
+  "savingThrows": "",
+  "skills": "Athletics +6, Perception +3, Survival +3",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 13",
+  "languages": "Elvish, Sylvan",
+  "challenge": "2 (450 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Charge",
+      "uses": "",
+      "description": "If the centaur moves at least 30 feet straight toward a target and then hits it with a pike attack on the same turn, the target takes an extra 10 (3d6) piercing damage."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The centaur makes two attacks: one with its pike and one with its hooves or two with its longbow."
+    },
+    {
+      "name": "Pike",
+      "uses": "",
+      "description": "Melee Weapon Attack: +6 to hit, reach 10 ft., one target. Hit: 9 (1d10 + 4) piercing damage."
+    },
+    {
+      "name": "Hooves",
+      "uses": "",
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) bludgeoning damage."
+    },
+    {
+      "name": "Longbow",
+      "uses": "",
+      "description": "Ranged Weapon Attack: +4 to hit, range 150/600 ft., one target. Hit: 6 (1d8 + 2) piercing damage."
+    }
+  ],
+  "legendaryActions": []
+}

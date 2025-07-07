@@ -1,0 +1,54 @@
+{
+  "name": "Bugbear",
+  "size": "Medium",
+  "type": "humanoid",
+  "alignment": "chaotic evil",
+  "armorClass": 16,
+  "armorType": "Hide Armor, Shield",
+  "hitPoints": 27,
+  "hitDice": "5d8 + 5",
+  "speed": "30 ft.",
+  "abilities": {
+    "strength": 15,
+    "dexterity": 14,
+    "constitution": 13,
+    "intelligence": 8,
+    "wisdom": 11,
+    "charisma": 9
+  },
+  "savingThrows": "",
+  "skills": "Stealth +6, Survival +2",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Darkvision 60 ft.,  Passive Perception 10",
+  "languages": "Common, Goblin",
+  "challenge": "1 (200 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Brute",
+      "uses": "",
+      "description": "A melee weapon deals one extra die of its damage when the bugbear hits with it (included in the attack)."
+    },
+    {
+      "name": "Surprise Attack",
+      "uses": "",
+      "description": "If the bugbear surprises a creature and hits it with an attack during the first round of combat, the target takes an extra 7 (2d6) damage from the attack."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Morningstar",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 11 (2d8 + 2) piercing damage."
+    },
+    {
+      "name": "Javelin",
+      "uses": "",
+      "description": "Melee or Ranged Weapon Attack: +4 to hit, reach 5 ft. or range 30/120 ft., one target. Hit: 9 (2d6 + 2) piercing damage in melee or 5 (1d6 + 2) piercing damage at range."
+    }
+  ],
+  "legendaryActions": []
+}

@@ -1,0 +1,59 @@
+{
+  "name": "Drow",
+  "size": "Medium",
+  "type": "humanoid",
+  "alignment": "neutral evil",
+  "armorClass": 15,
+  "armorType": "Chain Shirt",
+  "hitPoints": 13,
+  "hitDice": "3d8",
+  "speed": "30 ft.",
+  "abilities": {
+    "strength": 10,
+    "dexterity": 14,
+    "constitution": 10,
+    "intelligence": 11,
+    "wisdom": 11,
+    "charisma": 12
+  },
+  "savingThrows": "",
+  "skills": "Perception +2, Stealth +4",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Darkvision 120 ft.,  Passive Perception 12",
+  "languages": "Elvish, Undercommon",
+  "challenge": "1/4 (50 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Fey Ancestry",
+      "uses": "",
+      "description": "The drow has advantage on saving throws against being charmed, and magic can’t put the drow to sleep."
+    },
+    {
+      "name": "Innate Spellcasting",
+      "uses": "",
+      "description": "The drow’s spellcasting ability is Charisma (spell save DC 11). It can innately cast the following spells, requiring no material components:"
+    },
+    {
+      "name": "Sunlight Sensitivity",
+      "uses": "",
+      "description": "While in sunlight, the drow has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Shortsword",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    },
+    {
+      "name": "Hand Crossbow",
+      "uses": "",
+      "description": "Ranged Weapon Attack: +4 to hit, range 30/120 ft., one target. Hit: 5 (1d6 + 2) piercing damage, and the target must succeed on a DC 13 Constitution saving throw or be poisoned for 1 hour. If the saving throw fails by 5 or more, the target is also unconscious while poisoned in this way. The target wakes up if it takes damage or if another creature takes an action to shake it awake."
+    }
+  ],
+  "legendaryActions": []
+}

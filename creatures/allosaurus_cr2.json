@@ -1,0 +1,49 @@
+{
+  "name": "Allosaurus",
+  "size": "Large",
+  "type": "beast",
+  "alignment": "unaligned",
+  "armorClass": 13,
+  "armorType": "",
+  "hitPoints": 51,
+  "hitDice": "6d10 + 18",
+  "speed": "60 ft.",
+  "abilities": {
+    "strength": 19,
+    "dexterity": 13,
+    "constitution": 17,
+    "intelligence": 2,
+    "wisdom": 12,
+    "charisma": 5
+  },
+  "savingThrows": "",
+  "skills": "Perception +5",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 15",
+  "languages": "--",
+  "challenge": "2 (450 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Pounce",
+      "uses": "",
+      "description": "If the allosaurus moves at least 30 feet straight toward a creature and then hits it with a claw attack on the same turn, that target must succeed on a DC 13 Strength saving throw or be knocked prone. If the target is prone, the allosaurus can make one bite attack against it as a bonus action."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 15 (2d10 + 4) piercing damage."
+    },
+    {
+      "name": "Claw",
+      "uses": "",
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 8 (1d8 + 4) slashing damage."
+    }
+  ],
+  "legendaryActions": []
+}

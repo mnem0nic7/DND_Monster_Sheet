@@ -1,0 +1,54 @@
+{
+  "name": "Gargoyle",
+  "size": "Medium",
+  "type": "elemental",
+  "alignment": "chaotic evil",
+  "armorClass": 15,
+  "armorType": "Natural Armor",
+  "hitPoints": 52,
+  "hitDice": "7d8 + 21",
+  "speed": "30 ft., fly 60 ft.",
+  "abilities": {
+    "strength": 15,
+    "dexterity": 11,
+    "constitution": 16,
+    "intelligence": 6,
+    "wisdom": 11,
+    "charisma": 7
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "Bludgeoning, Piercing, and Slashing from Nonmagical Attacks that aren't Adamantine",
+  "immunities": "Poison",
+  "conditionImmunities": "Exhaustion, Petrified, Poisoned",
+  "senses": "Darkvision 60 ft.,  Passive Perception 10",
+  "languages": "Terran",
+  "challenge": "2 (450 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "False Appearance",
+      "uses": "",
+      "description": "While the gargoyle remains motionless, it is indistinguishable from an inanimate statue."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The gargoyle makes two attacks: one with its bite and one with its claws."
+    },
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    },
+    {
+      "name": "Claws",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) slashing damage."
+    }
+  ],
+  "legendaryActions": []
+}

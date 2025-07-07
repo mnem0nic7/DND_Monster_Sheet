@@ -1,0 +1,54 @@
+{
+  "name": "Pseudodragon",
+  "size": "Tiny",
+  "type": "dragon",
+  "alignment": "neutral good",
+  "armorClass": 13,
+  "armorType": "Natural Armor",
+  "hitPoints": 7,
+  "hitDice": "2d4 + 2",
+  "speed": "15 ft., fly 60 ft.",
+  "abilities": {
+    "strength": 6,
+    "dexterity": 15,
+    "constitution": 13,
+    "intelligence": 10,
+    "wisdom": 12,
+    "charisma": 10
+  },
+  "savingThrows": "",
+  "skills": "Perception +3, Stealth +4",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Blindsight 10 ft., Darkvision 60 ft.,  Passive Perception 13",
+  "languages": "Understands Common and Draconic but can't speak them",
+  "challenge": "1/4 (50 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Magic Resistance",
+      "uses": "",
+      "description": "The pseudodragon has advantage on saving throws against spells and other magical effects."
+    },
+    {
+      "name": "Limited Telepathy",
+      "uses": "",
+      "description": "The pseudodragon can magically communicate simple ideas, emotions, and images telepathically with any creature within 100 feet of it that can understand a language."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) piercing damage."
+    },
+    {
+      "name": "Sting",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 4 (1d4 + 2) piercing damage, and the target must succeed on a DC 11 Constitution saving throw or become poisoned for 1 hour. If the saving throw fails by 5 or more, the target falls unconscious for the same duration, or until it takes damage or another creature uses an action to shake it awake."
+    }
+  ],
+  "legendaryActions": []
+}

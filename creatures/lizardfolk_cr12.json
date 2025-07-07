@@ -1,0 +1,64 @@
+{
+  "name": "Lizardfolk",
+  "size": "Medium",
+  "type": "humanoid",
+  "alignment": "neutral",
+  "armorClass": 15,
+  "armorType": "Natural Armor, Shield",
+  "hitPoints": 22,
+  "hitDice": "4d8 + 4",
+  "speed": "30 ft., swim 30 ft.",
+  "abilities": {
+    "strength": 15,
+    "dexterity": 10,
+    "constitution": 13,
+    "intelligence": 7,
+    "wisdom": 12,
+    "charisma": 7
+  },
+  "savingThrows": "",
+  "skills": "Perception +3, Stealth +2, Survival +5",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 13",
+  "languages": "Draconic",
+  "challenge": "1/2 (100 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Hold Breath",
+      "uses": "",
+      "description": "The lizardfolk can hold its breath for 15 minutes."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The lizardfolk makes two melee attacks, each one with a different weapon."
+    },
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    },
+    {
+      "name": "Heavy Club",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) bludgeoning damage."
+    },
+    {
+      "name": "Javelin",
+      "uses": "",
+      "description": "Melee or Ranged Weapon Attack: +4 to hit, reach 5 ft. or range 30/120 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    },
+    {
+      "name": "Spiked Shield",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    }
+  ],
+  "legendaryActions": []
+}

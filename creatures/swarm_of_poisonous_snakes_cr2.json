@@ -1,0 +1,44 @@
+{
+  "name": "Swarm of Poisonous Snakes",
+  "size": "Medium",
+  "type": "beast",
+  "alignment": "unaligned",
+  "armorClass": 14,
+  "armorType": "",
+  "hitPoints": 36,
+  "hitDice": "8d8",
+  "speed": "30 ft., swim 30 ft.",
+  "abilities": {
+    "strength": 8,
+    "dexterity": 18,
+    "constitution": 11,
+    "intelligence": 1,
+    "wisdom": 10,
+    "charisma": 3
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "Bludgeoning, Piercing, Slashing",
+  "immunities": "",
+  "conditionImmunities": "Charmed, Frightened, Grappled, Paralyzed, Petrified, Prone, Restrained, Stunned",
+  "senses": "Blindsight 10 ft.,  Passive Perception 10",
+  "languages": "--",
+  "challenge": "2 (450 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Swarm",
+      "uses": "",
+      "description": "The swarm can occupy another creature's space and vice versa, and the swarm can move through any opening large enough for a Tiny snake. The swarm can't regain hit points or gain temporary hit points."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": ". Melee Weapon Attack: +6 to hit, reach 0 ft., one creature in the swarm's space. Hit: 7 (2d6) piercing damage, or 3 (1d6) piercing damage if the swarm has half of its hit points or fewer. The target must make a DC 10 Constitution saving throw, taking 14 (4d6) poison damage on a failed save, or half as much damage on a successful one."
+    }
+  ],
+  "legendaryActions": []
+}

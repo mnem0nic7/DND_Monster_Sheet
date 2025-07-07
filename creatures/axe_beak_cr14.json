@@ -1,0 +1,38 @@
+{
+  "name": "Axe Beak",
+  "size": "Large",
+  "type": "beast",
+  "alignment": "unaligned",
+  "armorClass": 11,
+  "armorType": "",
+  "hitPoints": 19,
+  "hitDice": "3d10 + 3",
+  "speed": "50 ft.",
+  "abilities": {
+    "strength": 14,
+    "dexterity": 12,
+    "constitution": 12,
+    "intelligence": 2,
+    "wisdom": 10,
+    "charisma": 5
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 10",
+  "languages": "--",
+  "challenge": "1/4 (50 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [],
+  "actions": [
+    {
+      "name": "Beak",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 6 (1d8 + 2) slashing damage."
+    }
+  ],
+  "legendaryActions": []
+}

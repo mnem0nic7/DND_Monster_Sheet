@@ -1,0 +1,59 @@
+{
+  "name": "Deep Gnome (Svirfneblin)",
+  "size": "Small",
+  "type": "humanoid",
+  "alignment": "neutral good",
+  "armorClass": 15,
+  "armorType": "Chain Shirt",
+  "hitPoints": 16,
+  "hitDice": "3d6 + 6",
+  "speed": "20 ft.",
+  "abilities": {
+    "strength": 15,
+    "dexterity": 14,
+    "constitution": 14,
+    "intelligence": 12,
+    "wisdom": 10,
+    "charisma": 9
+  },
+  "savingThrows": "",
+  "skills": "Investigation +3, Perception +2, Stealth +4",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Darkvision 120 ft.,  Passive Perception 12",
+  "languages": "Gnomish, Terran, Undercommon",
+  "challenge": "1/2 (100 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Stone Camouflage",
+      "uses": "",
+      "description": "The gnome has advantage on Dexterity (Stealth) checks made to hide in rocky terrain."
+    },
+    {
+      "name": "Gnome Cunning",
+      "uses": "",
+      "description": "The gnome has advantage on Intelligence, Wisdom, and Charisma saving throws against magic."
+    },
+    {
+      "name": "Innate Spellcasting",
+      "uses": "",
+      "description": "The gnome’s innate spellcasting ability is Intelligence (spell save DC 11). It can innately cast the following spells, requiring no material components:"
+    }
+  ],
+  "actions": [
+    {
+      "name": "War Pick",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 6 (1d8 + 2) piercing damage."
+    },
+    {
+      "name": "Poisoned Dart",
+      "uses": "",
+      "description": "Ranged Weapon Attack: +4 to hit, range 30/120 ft., one creature. Hit: 4 (1d4 + 2) piercing damage, and the target must succeed on a DC 12 Constitution saving throw or be poisoned for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
+    }
+  ],
+  "legendaryActions": []
+}

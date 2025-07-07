@@ -1,0 +1,44 @@
+{
+  "name": "Raven",
+  "size": "Tiny",
+  "type": "beast",
+  "alignment": "unaligned",
+  "armorClass": 12,
+  "armorType": "",
+  "hitPoints": 1,
+  "hitDice": "1d4 - 1",
+  "speed": "10 ft., fly 50 ft.",
+  "abilities": {
+    "strength": 2,
+    "dexterity": 14,
+    "constitution": 8,
+    "intelligence": 2,
+    "wisdom": 12,
+    "charisma": 6
+  },
+  "savingThrows": "",
+  "skills": "Perception +3",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 13",
+  "languages": "--",
+  "challenge": "0 (10 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Mimicry",
+      "uses": "",
+      "description": "The raven can mimic simple sounds it has heard, such as a person whispering, a baby crying, or an animal chittering. A creature that hears the sounds can tell they are imitations with a successful DC 10 Wisdom (Insight) check."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Beak",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 1 piercing damage."
+    }
+  ],
+  "legendaryActions": []
+}

@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Goblin",
+    "cr": "1/4",
+    "type": "humanoid",
+    "filename": "goblin_cr025.json"
+  },
+  {
+    "name": "Adult Red Dragon",
+    "cr": "17",
+    "type": "dragon",
+    "filename": "adult_red_dragon_cr17.json"
+  },
+  {
+    "name": "Owlbear",
+    "cr": "3",
+    "type": "monstrosity",
+    "filename": "owlbear_cr3.json"
+  },
+  {
+    "name": "Aboleth",
+    "cr": "10",
+    "type": "aberration",
+    "filename": "aboleth_cr10.json"
+  },
+  {
+    "name": "Ancient Red Dragon",
+    "cr": "24",
+    "type": "dragon",
+    "filename": "ancient_red_dragon_cr24.json"
+  },
+  {
+    "name": "Balor",
+    "cr": "19",
+    "type": "fiend",
+    "filename": "balor_cr19.json"
+  },
+  {
+    "name": "Beholder",
+    "cr": "13",
+    "type": "aberration",
+    "filename": "beholder_cr13.json"
+  },
+  {
+    "name": "Lich",
+    "cr": "21",
+    "type": "undead",
+    "filename": "lich_cr21.json"
+  },
+  {
+    "name": "Tarrasque",
+    "cr": "30",
+    "type": "monstrosity",
+    "filename": "tarrasque_cr30.json"
+  },
+  {
+    "name": "Vampire",
+    "cr": "13",
+    "type": "undead",
+    "filename": "vampire_cr13.json"
+  },
+  {
+    "name": "Dragon Turtle",
+    "cr": "17",
+    "type": "dragon",
+    "filename": "dragon_turtle_cr17.json"
+  },
+  {
+    "name": "Kraken",
+    "cr": "23",
+    "type": "monstrosity",
+    "filename": "kraken_cr23.json"
+  }
+]

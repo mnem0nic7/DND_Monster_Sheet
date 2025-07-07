@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D Creature Sheet Editor</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div id="welcomeScreen" class="welcome-screen">
+            <div class="welcome-content">
+                <h1 class="welcome-title">D&D Creature Sheet Editor</h1>
+                <p class="welcome-subtitle">Create, edit, and manage D&D creature stat blocks</p>
+
+                <div class="welcome-options">
+                    <div class="option-card" onclick="showCreateOptions()">
+                        <div class="option-icon" title="OwlBear Icon">
+                            <img src="owlbear_icon_1.png" alt="OwlBear Icon" />
+                        </div>
+                        <h3>New</h3>
+                    </div>
+                    
+                    <div class="option-card" onclick="showImportOptions()">
+                        <div class="option-icon" title="Dragon Icon">
+                            <img src="dragon_icon.png" alt="Dragon Icon" />
+                        </div>
+                        <h3>Existing</h3>
+                    </div>
+                    <!-- New Browse button -->
+                    <div class="option-card" onclick="showCreatureLibrary()">
+                        <div class="option-icon" title="Griffon Icon">
+                            <img src="giffon_icon.png" alt="Griffon Icon" />
+                        </div>
+                        <h3>Browse</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Options Modal -->
+        <div id="createModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Create New Creature</h3>
+                    <button class="close-btn" onclick="closeModals()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="create-options">
+                        <button class="option-btn" onclick="createBlankCreature()">
+                            <div class="btn-icon">📝</div>
+                            <div class="btn-text">
+                                <strong>Blank Creature</strong>
+                                <small>Start with empty stat block</small>
+                            </div>
+                        </button>
+                        
+                        <button class="option-btn" onclick="showTemplateLibrary()">
+                            <div class="btn-icon">📚</div>
+                            <div class="btn-text">
+                                <strong>From Template</strong>
+                                <small>Use an existing creature as a base</small>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Import Options Modal -->
+        <div id="importModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Import Creature</h3>
+                    <button class="close-btn" onclick="closeModals()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="import-options">
+                        <button class="option-btn" onclick="document.getElementById('loadJson').click(); closeModals();">
+                            <div class="btn-icon">📂</div>
+                            <div class="btn-text">
+                                <strong>Load JSON File</strong>
+                                <small>Import from your computer</small>
+                            </div>
+                        </button>
+                        
+                        <button class="option-btn" onclick="showCreatureLibrary()">
+                            <div class="btn-icon">🗂️</div>
+                            <div class="btn-text">
+                                <strong>From Creature Library</strong>
+                                <small>Choose from an existing creature</small>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Library Modal -->
+        <div id="templateLibrary" class="modal large-modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Choose Template</h3>
+                    <button class="close-btn" onclick="closeModals()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="library-grid">
+                        <div class="library-item" onclick="loadTemplateAndStart('goblin')">
+                            <strong>Goblin</strong>
+                            <span class="cr">CR 1/4</span>
+                            <small>Small humanoid</small>
+                        </div>
+                        <div class="library-item" onclick="loadTemplateAndStart('owlbear')">
+                            <strong>Owlbear</strong>
+                            <span class="cr">CR 3</span>
+                            <small>Large monstrosity</small>
+                        </div>
+                        <div class="library-item" onclick="loadTemplateAndStart('adult_red_dragon')">
+                            <strong>Adult Red Dragon</strong>
+                            <span class="cr">CR 17</span>
+                            <small>Huge dragon</small>
+                        </div>
+                    </div>
+                    <p class="library-note">💡 <strong>Tip:</strong> More templates available in the Creature Library section!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Creature Library (Full) -->
+        <div id="creatureLibraryFull" class="modal large-modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Creature Library</h3>
+                    <button class="close-btn" onclick="closeModals()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="library-search">
+                        <input type="text" id="creatureSearch" placeholder="Search creatures..." onkeyup="filterCreatures()">
+                    </div>
+                    <div class="library-categories">
+                        <button class="category-btn active" onclick="filterByCategory('all')">All</button>
+                        <button class="category-btn" onclick="filterByCategory('dragon')">Dragons</button>
+                        <button class="category-btn" onclick="filterByCategory('fiend')">Fiends</button>
+                        <button class="category-btn" onclick="filterByCategory('undead')">Undead</button>
+                        <button class="category-btn" onclick="filterByCategory('beast')">Beasts</button>
+                        <button class="category-btn" onclick="filterByCategory('humanoid')">Humanoids</button>
+                    </div>
+                    <div id="creatureLibraryGrid" class="library-grid large-grid">
+                        <p class="loading-text">Loading creature library...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Editor (Initially Hidden) -->
+        <div id="mainEditor" style="display: none;">
+            <header>
+                <h1>D&D Creature Sheet Editor</h1>
+                <div class="controls">
+                    <button id="backToWelcome" class="btn btn-secondary">← Back to Start</button>
+                    <button id="newCreature" class="btn btn-primary">New Creature</button>
+                    <button id="saveJson" class="btn btn-success">Save JSON</button>
+                    <input type="file" id="loadJson" accept=".json" style="display: none;">
+                    <button id="loadJsonBtn" class="btn btn-secondary">Load JSON</button>
+                    <button id="toggleLibrary" class="btn btn-info">Creature Library</button>
+                </div>
+            </header>
+
+            <!-- Creature Library Panel -->
+            <div id="creatureLibrary" class="creature-library" style="display: none;">
+                <h3>Quick Load Templates</h3>
+                <p>Click on any creature below to load it into the editor:</p>
+                <div class="library-grid">
+                    <div class="library-item" onclick="loadTemplate('goblin')">
+                        <strong>Goblin</strong>
+                        <span class="cr">CR 1/4</span>
+                        <small>Small humanoid</small>
+                    </div>
+                    <div class="library-item" onclick="loadTemplate('owlbear')">
+                        <strong>Owlbear</strong>
+                        <span class="cr">CR 3</span>
+                        <small>Large monstrosity</small>
+                    </div>
+                    <div class="library-item" onclick="loadTemplate('adult_red_dragon')">
+                        <strong>Adult Red Dragon</strong>
+                        <span class="cr">CR 17</span>
+                        <small>Huge dragon</small>
+                    </div>
+                </div>
+                <p class="library-note">💡 <strong>Tip:</strong> Save your custom creatures to the <code>creatures/</code> folder for easy organization!</p>
+            </div>
+
+            <div class="creature-sheet">
+                <!-- Section 1: Creature Name and Type -->
+                <div class="editable-section" id="nameSection">
+                    <div class="display-content">
+                        <h1 class="creature-name" id="creatureNameDisplay">Adult Red Dragon</h1>
+                        <div class="creature-type" id="creatureTypeDisplay">
+                            <em>Huge dragon, chaotic evil</em>
+                        </div>
+                    </div>
+                        <div class="edit-content">
+                            <div class="field-group">
+                                <label for="creatureName">Name:</label>
+                                <input type="text" id="creatureName" class="creature-name-input" placeholder="Creature Name" value="Adult Red Dragon">
+                            </div>
+                            <div class="field-group">
+                                <label for="creatureSize">Size:</label>
+                                <select id="creatureSize"></select>
+                            </div>
+                            <div class="field-group">
+                                <label for="creatureType">Type:</label>
+                                <select id="creatureType" onchange="toggleCreatureTypeOther()"></select>
+                                <input type="text" id="creatureTypeOther" placeholder="Enter type" style="display:none; margin-top:4px;" />
+                            </div>
+                            <div class="field-group">
+                                <label for="creatureAlignment">Alignment:</label>
+                                <select id="creatureAlignment"></select>
+                            </div>
+                        <div class="edit-buttons">
+                            <button class="btn btn-small btn-success" onclick="saveSection('nameSection')">Save</button>
+                            <button class="btn btn-small btn-secondary" onclick="cancelEdit('nameSection')">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Basic Stats -->
+                <div class="editable-section" id="basicStatsSection">
+                    <div class="display-content">
+                        <div class="stat-line">
+                            <strong>Armor Class</strong> <span id="armorClassDisplay">19 (natural armor)</span>
+                        </div>
+                        <div class="stat-line">
+                            <strong>Hit Points</strong> <span id="hitPointsDisplay">256 (19d12 + 133)</span>
+                        </div>
+                        <div class="stat-line">
+                            <strong>Speed</strong> <span id="speedDisplay">40 ft., climb 40 ft., fly 80 ft.</span>
+                        </div>
+                    </div>
+                    <div class="edit-content">
+                        <div class="stat-row">
+                            <span class="label">Armor Class</span>
+                            <input type="number" id="armorClass" value="19" readonly>
+                            <label class="checkbox-inline" style="margin-left:8px;">
+                                <input type="checkbox" id="overrideAC" /> Override AC
+                            </label>
+                            <select id="armorCategory" style="margin-left:8px;"></select>
+                            <select id="armorKind" style="margin-left:8px;"></select>
+                            <input type="text" id="armorKindOther" placeholder="Enter armor type" style="display:none; margin-left:8px;" />
+                            <label for="armorBonus" style="margin-left:8px;">Bonus:</label>
+                            <select id="armorBonus" style="margin-left:4px;">
+                                <option value="0">+0</option>
+                                <option value="1">+1</option>
+                                <option value="2">+2</option>
+                                <option value="3">+3</option>
+                            </select>
+                        </div>
+                        <div class="stat-row">
+                            <span class="label">Hit Points</span>
+                            <input type="number" id="hitPoints" value="256">
+                            <span class="hp-formula">
+                                (<input type="text" id="hitDice" placeholder="hit dice" value="19d12 + 133">)
+                            </span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="label">Speed</span>
+                            <input type="text" id="speed" placeholder="speed" value="40 ft., climb 40 ft., fly 80 ft.">
+                        </div>
+                        <div class="edit-buttons">
+                            <button class="btn btn-small btn-success" onclick="saveSection('basicStatsSection')">Save</button>
+                            <button class="btn btn-small btn-secondary" onclick="cancelEdit('basicStatsSection')">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Ability Scores -->
+                <div class="editable-section" id="abilityScoresSection">
+                    <div class="display-content">
+                        <div class="ability-scores-display">
+                            <div class="ability-score">
+                                <div class="ability-name">STR</div>
+                                <div class="ability-value" id="strDisplay">27 (+8)</div>
+                            </div>
+                            <div class="ability-score">
+                                <div class="ability-name">DEX</div>
+                                <div class="ability-value" id="dexDisplay">10 (+0)</div>
+                            </div>
+                            <div class="ability-score">
+                                <div class="ability-name">CON</div>
+                                <div class="ability-value" id="conDisplay">25 (+7)</div>
+                            </div>
+                            <div class="ability-score">
+                                <div class="ability-name">INT</div>
+                                <div class="ability-value" id="intDisplay">16 (+3)</div>
+                            </div>
+                            <div class="ability-score">
+                                <div class="ability-name">WIS</div>
+                                <div class="ability-value" id="wisDisplay">13 (+1)</div>
+                            </div>
+                            <div class="ability-score">
+                                <div class="ability-name">CHA</div>
+                                <div class="ability-value" id="chaDisplay">21 (+5)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="edit-content">
+                        <div class="ability-scores">
+                            <div class="ability">
+                                <label>STR</label>
+                                <input type="number" id="strength" value="27">
+                                <span class="modifier" id="strMod">(+8)</span>
+                            </div>
+                            <div class="ability">
+                                <label>DEX</label>
+                                <input type="number" id="dexterity" value="10">
+                                <span class="modifier" id="dexMod">(+0)</span>
+                            </div>
+                            <div class="ability">
+                                <label>CON</label>
+                                <input type="number" id="constitution" value="25">
+                                <span class="modifier" id="conMod">(+7)</span>
+                            </div>
+                            <div class="ability">
+                                <label>INT</label>
+                                <input type="number" id="intelligence" value="16">
+                                <span class="modifier" id="intMod">(+3)</span>
+                            </div>
+                            <div class="ability">
+                                <label>WIS</label>
+                                <input type="number" id="wisdom" value="13">
+                                <span class="modifier" id="wisMod">(+1)</span>
+                            </div>
+                            <div class="ability">
+                                <label>CHA</label>
+                                <input type="number" id="charisma" value="21">
+                                <span class="modifier" id="chaMod">(+5)</span>
+                            </div>
+                        </div>
+                        <div class="edit-buttons">
+                            <button class="btn btn-small btn-success" onclick="saveSection('abilityScoresSection')">Save</button>
+                            <button class="btn btn-small btn-secondary" onclick="cancelEdit('abilityScoresSection')">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Skills and Traits -->
+                <div class="editable-section" id="traitsSection">
+                    <div class="display-content">
+                        <div class="trait-line" id="savingThrowsLine">
+                            <strong>Saving Throws</strong> <span id="savingThrowsDisplay">Dex +6, Con +13, Wis +7, Cha +11</span>
+                        </div>
+                        <div class="trait-line" id="skillsLine">
+                            <strong>Skills</strong> <span id="skillsDisplay">Perception +13, Stealth +6</span>
+                        </div>
+                        <div class="trait-line" id="vulnerabilitiesLine" style="display: none;">
+                            <strong>Damage Vulnerabilities</strong> <span id="vulnerabilitiesDisplay"></span>
+                        </div>
+                        <div class="trait-line" id="resistancesLine" style="display: none;">
+                            <strong>Damage Resistances</strong> <span id="resistancesDisplay"></span>
+                        </div>
+                        <div class="trait-line" id="immunitiesLine">
+                            <strong>Damage Immunities</strong> <span id="immunitiesDisplay">fire</span>
+                        </div>
+                        <div class="trait-line" id="conditionImmunitiesLine" style="display: none;">
+                            <strong>Condition Immunities</strong> <span id="conditionImmunitiesDisplay"></span>
+                        </div>
+                        <div class="trait-line" id="sensesLine">
+                            <strong>Senses</strong> <span id="sensesDisplay">blindsight 60 ft., darkvision 120 ft., passive Perception 23</span>
+                        </div>
+                        <div class="trait-line" id="languagesLine">
+                            <strong>Languages</strong> <span id="languagesDisplay">Common, Draconic</span>
+                        </div>
+                        <div class="trait-line" id="challengeLine">
+                            <strong>Challenge</strong> <span id="challengeDisplay">17 (18,000 XP)</span>
+                            <strong>Proficiency Bonus</strong> <span id="proficiencyBonusDisplay">+6</span>
+                        </div>
+                    </div>
+                    <div class="edit-content">
+                        <div class="trait-row">
+                            <span class="label">Saving Throws</span>
+                            <input type="text" id="savingThrows" placeholder="saving throws" value="Dex +6, Con +13, Wis +7, Cha +11">
+                        </div>
+                        <div class="trait-row">
+                            <span class="label">Skills</span>
+                            <input type="text" id="skills" placeholder="skills" value="Perception +13, Stealth +6">
+                        </div>
+                        <div class="trait-row">
+                            <span class="label">Damage Vulnerabilities</span>
+                            <input type="text" id="vulnerabilities" placeholder="vulnerabilities" value="">
+                        </div>
+                        <div class="trait-row">
+                            <span class="label">Damage Resistances</span>
+                            <input type="text" id="resistances" placeholder="resistances" value="">
+                        </div>
+                        <div class="trait-row">
+                            <span class="label">Damage Immunities</span>
+                            <input type="text" id="immunities" placeholder="immunities" value="fire">
+                        </div>
+                        <div class="trait-row">
+                            <span class="label">Condition Immunities</span>
+                            <input type="text" id="conditionImmunities" placeholder="condition immunities" value="">
+                        </div>
+                        <div class="trait-row">
+                            <span class="label">Senses</span>
+                            <input type="text" id="senses" placeholder="senses" value="blindsight 60 ft., darkvision 120 ft., passive Perception 23">
+                        </div>
+                        <div class="trait-row">
+                            <span class="label">Languages</span>
+                            <input type="text" id="languages" placeholder="languages" value="Common, Draconic">
+                        </div>
+                        <div class="trait-row">
+                            <span class="label">Challenge</span>
+                            <input type="text" id="challenge" placeholder="challenge rating" value="17 (18,000 XP)">
+                            <span class="label">Proficiency Bonus</span>
+                            <input type="text" id="proficiencyBonus" placeholder="proficiency bonus" value="+6">
+                        </div>
+                        <div class="edit-buttons">
+                            <button class="btn btn-small btn-success" onclick="saveSection('traitsSection')">Save</button>
+                            <button class="btn btn-small btn-secondary" onclick="cancelEdit('traitsSection')">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Special Abilities -->
+                <div class="editable-section" id="specialAbilitiesSection">
+                    <div class="display-content">
+                        <div class="section-header">
+                            <h3>Special Abilities</h3>
+                        </div>
+                        <div id="specialAbilitiesDisplay">
+                            <div class="ability-display">
+                                <div class="ability-name-display"><strong>Legendary Resistance (3/Day).</strong></div>
+                                <div class="ability-description-display">If the dragon fails a saving throw, it can choose to succeed instead.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="edit-content">
+                        <div id="specialAbilities">
+                            <div class="ability-item">
+                                <input type="text" class="ability-name" placeholder="Ability Name" value="Legendary Resistance">
+                                <span class="ability-uses">(<input type="text" class="ability-use-count" placeholder="uses" value="3/Day">)</span>
+                                <button class="btn btn-small" onclick="removeElement(this.parentElement)" style="float: right; background: #dc3545; color: white;">Remove</button>
+                                <textarea class="ability-description" placeholder="Ability description">If the dragon fails a saving throw, it can choose to succeed instead.</textarea>
+                            </div>
+                        </div>
+                        <button class="btn btn-small add-ability" onclick="addSpecialAbility()">+ Add Special Ability</button>
+                        <div class="edit-buttons">
+                            <button class="btn btn-small btn-success" onclick="saveSection('specialAbilitiesSection')">Save</button>
+                            <button class="btn btn-small btn-secondary" onclick="cancelEdit('specialAbilitiesSection')">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 6: Actions -->
+                <div class="editable-section" id="actionsSection">
+                    <div class="display-content">
+                        <div class="section-header">
+                            <h3>Actions</h3>
+                        </div>
+                        <div id="actionsDisplay">
+                            <div class="action-display">
+                                <div class="action-name-display"><strong>Multiattack.</strong></div>
+                                <div class="action-description-display">The dragon can use its Frightful Presence. It then makes three attacks: one with its bite and two with its claws.</div>
+                            </div>
+                            <div class="action-display">
+                                <div class="action-name-display"><strong>Bite.</strong></div>
+                                <div class="action-description-display">Melee Weapon Attack: +14 to hit, reach 10 ft., one target. Hit: 19 (2d10 + 8) piercing damage plus 7 (2d6) fire damage.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="edit-content">
+                        <div id="actions">
+                            <div class="action-item">
+                                <input type="text" class="action-name" placeholder="Action Name" value="Multiattack">
+                                <button class="btn btn-small" onclick="removeElement(this.parentElement)" style="float: right; background: #dc3545; color: white;">Remove</button>
+                                <textarea class="action-description" placeholder="Action description">The dragon can use its Frightful Presence. It then makes three attacks: one with its bite and two with its claws.</textarea>
+                            </div>
+                            <div class="action-item">
+                                <input type="text" class="action-name" placeholder="Action Name" value="Bite">
+                                <button class="btn btn-small" onclick="removeElement(this.parentElement)" style="float: right; background: #dc3545; color: white;">Remove</button>
+                                <textarea class="action-description" placeholder="Action description">Melee Weapon Attack: +14 to hit, reach 10 ft., one target. Hit: 19 (2d10 + 8) piercing damage plus 7 (2d6) fire damage.</textarea>
+                            </div>
+                        </div>
+                        <button class="btn btn-small add-action" onclick="addAction()">+ Add Action</button>
+                        <div class="edit-buttons">
+                            <button class="btn btn-small btn-success" onclick="saveSection('actionsSection')">Save</button>
+                            <button class="btn btn-small btn-secondary" onclick="cancelEdit('actionsSection')">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 7: Legendary Actions -->
+                <div class="editable-section" id="legendaryActionsSection">
+                    <div class="display-content">
+                        <div class="section-header">
+                            <h3>Legendary Actions</h3>
+                        </div>
+                        <p class="legendary-description">The dragon can take 3 legendary actions, choosing from the options below. Only one legendary action option can be used at a time and only at the end of another creature's turn. The dragon regains spent legendary actions at the start of its turn.</p>
+                        <div id="legendaryActionsDisplay">
+                            <div class="legendary-action-display">
+                                <div class="legendary-action-name-display"><strong>Detect.</strong></div>
+                                <div class="legendary-action-description-display">The dragon makes a Wisdom (Perception) check.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="edit-content">
+                        <div id="legendaryActions">
+                            <div class="legendary-action-item">
+                                <input type="text" class="legendary-action-name" placeholder="Action Name" value="Detect">
+                                <button class="btn btn-small" onclick="removeElement(this.parentElement)" style="float: right; background: #dc3545; color: white;">Remove</button>
+                                <textarea class="legendary-action-description" placeholder="Action description">The dragon makes a Wisdom (Perception) check.</textarea>
+                            </div>
+                        </div>
+                        <button class="btn btn-small add-legendary-action" onclick="addLegendaryAction()">+ Add Legendary Action</button>
+                        <div class="edit-buttons">
+                            <button class="btn btn-small btn-success" onclick="saveSection('legendaryActionsSection')">Save</button>
+                            <button class="btn btn-small btn-secondary" onclick="cancelEdit('legendaryActionsSection')">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        </div> <!-- End mainEditor -->
+    </div> <!-- End container -->
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "name": "Crocodile",
+  "size": "Large",
+  "type": "beast",
+  "alignment": "unaligned",
+  "armorClass": 12,
+  "armorType": "Natural Armor",
+  "hitPoints": 19,
+  "hitDice": "3d10 + 3",
+  "speed": "20 ft., swim 30 ft.",
+  "abilities": {
+    "strength": 15,
+    "dexterity": 10,
+    "constitution": 13,
+    "intelligence": 2,
+    "wisdom": 10,
+    "charisma": 5
+  },
+  "savingThrows": "",
+  "skills": "Stealth +2",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 10",
+  "languages": "--",
+  "challenge": "1/2 (100 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Hold Breath",
+      "uses": "",
+      "description": "The crocodile can hold its breath for 15 minutes."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 7 (1d10 + 2) piercing damage, and the target is grappled (escape DC 12). Until this grapple ends, the target is restrained, and the crocodile can't bite another target."
+    }
+  ],
+  "legendaryActions": []
+}

@@ -1,0 +1,49 @@
+{
+  "name": "Minotaur Skeleton",
+  "size": "Large",
+  "type": "undead",
+  "alignment": "lawful evil",
+  "armorClass": 12,
+  "armorType": "Natural Armor",
+  "hitPoints": 67,
+  "hitDice": "9d10 + 18",
+  "speed": "40 ft.",
+  "abilities": {
+    "strength": 18,
+    "dexterity": 11,
+    "constitution": 15,
+    "intelligence": 6,
+    "wisdom": 8,
+    "charisma": 5
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "Bludgeoning",
+  "resistances": "",
+  "immunities": "Poison",
+  "conditionImmunities": "Exhaustion, Poisoned",
+  "senses": "Darkvision 60 ft.,  Passive Perception 9",
+  "languages": "Understands Abyssal but can't speak  it",
+  "challenge": "2 (450 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Charge",
+      "uses": "",
+      "description": "If the skeleton moves at least 10 feet straight toward a target and then hits it with a gore attack on the same turn, the target takes an extra 9 (2d8) piercing damage. If the target is a creature, it must succeed on a DC 14 Strength saving throw or be pushed up to 10 feet away and knocked prone."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Greataxe",
+      "uses": "",
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 17 (2d12 + 4) slashing damage."
+    },
+    {
+      "name": "Gore",
+      "uses": "",
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) piercing damage."
+    }
+  ],
+  "legendaryActions": []
+}

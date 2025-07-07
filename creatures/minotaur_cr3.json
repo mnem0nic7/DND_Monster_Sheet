@@ -1,0 +1,59 @@
+{
+  "name": "Minotaur",
+  "size": "Large",
+  "type": "monstrosity",
+  "alignment": "chaotic evil",
+  "armorClass": 14,
+  "armorType": "Natural Armor",
+  "hitPoints": 76,
+  "hitDice": "9d10 + 27",
+  "speed": "40 ft.",
+  "abilities": {
+    "strength": 18,
+    "dexterity": 11,
+    "constitution": 16,
+    "intelligence": 6,
+    "wisdom": 16,
+    "charisma": 9
+  },
+  "savingThrows": "",
+  "skills": "Perception +7",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Darkvision 60 ft.,  Passive Perception 17",
+  "languages": "Abyssal",
+  "challenge": "3 (700 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Charge",
+      "uses": "",
+      "description": "If the minotaur moves at least 10 feet straight toward a target and then hits it with a gore attack on the same turn, the target takes an extra 9 (2d8) piercing damage. If the target is a creature, it must succeed on a DC 14 Strength saving throw or be pushed up to 10 feet away and knocked prone."
+    },
+    {
+      "name": "Labyrinthine Recall",
+      "uses": "",
+      "description": "The minotaur can perfectly recall any path it has traveled."
+    },
+    {
+      "name": "Reckless",
+      "uses": "",
+      "description": "At the start of its turn, the minotaur can gain advantage on all melee weapon attack rolls it makes during that turn, but attack rolls against it have advantage until the start of its next turn."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Greataxe",
+      "uses": "",
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 17 (2d12 + 4) slashing damage."
+    },
+    {
+      "name": "Gore",
+      "uses": "",
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) piercing damage."
+    }
+  ],
+  "legendaryActions": []
+}

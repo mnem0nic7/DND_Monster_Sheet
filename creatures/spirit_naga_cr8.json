@@ -1,0 +1,49 @@
+{
+  "name": "Spirit Naga",
+  "size": "Large",
+  "type": "monstrosity",
+  "alignment": "chaotic evil",
+  "armorClass": 15,
+  "armorType": "Natural Armor",
+  "hitPoints": 75,
+  "hitDice": "10d10 + 20",
+  "speed": "40 ft.",
+  "abilities": {
+    "strength": 18,
+    "dexterity": 17,
+    "constitution": 14,
+    "intelligence": 16,
+    "wisdom": 15,
+    "charisma": 16
+  },
+  "savingThrows": "DEX +6, CON +5, WIS +5, CHA +6",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "Poison",
+  "conditionImmunities": "Charmed, Poisoned",
+  "senses": "Darkvision 60 ft.,  Passive Perception 12",
+  "languages": "Abyssal, Common",
+  "challenge": "8 (3,900 XP)",
+  "proficiencyBonus": "+3",
+  "specialAbilities": [
+    {
+      "name": "Rejuvenation",
+      "uses": "",
+      "description": "If it dies, the naga returns to life in 1d6 days and regains all its hit points. Only a wish spell can prevent this trait from functioning."
+    },
+    {
+      "name": "Spellcasting",
+      "uses": "",
+      "description": "The naga is a 10th-level spellcaster. Its spellcasting ability is Intelligence (spell save DC 14, +6 to hit with spell attacks), and it needs only verbal components to cast its spells. It has the following wizard spells prepared:"
+    }
+  ],
+  "actions": [
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +7 to hit, reach 10 ft., one creature. Hit: 7 (1d6 + 4) piercing damage, and the target must make a DC 13 Constitution saving throw, taking 31 (7d8) poison damage on a failed save, or half as much damage on a successful one."
+    }
+  ],
+  "legendaryActions": []
+}

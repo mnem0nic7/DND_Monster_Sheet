@@ -1,0 +1,69 @@
+{
+  "name": "Oni",
+  "size": "Large",
+  "type": "giant",
+  "alignment": "lawful evil",
+  "armorClass": 16,
+  "armorType": "Chain Mail",
+  "hitPoints": 110,
+  "hitDice": "13d10 + 39",
+  "speed": "30 ft., fly 30 ft.",
+  "abilities": {
+    "strength": 19,
+    "dexterity": 11,
+    "constitution": 16,
+    "intelligence": 14,
+    "wisdom": 12,
+    "charisma": 15
+  },
+  "savingThrows": "DEX +3, CON +6, WIS +4, CHA +5",
+  "skills": "Arcana +5, Deception +8, Perception +4",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Darkvision 60 ft.,  Passive Perception 14",
+  "languages": "Common, Giant",
+  "challenge": "7 (2,900 XP)",
+  "proficiencyBonus": "+3",
+  "specialAbilities": [
+    {
+      "name": "Innate Spellcasting",
+      "uses": "",
+      "description": "The oni's innate spellcasting ability is Charisma (spell save DC 13). The oni can innately cast the following spells, requiring no material components:"
+    },
+    {
+      "name": "Magic Weapons",
+      "uses": "",
+      "description": "The oni's weapon attacks are magical."
+    },
+    {
+      "name": "Regeneration",
+      "uses": "",
+      "description": "The oni regains 10 hit points at the start of its turn if it has at least 1 hit point."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The oni makes two attacks, either with its claws or its glaive."
+    },
+    {
+      "name": "Claw",
+      "uses": "",
+      "description": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 8 (1d8 + 4) slashing damage."
+    },
+    {
+      "name": "Glaive",
+      "uses": "",
+      "description": "Melee Weapon Attack: +7 to hit, reach 10 ft., one target. Hit: 15 (2d10 + 4) slashing damage, or 9 (1d10 + 4) slashing damage in Small or Medium form."
+    },
+    {
+      "name": "Change Shape",
+      "uses": "",
+      "description": "The oni magically polymorphs into a Small or Medium humanoid, into a Large giant, or back into its true form. Other than its size, its statistics are the same in each form. The only equipment that is transformed is its glaive, which shrinks so that it can be wielded in humanoid form. If the oni dies, it reverts to its true form, and its glaive reverts to its normal size."
+    }
+  ],
+  "legendaryActions": []
+}

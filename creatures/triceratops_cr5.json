@@ -1,0 +1,49 @@
+{
+  "name": "Triceratops",
+  "size": "Huge",
+  "type": "beast",
+  "alignment": "unaligned",
+  "armorClass": 13,
+  "armorType": "Natural Armor",
+  "hitPoints": 95,
+  "hitDice": "10d12 + 30",
+  "speed": "50 ft.",
+  "abilities": {
+    "strength": 22,
+    "dexterity": 9,
+    "constitution": 17,
+    "intelligence": 2,
+    "wisdom": 11,
+    "charisma": 5
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 10",
+  "languages": "--",
+  "challenge": "5 (1,800 XP)",
+  "proficiencyBonus": "+3",
+  "specialAbilities": [
+    {
+      "name": "Trampling Charge",
+      "uses": "",
+      "description": "If the triceratops moves at least 20 feet straight toward a creature and then hits it with a gore attack on the same turn, that target must succeed on a DC 13 Strength saving throw or be knocked prone. If the target is prone, the triceratops can make one stomp attack against it as a bonus action."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Gore",
+      "uses": "",
+      "description": "Melee Weapon Attack: +9 to hit, reach 5 ft., one target. Hit: 24 (4d8 + 6) piercing damage."
+    },
+    {
+      "name": "Stomp",
+      "uses": "",
+      "description": "Melee Weapon Attack: +9 to hit, reach 5 ft., one prone creature. Hit: 22 (3d10 + 6) bludgeoning damage."
+    }
+  ],
+  "legendaryActions": []
+}

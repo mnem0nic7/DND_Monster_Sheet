@@ -1,0 +1,54 @@
+{
+  "name": "Scout",
+  "size": "Medium",
+  "type": "humanoid",
+  "alignment": "any",
+  "armorClass": 13,
+  "armorType": "Leather Armor",
+  "hitPoints": 16,
+  "hitDice": "3d8 + 3",
+  "speed": "30 ft.",
+  "abilities": {
+    "strength": 11,
+    "dexterity": 14,
+    "constitution": 12,
+    "intelligence": 11,
+    "wisdom": 13,
+    "charisma": 11
+  },
+  "savingThrows": "",
+  "skills": "Nature +4, Perception +5, Stealth +6, Survival +5",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 15",
+  "languages": "Any one language (usually Common)",
+  "challenge": "1/2 (100 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Keen Hearing and Sight",
+      "uses": "",
+      "description": "The scout has advantage on Wisdom (Perception) checks that rely on hearing or sight."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The scout makes two melee attacks or two ranged attacks."
+    },
+    {
+      "name": "Shortsword",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    },
+    {
+      "name": "Longbow",
+      "uses": "",
+      "description": "Ranged Weapon Attack: +4 to hit, ranged 150/600 ft., one target. Hit: 6 (1d8 + 2) piercing damage."
+    }
+  ],
+  "legendaryActions": []
+}

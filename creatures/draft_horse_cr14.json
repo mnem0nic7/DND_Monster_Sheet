@@ -1,0 +1,38 @@
+{
+  "name": "Draft Horse",
+  "size": "Large",
+  "type": "beast",
+  "alignment": "unaligned",
+  "armorClass": 10,
+  "armorType": "",
+  "hitPoints": 19,
+  "hitDice": "3d10 + 3",
+  "speed": "40 ft.",
+  "abilities": {
+    "strength": 18,
+    "dexterity": 10,
+    "constitution": 12,
+    "intelligence": 2,
+    "wisdom": 11,
+    "charisma": 7
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 10",
+  "languages": "--",
+  "challenge": "1/4 (50 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [],
+  "actions": [
+    {
+      "name": "Hooves",
+      "uses": "",
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 9 (2d4 + 4) bludgeoning damage."
+    }
+  ],
+  "legendaryActions": []
+}

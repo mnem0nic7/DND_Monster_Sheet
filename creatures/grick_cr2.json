@@ -1,0 +1,54 @@
+{
+  "name": "Grick",
+  "size": "Medium",
+  "type": "monstrosity",
+  "alignment": "neutral",
+  "armorClass": 14,
+  "armorType": "Natural Armor",
+  "hitPoints": 27,
+  "hitDice": "6d8",
+  "speed": "30 ft., climb 30 ft.",
+  "abilities": {
+    "strength": 14,
+    "dexterity": 14,
+    "constitution": 11,
+    "intelligence": 3,
+    "wisdom": 14,
+    "charisma": 5
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "Bludgeoning, Piercing, and Slashing from Nonmagical Attacks",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Darkvision 60 ft.,  Passive Perception 12",
+  "languages": "--",
+  "challenge": "2 (450 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Stone Camouflage",
+      "uses": "",
+      "description": "The grick has advantage on Dexterity (Stealth) checks made to hide in rocky terrain."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The grick makes one attack with its tentacles. If that attack hits, the grick can make one beak attack against the same target."
+    },
+    {
+      "name": "Tentacles",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 9 (2d6 + 2) slashing damage."
+    },
+    {
+      "name": "Beak",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    }
+  ],
+  "legendaryActions": []
+}

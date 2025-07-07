@@ -1,0 +1,44 @@
+{
+  "name": "Plesiosaurus",
+  "size": "Large",
+  "type": "beast",
+  "alignment": "unaligned",
+  "armorClass": 13,
+  "armorType": "Natural Armor",
+  "hitPoints": 68,
+  "hitDice": "8d10 + 24",
+  "speed": "20 ft., swim 40 ft.",
+  "abilities": {
+    "strength": 18,
+    "dexterity": 15,
+    "constitution": 16,
+    "intelligence": 2,
+    "wisdom": 12,
+    "charisma": 5
+  },
+  "savingThrows": "",
+  "skills": "Perception +3, Stealth +4",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 13",
+  "languages": "--",
+  "challenge": "2 (450 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Hold Breath",
+      "uses": "",
+      "description": "The plesiosaurus can hold its breath for 1 hour."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +6 to hit, reach 10 ft., one target. Hit: 14 (3d6 + 4) piercing damage."
+    }
+  ],
+  "legendaryActions": []
+}

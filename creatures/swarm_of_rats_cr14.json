@@ -1,0 +1,49 @@
+{
+  "name": "Swarm of Rats",
+  "size": "Medium",
+  "type": "beast",
+  "alignment": "unaligned",
+  "armorClass": 10,
+  "armorType": "",
+  "hitPoints": 24,
+  "hitDice": "7d8 - 7",
+  "speed": "30 ft.",
+  "abilities": {
+    "strength": 9,
+    "dexterity": 11,
+    "constitution": 9,
+    "intelligence": 2,
+    "wisdom": 10,
+    "charisma": 3
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "Bludgeoning, Piercing, Slashing",
+  "immunities": "",
+  "conditionImmunities": "Charmed, Frightened, Grappled, Paralyzed, Petrified, Prone, Restrained, Stunned",
+  "senses": "Darkvision 30 ft.,  Passive Perception 10",
+  "languages": "--",
+  "challenge": "1/4 (50 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Keen Smell",
+      "uses": "",
+      "description": "The swarm has advantage on Wisdom (Perception) checks that rely on smell."
+    },
+    {
+      "name": "Swarm",
+      "uses": "",
+      "description": "The swarm can occupy another creature's space and vice versa, and the swarm can move through any opening large enough for a Tiny rat. The swarm can't regain hit points or gain temporary hit points."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": ". Melee Weapon Attack: +2 to hit, reach 0 ft., one target in the swarm's space. Hit: 7 (2d6) piercing damage, or 3 (1d6) piercing damage if the swarm has half of its hit points or fewer."
+    }
+  ],
+  "legendaryActions": []
+}

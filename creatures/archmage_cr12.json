@@ -1,0 +1,54 @@
+{
+  "name": "Archmage",
+  "size": "Medium",
+  "type": "humanoid",
+  "alignment": "any",
+  "armorClass": 12,
+  "armorType": "15 With Mage Armor",
+  "hitPoints": 99,
+  "hitDice": "18d8 + 18",
+  "speed": "30 ft.",
+  "abilities": {
+    "strength": 10,
+    "dexterity": 14,
+    "constitution": 12,
+    "intelligence": 20,
+    "wisdom": 15,
+    "charisma": 16
+  },
+  "savingThrows": "INT +9, WIS +6",
+  "skills": "Arcana +13, History +13",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 12",
+  "languages": "Any six languages",
+  "challenge": "12 (8,400 XP)",
+  "proficiencyBonus": "+4",
+  "specialAbilities": [
+    {
+      "name": "Magic Resistance",
+      "uses": "",
+      "description": "The archmage has advantage on saving throws against spells and other magical effects."
+    },
+    {
+      "name": "Spellcasting",
+      "uses": "",
+      "description": "The archmage is an 18th-level spellcaster. Its spellcasting ability is Intelligence (spell save DC 17, +9 to hit with spell attacks). The archmage can cast disguise self and invisibility at will and has the following wizard spells prepared:"
+    },
+    {
+      "name": "*The archmage casts mind blank, stoneskin and mage armor spells on itself before combat",
+      "uses": "",
+      "description": ""
+    }
+  ],
+  "actions": [
+    {
+      "name": "Dagger",
+      "uses": "",
+      "description": "Melee or Ranged Weapon Attack: +6 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 4 (1d4 + 2) piercing damage."
+    }
+  ],
+  "legendaryActions": []
+}

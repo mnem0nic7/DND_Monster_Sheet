@@ -1,0 +1,59 @@
+{
+  "name": "Ettin",
+  "size": "Large",
+  "type": "giant",
+  "alignment": "chaotic evil",
+  "armorClass": 12,
+  "armorType": "Natural Armor",
+  "hitPoints": 85,
+  "hitDice": "10d10 + 30",
+  "speed": "40 ft.",
+  "abilities": {
+    "strength": 21,
+    "dexterity": 8,
+    "constitution": 17,
+    "intelligence": 6,
+    "wisdom": 10,
+    "charisma": 8
+  },
+  "savingThrows": "",
+  "skills": "Perception +4",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Darkvision 60 ft.,  Passive Perception 14",
+  "languages": "Giant, Orc",
+  "challenge": "4 (1,100 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Two Heads",
+      "uses": "",
+      "description": "The ettin has advantage on Wisdom (Perception) checks and on saving throws against being blinded, charmed, deafened, frightened, stunned, and knocked unconscious."
+    },
+    {
+      "name": "Wakeful",
+      "uses": "",
+      "description": "When one of the ettin's heads is asleep, its other head is awake."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The ettin makes two attacks: one with its battleaxe and one with its morningstar."
+    },
+    {
+      "name": "Battleaxe",
+      "uses": "",
+      "description": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 14 (2d8 + 5) slashing damage."
+    },
+    {
+      "name": "Morningstar",
+      "uses": "",
+      "description": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 14 (2d8 + 5) piercing damage."
+    }
+  ],
+  "legendaryActions": []
+}

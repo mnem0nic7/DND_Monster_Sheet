@@ -1,0 +1,44 @@
+{
+  "name": "Pteranodon",
+  "size": "Medium",
+  "type": "beast",
+  "alignment": "unaligned",
+  "armorClass": 13,
+  "armorType": "",
+  "hitPoints": 13,
+  "hitDice": "3d8",
+  "speed": "10 ft., fly 60 ft.",
+  "abilities": {
+    "strength": 12,
+    "dexterity": 15,
+    "constitution": 10,
+    "intelligence": 2,
+    "wisdom": 9,
+    "charisma": 5
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 11",
+  "languages": "--",
+  "challenge": "1/4 (50 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Flyby",
+      "uses": "",
+      "description": "The pteranodon doesn’t provoke an opportunity attack when it flies out of an enemy’s reach."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 6 (2d4 + 1) piercing damage."
+    }
+  ],
+  "legendaryActions": []
+}

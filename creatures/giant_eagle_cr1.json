@@ -1,0 +1,54 @@
+{
+  "name": "Giant Eagle",
+  "size": "Large",
+  "type": "beast",
+  "alignment": "neutral good",
+  "armorClass": 13,
+  "armorType": "",
+  "hitPoints": 26,
+  "hitDice": "4d10 + 4",
+  "speed": "10 ft., fly 80 ft.",
+  "abilities": {
+    "strength": 16,
+    "dexterity": 17,
+    "constitution": 13,
+    "intelligence": 8,
+    "wisdom": 14,
+    "charisma": 10
+  },
+  "savingThrows": "",
+  "skills": "Perception +4",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 14",
+  "languages": "Giant Eagle  understands Common and Auran but can't speak them",
+  "challenge": "1 (200 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Keen Sight",
+      "uses": "",
+      "description": "The eagle has advantage on Wisdom (Perception) checks that rely on sight."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The eagle makes two attacks: one with its beak and one with its talons."
+    },
+    {
+      "name": "Beak",
+      "uses": "",
+      "description": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) piercing damage."
+    },
+    {
+      "name": "Talons",
+      "uses": "",
+      "description": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) slashing damage."
+    }
+  ],
+  "legendaryActions": []
+}

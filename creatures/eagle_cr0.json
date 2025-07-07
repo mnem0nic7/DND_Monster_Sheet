@@ -1,0 +1,44 @@
+{
+  "name": "Eagle",
+  "size": "Small",
+  "type": "beast",
+  "alignment": "unaligned",
+  "armorClass": 12,
+  "armorType": "",
+  "hitPoints": 3,
+  "hitDice": "1d6",
+  "speed": "10 ft., fly 60 ft.",
+  "abilities": {
+    "strength": 6,
+    "dexterity": 15,
+    "constitution": 10,
+    "intelligence": 2,
+    "wisdom": 14,
+    "charisma": 7
+  },
+  "savingThrows": "",
+  "skills": "Perception +4",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 14",
+  "languages": "--",
+  "challenge": "0 (10 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Keen Sight",
+      "uses": "",
+      "description": "The eagle has advantage on Wisdom (Perception) checks that rely on sight."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Talons",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) slashing damage."
+    }
+  ],
+  "legendaryActions": []
+}

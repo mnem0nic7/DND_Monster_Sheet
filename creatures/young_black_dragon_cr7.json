@@ -1,0 +1,59 @@
+{
+  "name": "Young Black Dragon",
+  "size": "Large",
+  "type": "dragon",
+  "alignment": "chaotic evil",
+  "armorClass": 18,
+  "armorType": "Natural Armor",
+  "hitPoints": 127,
+  "hitDice": "15d10 + 45",
+  "speed": "40 ft., fly 80 ft., swim 40 ft.",
+  "abilities": {
+    "strength": 19,
+    "dexterity": 14,
+    "constitution": 17,
+    "intelligence": 12,
+    "wisdom": 11,
+    "charisma": 15
+  },
+  "savingThrows": "DEX +5, CON +6, WIS +3, CHA +5",
+  "skills": "Perception +6, Stealth +5",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "Acid",
+  "conditionImmunities": "",
+  "senses": "Blindsight 30 ft., Darkvision 120 ft.,  Passive Perception 16",
+  "languages": "Common, Draconic",
+  "challenge": "7 (2,900 XP)",
+  "proficiencyBonus": "+3",
+  "specialAbilities": [
+    {
+      "name": "Amphibious",
+      "uses": "",
+      "description": "The dragon can breathe air and water."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The dragon makes three attacks: one with its bite and two with its claws."
+    },
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +7 to hit, reach 10 ft., one target. Hit: 15 (2d10 + 4) piercing damage plus 4 (1d8) acid damage."
+    },
+    {
+      "name": "Claw",
+      "uses": "",
+      "description": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage."
+    },
+    {
+      "name": "Acid Breath",
+      "uses": "Recharge 5–6",
+      "description": "The dragon exhales acid in a 30­-foot line that is 5 feet wide. Each creature in that line must make a DC 14 Dexterity saving throw, taking 49 (11d8) acid damage on a failed save, or half as much damage on a successful one."
+    }
+  ],
+  "legendaryActions": []
+}

@@ -1,0 +1,43 @@
+{
+  "name": "Frog",
+  "size": "Tiny",
+  "type": "beast",
+  "alignment": "unaligned",
+  "armorClass": 11,
+  "armorType": "",
+  "hitPoints": 1,
+  "hitDice": "1d4 - 1",
+  "speed": "20 ft., swim 20 ft.",
+  "abilities": {
+    "strength": 1,
+    "dexterity": 13,
+    "constitution": 8,
+    "intelligence": 1,
+    "wisdom": 8,
+    "charisma": 3
+  },
+  "savingThrows": "",
+  "skills": "Perception +1, Stealth +3",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Darkvision 30 ft.,  Passive Perception 11",
+  "languages": "--",
+  "challenge": "0 (10 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Amphibious",
+      "uses": "",
+      "description": "The frog can breathe air and water."
+    },
+    {
+      "name": "Standing Leap",
+      "uses": "",
+      "description": "The frog's long jump is up to 10 feet and its high jump is up to 5 feet, with or without a running start."
+    }
+  ],
+  "actions": [],
+  "legendaryActions": []
+}

@@ -1,0 +1,43 @@
+{
+  "name": "Bandit",
+  "size": "Medium",
+  "type": "humanoid",
+  "alignment": "any",
+  "armorClass": 12,
+  "armorType": "Leather Armor",
+  "hitPoints": 11,
+  "hitDice": "2d8 + 2",
+  "speed": "30 ft.",
+  "abilities": {
+    "strength": 11,
+    "dexterity": 12,
+    "constitution": 12,
+    "intelligence": 10,
+    "wisdom": 10,
+    "charisma": 10
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 10",
+  "languages": "Any one language (usually Common)",
+  "challenge": "1/8 (25 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [],
+  "actions": [
+    {
+      "name": "Scimitar",
+      "uses": "",
+      "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) slashing damage."
+    },
+    {
+      "name": "Light Crossbow",
+      "uses": "",
+      "description": "Ranged Weapon Attack: +3 to hit, range 80 ft./320 ft., one target. Hit: 5 (1d8 + 1) piercing damage."
+    }
+  ],
+  "legendaryActions": []
+}

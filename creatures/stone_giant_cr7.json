@@ -1,0 +1,49 @@
+{
+  "name": "Stone Giant",
+  "size": "Huge",
+  "type": "giant",
+  "alignment": "neutral",
+  "armorClass": 17,
+  "armorType": "Natural Armor",
+  "hitPoints": 126,
+  "hitDice": "11d12 + 55",
+  "speed": "40 ft.",
+  "abilities": {
+    "strength": 23,
+    "dexterity": 15,
+    "constitution": 20,
+    "intelligence": 10,
+    "wisdom": 12,
+    "charisma": 9
+  },
+  "savingThrows": "DEX +5, CON +8, WIS +4",
+  "skills": "Athletics +12, Perception +4",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Darkvision 60 ft.,  Passive Perception 14",
+  "languages": "Giant",
+  "challenge": "7 (2,900 XP)",
+  "proficiencyBonus": "+3",
+  "specialAbilities": [
+    {
+      "name": "Stone Camouflage",
+      "uses": "",
+      "description": "The giant has advantage on Dexterity (Stealth) checks made to hide in rocky terrain."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The giant makes two greatclub attacks. Greatclub. Melee Weapon Attack: +9 to hit, reach 15 ft., one target. Hit: 19 (3d8 + 6) bludgeoning damage."
+    },
+    {
+      "name": "Rock",
+      "uses": "",
+      "description": "Ranged Weapon Attack: +9 to hit, range 60/240 ft., one target. Hit: 28 (4d10 + 6) bludgeoning damage. If the target is a creature, it must succeed on a DC 17 Strength saving throw or be knocked prone."
+    }
+  ],
+  "legendaryActions": []
+}

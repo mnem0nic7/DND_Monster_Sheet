@@ -1,0 +1,59 @@
+{
+  "name": "Shadow",
+  "size": "Medium",
+  "type": "undead",
+  "alignment": "chaotic evil",
+  "armorClass": 12,
+  "armorType": "",
+  "hitPoints": 16,
+  "hitDice": "3d8 + 3",
+  "speed": "40 ft.",
+  "abilities": {
+    "strength": 6,
+    "dexterity": 14,
+    "constitution": 13,
+    "intelligence": 6,
+    "wisdom": 10,
+    "charisma": 8
+  },
+  "savingThrows": "",
+  "skills": "Stealth +4",
+  "vulnerabilities": "Radiant",
+  "resistances": "Acid, Cold, Fire, Lightning, Thunder; Bludgeoning, Piercing, and Slashing from Nonmagical Attacks",
+  "immunities": "Necrotic, Poison",
+  "conditionImmunities": "Exhaustion, Frightened, Grappled, Paralyzed, Petrified, Poisoned, Prone, Restrained",
+  "senses": "Darkvision 60 ft.,  Passive Perception 10",
+  "languages": "--",
+  "challenge": "1/2 (100 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Amorphous",
+      "uses": "",
+      "description": "The shadow can move through a space as narrow as 1 inch wide without squeezing."
+    },
+    {
+      "name": "Shadow Stealth",
+      "uses": "",
+      "description": "While in dim light or darkness, the shadow can take the Hide action as a bonus action."
+    },
+    {
+      "name": "Sunlight Weakness",
+      "uses": "",
+      "description": "While in sunlight, the shadow has disadvantage on attack rolls, ability checks, and saving throws."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Strength Drain",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 9 (2d6 + 2) necrotic damage, and the target's Strength score is reduced by 1d4. The target dies if this reduces its Strength to 0. Otherwise, the reduction lasts until the target finishes a short or long rest."
+    },
+    {
+      "name": "If a non-evil humanoid dies from this attack, a new shadow rises from the corpse 1d4 hours later",
+      "uses": "",
+      "description": ""
+    }
+  ],
+  "legendaryActions": []
+}

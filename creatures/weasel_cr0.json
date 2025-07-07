@@ -1,0 +1,44 @@
+{
+  "name": "Weasel",
+  "size": "Tiny",
+  "type": "beast",
+  "alignment": "unaligned",
+  "armorClass": 13,
+  "armorType": "",
+  "hitPoints": 1,
+  "hitDice": "1d4 - 1",
+  "speed": "30 ft.",
+  "abilities": {
+    "strength": 3,
+    "dexterity": 16,
+    "constitution": 8,
+    "intelligence": 2,
+    "wisdom": 12,
+    "charisma": 3
+  },
+  "savingThrows": "",
+  "skills": "Perception +3, Stealth +5",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 13",
+  "languages": "--",
+  "challenge": "0 (10 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Keen Hearing and Smell",
+      "uses": "",
+      "description": "The weasel has advantage on Wisdom (Perception) checks that rely on hearing or smell."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 1 piercing damage."
+    }
+  ],
+  "legendaryActions": []
+}

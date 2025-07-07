@@ -1,0 +1,64 @@
+{
+  "name": "Lion",
+  "size": "Large",
+  "type": "beast",
+  "alignment": "unaligned",
+  "armorClass": 12,
+  "armorType": "",
+  "hitPoints": 26,
+  "hitDice": "4d10 + 4",
+  "speed": "50 ft.",
+  "abilities": {
+    "strength": 17,
+    "dexterity": 15,
+    "constitution": 13,
+    "intelligence": 3,
+    "wisdom": 12,
+    "charisma": 8
+  },
+  "savingThrows": "",
+  "skills": "Perception +3, Stealth +6",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 13",
+  "languages": "--",
+  "challenge": "1 (200 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Keen Smell",
+      "uses": "",
+      "description": "The lion has advantage on Wisdom (Perception) checks that rely on smell."
+    },
+    {
+      "name": "Pack Tactics: The lion has advantage on an attack roll against a creature if at least one of the lion’s allies is within 5 feet of the creature and the ally isn’t incapacitated",
+      "uses": "",
+      "description": ""
+    },
+    {
+      "name": "Pounce",
+      "uses": "",
+      "description": "If the lion moves at least 20 feet straight toward a creature and then hits it with a claw attack on the same turn, that target must succeed on a DC 13 Strength saving throw or be knocked prone. If the target is prone, the lion can make one bite attack against it as a bonus action."
+    },
+    {
+      "name": "Running Leap",
+      "uses": "",
+      "description": "With a 10-foot running start, the lion can long jump up to 25 feet."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 7 (1d8 + 3) piercing damage."
+    },
+    {
+      "name": "Claw",
+      "uses": "",
+      "description": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) slashing damage."
+    }
+  ],
+  "legendaryActions": []
+}

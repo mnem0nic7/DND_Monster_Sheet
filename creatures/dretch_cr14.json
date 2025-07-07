@@ -1,0 +1,53 @@
+{
+  "name": "Dretch",
+  "size": "Small",
+  "type": "fiend",
+  "alignment": "chaotic evil",
+  "armorClass": 11,
+  "armorType": "Natural Armor",
+  "hitPoints": 18,
+  "hitDice": "4d6 + 4",
+  "speed": "20 ft.",
+  "abilities": {
+    "strength": 11,
+    "dexterity": 11,
+    "constitution": 12,
+    "intelligence": 5,
+    "wisdom": 8,
+    "charisma": 3
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "Cold, Fire, Lightning",
+  "immunities": "Poison",
+  "conditionImmunities": "Poisoned",
+  "senses": "Darkvision 60 ft.,  Passive Perception 9",
+  "languages": "Abyssal, Telepathy 60 ft.",
+  "challenge": "1/4 (50 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The dretch makes two attacks: one with its bite and one with its claws."
+    },
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 3 (1d6) piercing damage."
+    },
+    {
+      "name": "Claws",
+      "uses": "",
+      "description": "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 5 (2d4) slashing damage."
+    },
+    {
+      "name": "Fetid Cloud",
+      "uses": "1/Day",
+      "description": "A 10­-foot radius of disgusting green gas extends out from the dretch. The gas spreads around corners, and its area is lightly obscured. It lasts for 1 minute or until a strong wind disperses it. Any creature that starts its turn in that area must succeed on a DC 11 Constitution saving throw or be poisoned until the start of its next turn. While poisoned in this way, the target can take either an action or a bonus action on its turn, not both, and can't take reactions."
+    }
+  ],
+  "legendaryActions": []
+}

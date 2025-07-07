@@ -1,0 +1,54 @@
+{
+  "name": "Hippogriff",
+  "size": "Large",
+  "type": "monstrosity",
+  "alignment": "unaligned",
+  "armorClass": 11,
+  "armorType": "",
+  "hitPoints": 19,
+  "hitDice": "3d10 + 3",
+  "speed": "40 ft., fly 60 ft.",
+  "abilities": {
+    "strength": 17,
+    "dexterity": 13,
+    "constitution": 13,
+    "intelligence": 2,
+    "wisdom": 12,
+    "charisma": 8
+  },
+  "savingThrows": "",
+  "skills": "Perception +5",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 15",
+  "languages": "--",
+  "challenge": "1 (200 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Keen Sight",
+      "uses": "",
+      "description": "The hippogriff has advantage on Wisdom (Perception) checks that rely on sight."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The hippogriff makes two attacks: one with its beak and one with its claws."
+    },
+    {
+      "name": "Beak",
+      "uses": "",
+      "description": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 8 (1d10 + 3) piercing damage."
+    },
+    {
+      "name": "Claws",
+      "uses": "",
+      "description": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) slashing damage."
+    }
+  ],
+  "legendaryActions": []
+}

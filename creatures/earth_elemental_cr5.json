@@ -1,0 +1,54 @@
+{
+  "name": "Earth Elemental",
+  "size": "Large",
+  "type": "elemental",
+  "alignment": "neutral",
+  "armorClass": 17,
+  "armorType": "Natural Armor",
+  "hitPoints": 126,
+  "hitDice": "12d10 + 60",
+  "speed": "30 ft., burrow 30 ft.",
+  "abilities": {
+    "strength": 20,
+    "dexterity": 8,
+    "constitution": 20,
+    "intelligence": 5,
+    "wisdom": 10,
+    "charisma": 5
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "Thunder",
+  "resistances": "Bludgeoning, Piercing, and Slashing from Nonmagical Attacks",
+  "immunities": "Poison",
+  "conditionImmunities": "Exhaustion, Paralyzed, Petrified, Poisoned, Unconscious",
+  "senses": "Darkvision 60 ft., Tremorsense 60 ft.,  Passive Perception 10",
+  "languages": "Terran",
+  "challenge": "5 (1,800 XP)",
+  "proficiencyBonus": "+3",
+  "specialAbilities": [
+    {
+      "name": "Earth Glide",
+      "uses": "",
+      "description": "The elemental can burrow through nonmagical, unworked earth and stone. While doing so, the elemental doesn't disturb the material it moves through."
+    },
+    {
+      "name": "Siege Monster",
+      "uses": "",
+      "description": "The elemental deals double damage to objects and structures."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The elemental makes two slam attacks."
+    },
+    {
+      "name": "Slam",
+      "uses": "",
+      "description": "Melee Weapon Attack: +8 to hit, reach 10 ft., one target. Hit: 14 (2d8 + 5) bludgeoning damage."
+    }
+  ],
+  "legendaryActions": []
+}

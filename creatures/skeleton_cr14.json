@@ -1,0 +1,43 @@
+{
+  "name": "Skeleton",
+  "size": "Medium",
+  "type": "undead",
+  "alignment": "lawful evil",
+  "armorClass": 13,
+  "armorType": "Armor Scraps",
+  "hitPoints": 13,
+  "hitDice": "2d8 + 4",
+  "speed": "30 ft.",
+  "abilities": {
+    "strength": 10,
+    "dexterity": 14,
+    "constitution": 15,
+    "intelligence": 6,
+    "wisdom": 8,
+    "charisma": 5
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "Bludgeoning",
+  "resistances": "",
+  "immunities": "Poison",
+  "conditionImmunities": "Exhaustion, Poisoned",
+  "senses": "Darkvision 60 ft.,  Passive Perception 9",
+  "languages": "Understands all languages it knew in life but can't speak",
+  "challenge": "1/4 (50 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [],
+  "actions": [
+    {
+      "name": "Shortsword",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    },
+    {
+      "name": "Shortbow",
+      "uses": "",
+      "description": "Ranged Weapon Attack: +4 to hit, range 80/320 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    }
+  ],
+  "legendaryActions": []
+}

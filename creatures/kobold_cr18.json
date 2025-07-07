@@ -1,0 +1,54 @@
+{
+  "name": "Kobold",
+  "size": "Small",
+  "type": "humanoid",
+  "alignment": "lawful evil",
+  "armorClass": 12,
+  "armorType": "",
+  "hitPoints": 5,
+  "hitDice": "2d6 - 2",
+  "speed": "30 ft.",
+  "abilities": {
+    "strength": 7,
+    "dexterity": 15,
+    "constitution": 9,
+    "intelligence": 8,
+    "wisdom": 7,
+    "charisma": 8
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Darkvision 60 ft.,  Passive Perception 8",
+  "languages": "Common, Draconic",
+  "challenge": "1/8 (25 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Sunlight Sensitivity",
+      "uses": "",
+      "description": "While in sunlight, the kobold has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight."
+    },
+    {
+      "name": "Pack Tactics",
+      "uses": "",
+      "description": "The kobold has advantage on an attack roll against a creature if at least one of the kobold's allies is within 5 feet of the creature and the ally isn't incapacitated."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Dagger",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) piercing damage."
+    },
+    {
+      "name": "Sling",
+      "uses": "",
+      "description": "Ranged Weapon Attack: +4 to hit, range 30/120 ft., one target. Hit: 4 (1d4 + 2) bludgeoning damage."
+    }
+  ],
+  "legendaryActions": []
+}

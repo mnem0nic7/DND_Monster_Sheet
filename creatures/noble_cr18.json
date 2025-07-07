@@ -1,0 +1,38 @@
+{
+  "name": "Noble",
+  "size": "Medium",
+  "type": "humanoid",
+  "alignment": "any",
+  "armorClass": 15,
+  "armorType": "Breastplate",
+  "hitPoints": 9,
+  "hitDice": "2d8",
+  "speed": "30 ft.",
+  "abilities": {
+    "strength": 11,
+    "dexterity": 12,
+    "constitution": 11,
+    "intelligence": 12,
+    "wisdom": 14,
+    "charisma": 16
+  },
+  "savingThrows": "",
+  "skills": "Deception +5, Insight +4, Persuasion +5",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 12",
+  "languages": "Any two languages",
+  "challenge": "1/8 (25 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [],
+  "actions": [
+    {
+      "name": "Rapier",
+      "uses": "",
+      "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 5 (1d8 + 1) piercing damage."
+    }
+  ],
+  "legendaryActions": []
+}

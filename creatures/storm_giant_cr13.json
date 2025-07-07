@@ -1,0 +1,64 @@
+{
+  "name": "Storm Giant",
+  "size": "Huge",
+  "type": "giant",
+  "alignment": "chaotic good",
+  "armorClass": 16,
+  "armorType": "Scale Mail",
+  "hitPoints": 230,
+  "hitDice": "20d12 + 100",
+  "speed": "50 ft., swim 50 ft.",
+  "abilities": {
+    "strength": 29,
+    "dexterity": 14,
+    "constitution": 20,
+    "intelligence": 16,
+    "wisdom": 18,
+    "charisma": 18
+  },
+  "savingThrows": "STR +14, CON +10, WIS +9, CHA +9",
+  "skills": "Arcana +8, Athletics +14, History +8, Perception +9",
+  "vulnerabilities": "",
+  "resistances": "Cold",
+  "immunities": "Lightning, Thunder",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 19",
+  "languages": "Common, Giant",
+  "challenge": "13 (10,000 XP)",
+  "proficiencyBonus": "+5",
+  "specialAbilities": [
+    {
+      "name": "Amphibious",
+      "uses": "",
+      "description": "The giant can breathe air and water."
+    },
+    {
+      "name": "Innate Spellcasting",
+      "uses": "",
+      "description": "The giant's innate spellcasting ability is Charisma (spell save DC 17). It can innately cast the following spells, requiring no material components:"
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The giant makes two greatsword attacks."
+    },
+    {
+      "name": "Greatsword",
+      "uses": "",
+      "description": "Melee Weapon Attack: +14 to hit, reach 10 ft., one target. Hit: 30 (6d6 + 9) slashing damage."
+    },
+    {
+      "name": "Rock",
+      "uses": "",
+      "description": "Ranged Weapon Attack: +14 to hit, range 60/240 ft., one target. Hit: 35 (4d12 + 9) bludgeoning damage."
+    },
+    {
+      "name": "Lightning Strike",
+      "uses": "Recharge 5–6",
+      "description": "The giant hurls a magical lightning bolt at a point it can see within 500 feet of it. Each creature within 10 feet of that point must make a DC 17 Dexterity saving throw, taking 54 (12d8) lightning damage on a failed save, or half as much damage on a successful one."
+    }
+  ],
+  "legendaryActions": []
+}

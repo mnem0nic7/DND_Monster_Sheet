@@ -1,0 +1,64 @@
+{
+  "name": "Werebear",
+  "size": "Medium",
+  "type": "humanoid",
+  "alignment": "neutral good",
+  "armorClass": 10,
+  "armorType": "",
+  "hitPoints": 135,
+  "hitDice": "18d8 + 54",
+  "speed": "30 ft., 40 ft., climb 30 ft. in bear or hybrid form",
+  "abilities": {
+    "strength": 19,
+    "dexterity": 10,
+    "constitution": 17,
+    "intelligence": 11,
+    "wisdom": 12,
+    "charisma": 12
+  },
+  "savingThrows": "",
+  "skills": "Perception +7",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "Bludgeoning, Piercing, and Slashing from Nonmagical Attacks that aren't Silvered",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 17",
+  "languages": "Common (can't speak in bear form)",
+  "challenge": "5 (1,800 XP)",
+  "proficiencyBonus": "+3",
+  "specialAbilities": [
+    {
+      "name": "Shapechanger",
+      "uses": "",
+      "description": "The werebear can use its action to polymorph into a Large bear-humanoid hybrid or into a Large bear, or back into its true form, which is humanoid. Its statistics, other than its size and AC, are the same in each form. Any equipment it is wearing or carrying isn't transformed. It reverts to its true form if it dies."
+    },
+    {
+      "name": "Keen Smell",
+      "uses": "",
+      "description": "The werebear has advantage on Wisdom (Perception) checks that rely on smell."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "In bear form, the werebear makes two claw attacks. In humanoid form, it makes two greataxe attacks. In hybrid form, it can attack like a bear or a humanoid."
+    },
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 15 (2d10 + 4) piercing damage. If the target is a humanoid, it must succeed on a DC 14 Constitution saving throw or be cursed with werebear lycanthropy."
+    },
+    {
+      "name": "Claw",
+      "uses": "",
+      "description": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) slashing damage."
+    },
+    {
+      "name": "Greataxe",
+      "uses": "",
+      "description": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 10 (1d12 + 4) slashing damage."
+    }
+  ],
+  "legendaryActions": []
+}

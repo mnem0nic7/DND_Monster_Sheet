@@ -1,0 +1,44 @@
+{
+  "name": "Swarm of Ravens",
+  "size": "Medium",
+  "type": "beast",
+  "alignment": "unaligned",
+  "armorClass": 12,
+  "armorType": "",
+  "hitPoints": 24,
+  "hitDice": "7d8 - 7",
+  "speed": "10 ft., fly 50 ft.",
+  "abilities": {
+    "strength": 6,
+    "dexterity": 14,
+    "constitution": 8,
+    "intelligence": 3,
+    "wisdom": 12,
+    "charisma": 6
+  },
+  "savingThrows": "",
+  "skills": "Perception +5",
+  "vulnerabilities": "",
+  "resistances": "Bludgeoning, Piercing, Slashing",
+  "immunities": "",
+  "conditionImmunities": "Charmed, Frightened, Grappled, Paralyzed, Petrified, Prone, Restrained, Stunned",
+  "senses": "Passive Perception 15",
+  "languages": "--",
+  "challenge": "1/4 (50 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Swarm",
+      "uses": "",
+      "description": "The swarm can occupy another creature's space and vice versa, and the swarm can move through any opening large enough for a Tiny raven. The swarm can't regain hit points or gain temporary hit points."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Beaks",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target in the swarm's space. Hit: 7 (2d6) piercing damage, or 3 (1d6) piercing damage if the swarm has half of its hit points or fewer."
+    }
+  ],
+  "legendaryActions": []
+}

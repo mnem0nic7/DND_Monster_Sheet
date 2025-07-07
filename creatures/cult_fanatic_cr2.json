@@ -1,0 +1,54 @@
+{
+  "name": "Cult Fanatic",
+  "size": "Medium",
+  "type": "humanoid",
+  "alignment": "any",
+  "armorClass": 13,
+  "armorType": "Leather Armor",
+  "hitPoints": 33,
+  "hitDice": "6d8 + 6",
+  "speed": "30 ft.",
+  "abilities": {
+    "strength": 11,
+    "dexterity": 14,
+    "constitution": 12,
+    "intelligence": 10,
+    "wisdom": 13,
+    "charisma": 14
+  },
+  "savingThrows": "",
+  "skills": "Deception +4, Persuasion +4, Religion +2",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 11",
+  "languages": "Any one language (usually Common)",
+  "challenge": "2 (450 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Dark Devotion",
+      "uses": "",
+      "description": "The fanatic has advantage on saving throws against being charmed or frightened."
+    },
+    {
+      "name": "Spellcasting",
+      "uses": "",
+      "description": "The fanatic is a 4th-level spellcaster. Its spellcasting ability is Wisdom (spell save DC 11, +3 to hit with spell attacks). The fanatic has the following cleric spells prepared:"
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The fanatic makes two melee attacks."
+    },
+    {
+      "name": "Dagger",
+      "uses": "",
+      "description": "Melee or Ranged Weapon Attack: +4 to hit, reach 5 ft. or range 20/60 ft., one creature. Hit: 4 (1d4 + 2) piercing damage."
+    }
+  ],
+  "legendaryActions": []
+}

@@ -1,0 +1,64 @@
+{
+  "name": "Werewolf",
+  "size": "Medium",
+  "type": "humanoid",
+  "alignment": "chaotic evil",
+  "armorClass": 11,
+  "armorType": "",
+  "hitPoints": 58,
+  "hitDice": "9d8 + 18",
+  "speed": "30 ft., 40 ft. in wolf form",
+  "abilities": {
+    "strength": 15,
+    "dexterity": 13,
+    "constitution": 14,
+    "intelligence": 10,
+    "wisdom": 11,
+    "charisma": 10
+  },
+  "savingThrows": "",
+  "skills": "Perception +4, Stealth +3",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "Bludgeoning, Piercing, and Slashing from Nonmagical Attacks that aren't Silvered",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 14",
+  "languages": "Common (can't speak in wolf form)",
+  "challenge": "3 (700 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Shapechanger",
+      "uses": "",
+      "description": "The werewolf can use its action to polymorph into a wolf-humanoid hybrid or into a wolf, or back into its true form, which is humanoid. Its statistics, other than its AC, are the same in each form. Any equipment it is wearing or carrying isn't transformed. It reverts to its true form if it dies."
+    },
+    {
+      "name": "Keen Hearing and Smell",
+      "uses": "",
+      "description": "The werewolf has advantage on Wisdom (Perception) checks that rely on hearing or smell."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "(Humanoid or Hybrid Form Only). The werewolf makes two attacks: one with its bite and one with its claws or spear."
+    },
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 6 (1d8 + 2) piercing damage. If the target is a humanoid, it must succeed on a DC 12 Constitution saving throw or be cursed with werewolf lycanthropy."
+    },
+    {
+      "name": "Claws",
+      "uses": "",
+      "description": "(Hybrid Form Only). Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 7 (2d4 + 2) slashing damage."
+    },
+    {
+      "name": "Spear",
+      "uses": "",
+      "description": "Melee or Ranged Weapon Attack: +4 to hit, reach 5 ft. or range 20/60 ft., one creature. Hit: 5 (1d6 + 2) piercing damage, or 6 (1d8 + 2) piercing damage if used with two hands to make a melee attack."
+    }
+  ],
+  "legendaryActions": []
+}

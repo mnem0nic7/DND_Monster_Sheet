@@ -1,0 +1,59 @@
+{
+  "name": "Gladiator",
+  "size": "Medium",
+  "type": "humanoid",
+  "alignment": "any",
+  "armorClass": 16,
+  "armorType": "Studded Leather, Shield",
+  "hitPoints": 112,
+  "hitDice": "15d8 + 45",
+  "speed": "30 ft.",
+  "abilities": {
+    "strength": 18,
+    "dexterity": 15,
+    "constitution": 16,
+    "intelligence": 10,
+    "wisdom": 12,
+    "charisma": 15
+  },
+  "savingThrows": "STR +7, DEX +5, CON +6",
+  "skills": "Athletics +10, Intimidation +5",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 11",
+  "languages": "Any one language (usually Common)",
+  "challenge": "5 (1,800 XP)",
+  "proficiencyBonus": "+3",
+  "specialAbilities": [
+    {
+      "name": "Brave",
+      "uses": "",
+      "description": "The gladiator has advantage on saving throws against being frightened."
+    },
+    {
+      "name": "Brute",
+      "uses": "",
+      "description": "A melee weapon deals one extra die of its damage when the gladiator hits with it (included in the attack)."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The gladiator makes three melee attacks or two ranged attacks."
+    },
+    {
+      "name": "Spear",
+      "uses": "",
+      "description": "Melee or Ranged Weapon Attack: +7 to hit, reach 5 ft. and range 20/60 ft., one target. Hit: 11 (2d6 + 4) piercing damage, or 13 (2d8 + 4) piercing damage if used with two hands to make a melee attack."
+    },
+    {
+      "name": "Shield Bash",
+      "uses": "",
+      "description": "Melee Weapon Attack: +7 to hit, reach 5 ft., one creature. Hit: 9 (2d4 + 4) bludgeoning damage. If the target is a Medium or smaller creature, it must succeed on a DC 15 Strength saving throw or be knocked prone."
+    }
+  ],
+  "legendaryActions": []
+}

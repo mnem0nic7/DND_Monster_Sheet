@@ -1,0 +1,38 @@
+{
+  "name": "Sea Horse",
+  "size": "Tiny",
+  "type": "beast",
+  "alignment": "unaligned",
+  "armorClass": 11,
+  "armorType": "",
+  "hitPoints": 1,
+  "hitDice": "1d4 - 1",
+  "speed": "0 ft., swim 20 ft.",
+  "abilities": {
+    "strength": 1,
+    "dexterity": 12,
+    "constitution": 8,
+    "intelligence": 1,
+    "wisdom": 10,
+    "charisma": 2
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 10",
+  "languages": "--",
+  "challenge": "0 (10 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Water Breathing",
+      "uses": "",
+      "description": "The sea horse can breathe only underwater."
+    }
+  ],
+  "actions": [],
+  "legendaryActions": []
+}

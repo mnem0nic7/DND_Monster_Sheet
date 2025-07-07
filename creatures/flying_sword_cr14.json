@@ -1,0 +1,49 @@
+{
+  "name": "Flying Sword",
+  "size": "Small",
+  "type": "construct",
+  "alignment": "unaligned",
+  "armorClass": 17,
+  "armorType": "Natural Armor",
+  "hitPoints": 17,
+  "hitDice": "5d6",
+  "speed": "0 ft., fly 50 ft. (hover)",
+  "abilities": {
+    "strength": 12,
+    "dexterity": 15,
+    "constitution": 11,
+    "intelligence": 1,
+    "wisdom": 5,
+    "charisma": 1
+  },
+  "savingThrows": "DEX +4",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "Poison, Psychic",
+  "conditionImmunities": "Blinded, Charmed, Deafened, Frightened, Paralyzed, Petrified, Poisoned",
+  "senses": "Blindsight 60 ft.,  Passive Perception 7",
+  "languages": "--",
+  "challenge": "1/4 (50 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Antimagic Susceptibility",
+      "uses": "",
+      "description": "The sword is incapacitated while in the area of an antimagic field. If targeted by dispel magic, the sword must succeed on a Constitution saving throw against the caster's spell save DC or fall unconscious for 1 minute."
+    },
+    {
+      "name": "False Appearance",
+      "uses": "",
+      "description": "While the sword remains motionless and isn't flying, it is indistinguishable from a normal sword."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Longsword",
+      "uses": "",
+      "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 5 (1d8 + 1) slashing damage."
+    }
+  ],
+  "legendaryActions": []
+}

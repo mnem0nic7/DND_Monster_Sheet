@@ -1,0 +1,44 @@
+{
+  "name": "Worg",
+  "size": "Large",
+  "type": "monstrosity",
+  "alignment": "neutral evil",
+  "armorClass": 13,
+  "armorType": "Natural Armor",
+  "hitPoints": 26,
+  "hitDice": "4d10 + 4",
+  "speed": "50 ft.",
+  "abilities": {
+    "strength": 16,
+    "dexterity": 13,
+    "constitution": 13,
+    "intelligence": 7,
+    "wisdom": 11,
+    "charisma": 8
+  },
+  "savingThrows": "",
+  "skills": "Perception +4",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Darkvision 60 ft.,  Passive Perception 14",
+  "languages": "Goblin, Worg",
+  "challenge": "1/2 (100 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Keen Hearing and Smell",
+      "uses": "",
+      "description": "The worg has advantage on Wisdom (Perception) checks that rely on hearing or smell."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) piercing damage. If the target is a creature, it must succeed on a DC 13 Strength saving throw or be knocked prone."
+    }
+  ],
+  "legendaryActions": []
+}

@@ -1,0 +1,49 @@
+{
+  "name": "Ochre Jelly",
+  "size": "Large",
+  "type": "ooze",
+  "alignment": "unaligned",
+  "armorClass": 8,
+  "armorType": "",
+  "hitPoints": 45,
+  "hitDice": "6d10 + 12",
+  "speed": "10 ft., climb 10 ft.",
+  "abilities": {
+    "strength": 15,
+    "dexterity": 6,
+    "constitution": 14,
+    "intelligence": 2,
+    "wisdom": 6,
+    "charisma": 1
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "Acid",
+  "immunities": "Lightning, Slashing",
+  "conditionImmunities": "Blinded, Charmed, Deafened, Exhaustion, Frightened, Prone",
+  "senses": "Blindsight 60 ft.,  Passive Perception 8",
+  "languages": "--",
+  "challenge": "2 (450 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Amorphous",
+      "uses": "",
+      "description": "The jelly can move through a space as narrow as 1 inch wide without squeezing."
+    },
+    {
+      "name": "Spider Climb",
+      "uses": "",
+      "description": "The jelly can climb difficult surfaces, including upside down on ceilings, without needing to make an ability check."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Pseudopod",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 9 (2d6 + 2) bludgeoning damage plus 3 (1d6) acid damage."
+    }
+  ],
+  "legendaryActions": []
+}

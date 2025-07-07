@@ -1,0 +1,44 @@
+{
+  "name": "Merfolk",
+  "size": "Medium",
+  "type": "humanoid",
+  "alignment": "neutral",
+  "armorClass": 11,
+  "armorType": "",
+  "hitPoints": 11,
+  "hitDice": "2d8 + 2",
+  "speed": "10 ft., swim 40 ft.",
+  "abilities": {
+    "strength": 10,
+    "dexterity": 13,
+    "constitution": 12,
+    "intelligence": 11,
+    "wisdom": 11,
+    "charisma": 12
+  },
+  "savingThrows": "",
+  "skills": "Perception +2",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 12",
+  "languages": "Aquan, Common",
+  "challenge": "1/8 (25 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Amphibious",
+      "uses": "",
+      "description": "The merfolk can breathe air and water."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Spear",
+      "uses": "",
+      "description": "Melee or Ranged Weapon Attack: +2 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 3 (1d6) piercing damage, or 4 (1d8) piercing damage if used with two hands to make a melee attack."
+    }
+  ],
+  "legendaryActions": []
+}

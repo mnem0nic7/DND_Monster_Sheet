@@ -1,0 +1,64 @@
+{
+  "name": "Flameskull",
+  "size": "Tiny",
+  "type": "undead",
+  "alignment": "neutral evil",
+  "armorClass": 13,
+  "armorType": "",
+  "hitPoints": 40,
+  "hitDice": "9d4 + 18",
+  "speed": "0 ft., fly 40 ft. (hover)",
+  "abilities": {
+    "strength": 1,
+    "dexterity": 17,
+    "constitution": 14,
+    "intelligence": 16,
+    "wisdom": 10,
+    "charisma": 11
+  },
+  "savingThrows": "",
+  "skills": "Arcana +5, Perception +2",
+  "vulnerabilities": "",
+  "resistances": "Lightning, Necrotic, Piercing",
+  "immunities": "Cold, Fire, Poison",
+  "conditionImmunities": "Charmed, Frightened, Paralyzed, Poisoned, Prone",
+  "senses": "Darkvision 60 ft.,  Passive Perception 12",
+  "languages": "Common",
+  "challenge": "4 (1,100 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Illumination",
+      "uses": "",
+      "description": "The flameskull sheds either dim light in a 15-foot radius, or bright light in a 15-foot radius and dim light for an additional 15 feet. It can switch between the options as an action."
+    },
+    {
+      "name": "Magic Resistance",
+      "uses": "",
+      "description": "The flameskull has advantage on saving throws against spells and other magical effects."
+    },
+    {
+      "name": "Rejuvenation",
+      "uses": "",
+      "description": "If the flameskull is destroyed, it regains all its hit points in 1 hour unless holy water is sprinkled on its remains or a dispel magic or remove curse spell is cast on them."
+    },
+    {
+      "name": "Spellcasting",
+      "uses": "",
+      "description": "The flameskull is a 5th-level spellcaster. Its spellcasting ability is Intelligence (spell save DC 13, +5 to hit with spell attacks). It requires no somatic or material components to cast its spells. The flameskull has the following wizard spells prepared: Cantrip (at will): mage hand 1st level (3 slots): magic missile, shield 2nd level (2 slots): blur, flaming sphere 3rd level (1 slot): fireball"
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The flameskull uses Fire Ray twice."
+    },
+    {
+      "name": "Fire Ray",
+      "uses": "",
+      "description": "Ranged Spell Attack: +5 to hit, range 30 ft., one target. Hit: 10 (3d6) fire damage."
+    }
+  ],
+  "legendaryActions": []
+}

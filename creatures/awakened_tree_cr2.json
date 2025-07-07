@@ -1,0 +1,44 @@
+{
+  "name": "Awakened Tree",
+  "size": "Huge",
+  "type": "plant",
+  "alignment": "unaligned",
+  "armorClass": 13,
+  "armorType": "Natural Armor",
+  "hitPoints": 59,
+  "hitDice": "7d12 + 14",
+  "speed": "20 ft.",
+  "abilities": {
+    "strength": 19,
+    "dexterity": 6,
+    "constitution": 15,
+    "intelligence": 10,
+    "wisdom": 10,
+    "charisma": 7
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "Fire",
+  "resistances": "Bludgeoning, Piercing",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 10",
+  "languages": "One language known by its creator",
+  "challenge": "2 (450 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "False Appearance",
+      "uses": "",
+      "description": "While the tree remains motionless, it is indistinguishable from a normal tree."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Slam",
+      "uses": "",
+      "description": "Melee Weapon Attack: +6 to hit, reach 10 ft., one target. Hit: 14 (3d6 + 4) bludgeoning damage."
+    }
+  ],
+  "legendaryActions": []
+}

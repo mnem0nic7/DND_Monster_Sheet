@@ -1,0 +1,59 @@
+{
+  "name": "Erinyes",
+  "size": "Medium",
+  "type": "fiend",
+  "alignment": "lawful evil",
+  "armorClass": 18,
+  "armorType": "Plate",
+  "hitPoints": 153,
+  "hitDice": "18d8 + 72",
+  "speed": "30 ft., fly 60 ft.",
+  "abilities": {
+    "strength": 18,
+    "dexterity": 16,
+    "constitution": 18,
+    "intelligence": 14,
+    "wisdom": 14,
+    "charisma": 18
+  },
+  "savingThrows": "DEX +7, CON +8, WIS +6, CHA +8",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "Cold; Bludgeoning, Piercing, and Slashing from Nonmagical Attacks that aren't Silvered",
+  "immunities": "Fire, Poison",
+  "conditionImmunities": "Poisoned",
+  "senses": "Truesight 120 ft.,  Passive Perception 12",
+  "languages": "Infernal, Telepathy 120 ft.",
+  "challenge": "12 (8,400 XP)",
+  "proficiencyBonus": "+4",
+  "specialAbilities": [
+    {
+      "name": "Hellish Weapons",
+      "uses": "",
+      "description": "The erinyes's weapon attacks are magical and deal an extra 13 (3d8) poison damage on a hit (included in the attacks)."
+    },
+    {
+      "name": "Magic Resistance",
+      "uses": "",
+      "description": "The erinyes has advantage on saving throws against spells and other magical effects."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The erinyes makes three attacks."
+    },
+    {
+      "name": "Longsword",
+      "uses": "",
+      "description": "Melee Weapon Attack: +8 to hit, reach 5 ft., one target. Hit: 8 (1d8 + 4) slashing damage, or 9 (1d10 + 4) slashing damage if used with two hands, plus 13 (3d8) poison damage."
+    },
+    {
+      "name": "Longbow",
+      "uses": "",
+      "description": "Ranged Weapon Attack: +7 to hit, range 150/600 ft., one target. Hit: 7 (1d8 + 3) piercing damage plus 13 (3d8) poison damage, and the target must succeed on a DC 14 Constitution saving throw or be poisoned. The poison lasts until it is removed by the lesser restoration spell or similar magic."
+    }
+  ],
+  "legendaryActions": []
+}

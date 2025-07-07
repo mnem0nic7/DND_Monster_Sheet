@@ -1,0 +1,48 @@
+{
+  "name": "Bandit Captain",
+  "size": "Medium",
+  "type": "humanoid",
+  "alignment": "any",
+  "armorClass": 15,
+  "armorType": "Studded Leather",
+  "hitPoints": 65,
+  "hitDice": "10d8 + 20",
+  "speed": "30 ft.",
+  "abilities": {
+    "strength": 15,
+    "dexterity": 16,
+    "constitution": 14,
+    "intelligence": 14,
+    "wisdom": 11,
+    "charisma": 14
+  },
+  "savingThrows": "STR +4, DEX +5, WIS +2",
+  "skills": "Athletics +4, Deception +4",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 10",
+  "languages": "Any two languages",
+  "challenge": "2 (450 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The captain makes three melee attacks: two with its scimitar and one with its dagger. Or the captain makes two ranged attacks with its daggers."
+    },
+    {
+      "name": "Scimitar",
+      "uses": "",
+      "description": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) slashing damage."
+    },
+    {
+      "name": "Dagger",
+      "uses": "",
+      "description": "Melee or Ranged Weapon Attack: +5 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 5 (1d4 + 3) piercing damage."
+    }
+  ],
+  "legendaryActions": []
+}

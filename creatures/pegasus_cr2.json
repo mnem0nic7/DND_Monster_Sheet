@@ -1,0 +1,38 @@
+{
+  "name": "Pegasus",
+  "size": "Large",
+  "type": "celestial",
+  "alignment": "chaotic good",
+  "armorClass": 12,
+  "armorType": "",
+  "hitPoints": 59,
+  "hitDice": "7d10 + 21",
+  "speed": "60 ft., fly 90 ft.",
+  "abilities": {
+    "strength": 18,
+    "dexterity": 15,
+    "constitution": 16,
+    "intelligence": 10,
+    "wisdom": 15,
+    "charisma": 13
+  },
+  "savingThrows": "DEX +4, WIS +4, CHA +3",
+  "skills": "Perception +6",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 16",
+  "languages": "Celestial, Common, Elvish  and Sylvan but can't speak",
+  "challenge": "2 (450 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [],
+  "actions": [
+    {
+      "name": "Hooves",
+      "uses": "",
+      "description": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) bludgeoning damage."
+    }
+  ],
+  "legendaryActions": []
+}

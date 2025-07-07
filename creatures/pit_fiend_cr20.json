@@ -1,0 +1,64 @@
+{
+  "name": "Pit Fiend",
+  "size": "Large",
+  "type": "fiend",
+  "alignment": "lawful evil",
+  "armorClass": 19,
+  "armorType": "Natural Armor",
+  "hitPoints": 300,
+  "hitDice": "24d10 + 168",
+  "speed": "30 ft., fly 60 ft.",
+  "abilities": {
+    "strength": 26,
+    "dexterity": 14,
+    "constitution": 24,
+    "intelligence": 22,
+    "wisdom": 18,
+    "charisma": 24
+  },
+  "savingThrows": "DEX +8, CON +13, WIS +10",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "Cold; Bludgeoning, Piercing, and Slashing from Nonmagical Attacks that aren't Silvered",
+  "immunities": "Fire, Poison",
+  "conditionImmunities": "Poisoned",
+  "senses": "Truesight 120 ft.,  Passive Perception 14",
+  "languages": "Infernal, Telepathy 120 ft.",
+  "challenge": "20 (25,000 XP)",
+  "proficiencyBonus": "+6",
+  "specialAbilities": [
+    {
+      "name": "Fear Aura",
+      "uses": "",
+      "description": "incapacitatedfrightenedMagic Resistance.Magic Weapons.Innate Spellcasting.detect magicfireballhold monsterwall of fire"
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The pit fiend makes four attacks: one with its bite, one with its claw, one with its mace, and one with its tail."
+    },
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +14 to hit, reach 5 ft., one target. Hit: 22 (4d6 + 8) piercing damage. The target must succeed on a DC 21 Constitution saving throw or become poisoned. While poisoned in this way, the target can't regain hit points, and it takes 21 (6d6) poison damage at the start of each of its turns. The poisoned target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
+    },
+    {
+      "name": "Claw",
+      "uses": "",
+      "description": "Melee Weapon Attack: +14 to hit, reach 10 ft., one target. Hit: 17 (2d8 + 8) slashing damage."
+    },
+    {
+      "name": "Mace",
+      "uses": "",
+      "description": "Melee Weapon Attack: +14 to hit, reach 10 ft., one target. Hit: 15 (2d6 + 8) bludgeoning damage plus 21 (6d6) fire damage."
+    },
+    {
+      "name": "Tail",
+      "uses": "",
+      "description": "Melee Weapon Attack: +14 to hit, reach 10 ft., one target. Hit: 24 (3d10 + 8) bludgeoning damage."
+    }
+  ],
+  "legendaryActions": []
+}

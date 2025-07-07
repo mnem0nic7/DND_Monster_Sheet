@@ -1,0 +1,49 @@
+{
+  "name": "Green Dragon Wyrmling",
+  "size": "Medium",
+  "type": "dragon",
+  "alignment": "lawful evil",
+  "armorClass": 17,
+  "armorType": "Natural Armor",
+  "hitPoints": 38,
+  "hitDice": "7d8 + 7",
+  "speed": "30 ft., fly 60 ft., swim 30 ft.",
+  "abilities": {
+    "strength": 15,
+    "dexterity": 12,
+    "constitution": 13,
+    "intelligence": 14,
+    "wisdom": 11,
+    "charisma": 13
+  },
+  "savingThrows": "DEX +3, CON +3, WIS +2, CHA +3",
+  "skills": "Perception +4, Stealth +3",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "Poison",
+  "conditionImmunities": "Poisoned",
+  "senses": "Blindsight 10 ft., Darkvision 60 ft.,  Passive Perception 14",
+  "languages": "Draconic",
+  "challenge": "2 (450 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Amphibious",
+      "uses": "",
+      "description": "The dragon can breathe air and water."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (1d10 + 2) piercing damage plus 3 (1d6) poison damage."
+    },
+    {
+      "name": "Poison Breath",
+      "uses": "Recharge 5–6",
+      "description": "The dragon exhales poisonous gas in a 15-foot cone. Each creature in that area must make a DC 11 Constitution saving throw, taking 21 (6d6) poison damage on a failed save, or half as much damage on a successful one."
+    }
+  ],
+  "legendaryActions": []
+}

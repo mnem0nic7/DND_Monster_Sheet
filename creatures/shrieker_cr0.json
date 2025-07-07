@@ -1,0 +1,38 @@
+{
+  "name": "Shrieker",
+  "size": "Medium",
+  "type": "plant",
+  "alignment": "unaligned",
+  "armorClass": 5,
+  "armorType": "",
+  "hitPoints": 13,
+  "hitDice": "3d8",
+  "speed": "0 ft.",
+  "abilities": {
+    "strength": 1,
+    "dexterity": 1,
+    "constitution": 10,
+    "intelligence": 1,
+    "wisdom": 3,
+    "charisma": 1
+  },
+  "savingThrows": "",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "Blinded, Deafened, Frightened",
+  "senses": "Blindsight 30 ft.,  Passive Perception 6",
+  "languages": "--",
+  "challenge": "0 (10 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "False Appearance",
+      "uses": "",
+      "description": "While the shrieker remains motionless, it is indistinguishable from an ordinary fungus."
+    }
+  ],
+  "actions": [],
+  "legendaryActions": []
+}

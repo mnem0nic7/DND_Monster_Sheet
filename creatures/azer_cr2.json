@@ -1,0 +1,54 @@
+{
+  "name": "Azer",
+  "size": "Medium",
+  "type": "elemental",
+  "alignment": "lawful neutral",
+  "armorClass": 17,
+  "armorType": "Natural Armor, Shield",
+  "hitPoints": 39,
+  "hitDice": "6d8 + 12",
+  "speed": "30 ft.",
+  "abilities": {
+    "strength": 17,
+    "dexterity": 12,
+    "constitution": 15,
+    "intelligence": 12,
+    "wisdom": 13,
+    "charisma": 10
+  },
+  "savingThrows": "CON +4",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "Fire, Poison",
+  "conditionImmunities": "Poisoned",
+  "senses": "Passive Perception 11",
+  "languages": "Ignan",
+  "challenge": "2 (450 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Heated Body",
+      "uses": "",
+      "description": "A creature that touches the azer or hits it with a melee attack while within 5 feet of it takes 5 (1d10) fire damage."
+    },
+    {
+      "name": "Heated Weapons",
+      "uses": "",
+      "description": "When the azer hits with a metal melee weapon, it deals an extra 3 (1d6) fire damage (included in the attack)."
+    },
+    {
+      "name": "Illumination",
+      "uses": "",
+      "description": "The azer sheds bright light in a 10-­foot radius and dim light for an additional 10 feet."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Warhammer",
+      "uses": "",
+      "description": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 7 (1d8 + 3) bludgeoning damage, or 8 (1d10 + 3) bludgeoning damage if used with two hands to make a melee attack, plus 3 (1d6) fire damage."
+    }
+  ],
+  "legendaryActions": []
+}

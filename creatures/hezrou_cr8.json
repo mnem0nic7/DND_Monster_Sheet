@@ -1,0 +1,59 @@
+{
+  "name": "Hezrou",
+  "size": "Large",
+  "type": "fiend",
+  "alignment": "chaotic evil",
+  "armorClass": 16,
+  "armorType": "Natural Armor",
+  "hitPoints": 136,
+  "hitDice": "13d10 + 65",
+  "speed": "30 ft.",
+  "abilities": {
+    "strength": 19,
+    "dexterity": 17,
+    "constitution": 20,
+    "intelligence": 5,
+    "wisdom": 12,
+    "charisma": 13
+  },
+  "savingThrows": "STR +7, CON +8, WIS +4",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "Cold, Fire, Lightning; Bludgeoning, Piercing, and Slashing from Nonmagical Attacks",
+  "immunities": "Poison",
+  "conditionImmunities": "Poisoned",
+  "senses": "Darkvision 120 ft.,  Passive Perception 11",
+  "languages": "Abyssal, Telepathy 120 ft.",
+  "challenge": "8 (3,900 XP)",
+  "proficiencyBonus": "+3",
+  "specialAbilities": [
+    {
+      "name": "Magic Resistance",
+      "uses": "",
+      "description": "The hezrou has advantage on saving throws against spells and other magical effects."
+    },
+    {
+      "name": "Stench",
+      "uses": "",
+      "description": "Any creature that starts its turn within 10 feet of the hezrou must succeed on a DC 14 Constitution saving throw or be poisoned until the start of its next turn. On a successful saving throw, the creature is immune to the hezrou's stench for 24 hours."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The hezrou makes three attacks: one with its bite and two with its claws."
+    },
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 15 (2d10 + 4) piercing damage."
+    },
+    {
+      "name": "Claw",
+      "uses": "",
+      "description": "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage."
+    }
+  ],
+  "legendaryActions": []
+}

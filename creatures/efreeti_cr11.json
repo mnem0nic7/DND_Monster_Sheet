@@ -1,0 +1,59 @@
+{
+  "name": "Efreeti",
+  "size": "Large",
+  "type": "elemental",
+  "alignment": "lawful evil",
+  "armorClass": 17,
+  "armorType": "Natural Armor",
+  "hitPoints": 200,
+  "hitDice": "16d10 + 112",
+  "speed": "40 ft., fly 60 ft.",
+  "abilities": {
+    "strength": 22,
+    "dexterity": 12,
+    "constitution": 24,
+    "intelligence": 16,
+    "wisdom": 15,
+    "charisma": 16
+  },
+  "savingThrows": "INT +7, WIS +6, CHA +7",
+  "skills": "",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "Fire",
+  "conditionImmunities": "",
+  "senses": "Darkvision 120 ft.,  Passive Perception 12",
+  "languages": "Ignan",
+  "challenge": "11 (7,200 XP)",
+  "proficiencyBonus": "+4",
+  "specialAbilities": [
+    {
+      "name": "Elemental Demise",
+      "uses": "",
+      "description": "If the efreeti dies, its body disintegrates in a flash of fire and puff of smoke, leaving behind only equipment the efreeti was wearing or carrying."
+    },
+    {
+      "name": "Innate Spellcasting",
+      "uses": "",
+      "description": "The efreeti's innate spellcasting ability is Charisma (spell save DC 15, +7 to hit with spell attacks). It can innately cast the following spells, requiring no material components:"
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The efreeti makes two scimitar attacks or uses its Hurl Flame twice."
+    },
+    {
+      "name": "Scimitar",
+      "uses": "",
+      "description": "Melee Weapon Attack: +10 to hit, reach 5 ft., one target. Hit: 13 (2d6 + 6) slashing damage plus 7 (2d6) fire damage."
+    },
+    {
+      "name": "Hurl Flame",
+      "uses": "",
+      "description": "Ranged Spell Attack: +7 to hit, range 120 ft., one target. Hit: 17 (5d6) fire damage."
+    }
+  ],
+  "legendaryActions": []
+}

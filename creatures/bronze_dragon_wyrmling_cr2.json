@@ -1,0 +1,59 @@
+{
+  "name": "Bronze Dragon Wyrmling",
+  "size": "Medium",
+  "type": "dragon",
+  "alignment": "lawful good",
+  "armorClass": 17,
+  "armorType": "Natural Armor",
+  "hitPoints": 32,
+  "hitDice": "5d8 + 10",
+  "speed": "30 ft., fly 60 ft., swim 30 ft.",
+  "abilities": {
+    "strength": 17,
+    "dexterity": 10,
+    "constitution": 15,
+    "intelligence": 12,
+    "wisdom": 11,
+    "charisma": 15
+  },
+  "savingThrows": "DEX +2, CON +4, WIS +2, CHA +4",
+  "skills": "Perception +4, Stealth +2",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "Lightning",
+  "conditionImmunities": "",
+  "senses": "Blindsight 10 ft., Darkvision 60 ft.,  Passive Perception 14",
+  "languages": "Draconic",
+  "challenge": "2 (450 XP)",
+  "proficiencyBonus": "+2",
+  "specialAbilities": [
+    {
+      "name": "Amphibious",
+      "uses": "",
+      "description": "The dragon can breathe air and water."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Bite",
+      "uses": "",
+      "description": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 8 (1d10 + 3) piercing damage."
+    },
+    {
+      "name": "Breath Weapons",
+      "uses": "Recharge 5–6",
+      "description": "The dragon uses one of the following breath weapons."
+    },
+    {
+      "name": "Lightning Breath",
+      "uses": "",
+      "description": "The dragon exhales lightning in a 40-foot line that is 5 feet wide. Each creature in that line must make a DC 12 Dexterity saving throw, taking 16 (3d10) lightning damage on a failed save, or half as much damage on a successful one."
+    },
+    {
+      "name": "Repulsion Breath",
+      "uses": "",
+      "description": "The dragon exhales repulsion energy in a 30-foot cone. Each creature in that area must succeed on a DC 12 Strength saving throw. On a failed save, the creature is pushed 30 feet away from the dragon."
+    }
+  ],
+  "legendaryActions": []
+}

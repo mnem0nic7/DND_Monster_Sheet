@@ -1,0 +1,54 @@
+{
+  "name": "Roc",
+  "size": "Gargantuan",
+  "type": "monstrosity",
+  "alignment": "unaligned",
+  "armorClass": 15,
+  "armorType": "Natural Armor",
+  "hitPoints": 248,
+  "hitDice": "16d20 + 80",
+  "speed": "20 ft., fly 120 ft.",
+  "abilities": {
+    "strength": 28,
+    "dexterity": 10,
+    "constitution": 20,
+    "intelligence": 3,
+    "wisdom": 10,
+    "charisma": 9
+  },
+  "savingThrows": "DEX +4, CON +9, WIS +4, CHA +3",
+  "skills": "Perception +4",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 14",
+  "languages": "--",
+  "challenge": "11 (7,200 XP)",
+  "proficiencyBonus": "+4",
+  "specialAbilities": [
+    {
+      "name": "Keen Sight",
+      "uses": "",
+      "description": "The roc has advantage on Wisdom (Perception) checks that rely on sight."
+    }
+  ],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The roc makes two attacks: one with its beak and one with its talons."
+    },
+    {
+      "name": "Beak",
+      "uses": "",
+      "description": "Melee Weapon Attack: +13 to hit, reach 10 ft., one target. Hit: 27 (4d8 + 9) piercing damage."
+    },
+    {
+      "name": "Talons",
+      "uses": "",
+      "description": "Melee Weapon Attack: +13 to hit, reach 5 ft., one target. Hit: 23 (4d6 + 9) slashing damage, and the target is grappled (escape DC 19). Until this grapple ends, the target is restrained, and the roc can't use its talons on another target."
+    }
+  ],
+  "legendaryActions": []
+}

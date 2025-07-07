@@ -1,0 +1,48 @@
+{
+  "name": "Frost Giant",
+  "size": "Huge",
+  "type": "giant",
+  "alignment": "neutral evil",
+  "armorClass": 15,
+  "armorType": "Patchwork Armor",
+  "hitPoints": 138,
+  "hitDice": "12d12 + 60",
+  "speed": "40 ft.",
+  "abilities": {
+    "strength": 23,
+    "dexterity": 9,
+    "constitution": 21,
+    "intelligence": 9,
+    "wisdom": 10,
+    "charisma": 12
+  },
+  "savingThrows": "CON +8, WIS +3, CHA +4",
+  "skills": "Athletics +9, Perception +3",
+  "vulnerabilities": "",
+  "resistances": "",
+  "immunities": "Cold",
+  "conditionImmunities": "",
+  "senses": "Passive Perception 13",
+  "languages": "Giant",
+  "challenge": "8 (3,900 XP)",
+  "proficiencyBonus": "+3",
+  "specialAbilities": [],
+  "actions": [
+    {
+      "name": "Multiattack",
+      "uses": "",
+      "description": "The giant makes two greataxe attacks."
+    },
+    {
+      "name": "Greataxe",
+      "uses": "",
+      "description": "Melee Weapon Attack: +9 to hit, reach 10 ft., one target. Hit: 25 (3d12 + 6) slashing damage."
+    },
+    {
+      "name": "Rock",
+      "uses": "",
+      "description": "Ranged Weapon Attack: +9 to hit, range 60/240 ft., one target. Hit: 28 (4d10 + 6) bludgeoning damage."
+    }
+  ],
+  "legendaryActions": []
+}
