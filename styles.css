@@ -186,6 +186,34 @@ header h1 {
     color: #666;
 }
 
+/* Calculated field styling */
+.calculated-label {
+    font-size: 0.8em;
+    color: #666;
+    font-style: italic;
+    margin-left: 5px;
+}
+
+/* Armor controls styling */
+.stat-row select {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 5px;
+    font-weight: 600;
+    min-width: 150px;
+}
+
+.stat-row input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.stat-row label {
+    font-weight: normal;
+    min-width: auto;
+    color: #8b4513;
+}
+
 /* Ability scores */
 .ability-scores {
     display: grid;
@@ -302,6 +330,7 @@ header h1 {
     font-style: italic;
     color: #666;
     width: 80px;
+    display: inline !important;
 }
 
 .ability-description, .action-description, .legendary-action-description {
@@ -872,6 +901,113 @@ header h1 {
     width: 150px;
 }
 
+/* Armor class specific styling */
+.armor-type-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.armor-type-row label {
+    font-weight: bold;
+    color: #8b4513;
+    margin-right: 4px;
+}
+
+.armor-type-row select {
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    color: #2c1810;
+}
+
+.armor-class-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.armor-class-row .label {
+    font-weight: bold;
+    color: #8b4513;
+    min-width: 100px;
+}
+
+.armor-class-row input[type="number"] {
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 80px;
+}
+
+.checkbox-inline {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: normal;
+    color: #2c1810;
+}
+
+/* Hit points calculation styling */
+.hp-calculation-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.hp-calculation-row label {
+    font-weight: bold;
+    color: #8b4513;
+    margin-right: 4px;
+}
+
+.hp-calculation-row input[type="number"] {
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    color: #2c1810;
+}
+
+.hp-calculation-row select {
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    color: #2c1810;
+}
+
+.hp-calculation-row span {
+    color: #8b4513;
+    font-weight: bold;
+}
+
+.hp-class-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.hp-class-row .label {
+    font-weight: bold;
+    color: #8b4513;
+    min-width: 100px;
+}
+
+.hp-class-row input[type="number"] {
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 80px;
+}
+
 /* Ability scores */
 .ability-scores-display {
     display: flex;
@@ -1062,7 +1198,7 @@ header h1 {
 
 /* Click indicator */
 .editable-section::before {
-    content: "Click to edit";
+    /* content: "Click to edit"; */
     position: absolute;
     top: 10px;
     right: 15px;
@@ -1077,9 +1213,56 @@ header h1 {
 }
 
 .editable-section.editing::before {
-    content: "Editing...";
+    /* content: "Editing..."; */
     opacity: 1;
     color: #2196F3;
+}
+
+/* Empty section styling */
+.empty-section {
+    color: #666;
+    font-style: italic;
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border: 1px dashed #ddd;
+    margin: 10px 0;
+}
+
+.empty-section:hover {
+    background: #e9ecef;
+    cursor: pointer;
+}
+
+/* Dynamic section items */
+.ability-item, .action-item, .legendary-action-item {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.ability-item input, .action-item input, .legendary-action-item input {
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.ability-item textarea, .action-item textarea, .legendary-action-item textarea {
+    width: 100%;
+    min-height: 60px;
+    margin-top: 5px;
+}
+
+.ability-uses {
+    margin-left: 10px;
+    color: #666;
+}
+
+.ability-use-count {
+    width: 80px !important;
+    display: inline !important;
 }
 
 /* Responsive design */

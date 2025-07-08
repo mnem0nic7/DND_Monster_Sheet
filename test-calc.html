@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test calculateModifier</title>
+</head>
+<body>
+    <h1>Testing calculateModifier behavior</h1>
+    <div id="output"></div>
+    
+    <script>
+        function calculateModifier(score) {
+            return Math.floor((score - 10) / 2);
+        }
+        
+        const results = [];
+        
+        // Test various inputs
+        const testInputs = [null, undefined, "test", NaN, 10, 15];
+        
+        testInputs.forEach(input => {
+            const result = calculateModifier(input);
+            const isNaN_result = isNaN(result);
+            results.push(`calculateModifier(${input}) = ${result}, isNaN: ${isNaN_result}`);
+        });
+        
+        document.getElementById('output').innerHTML = results.join('<br>');
+        console.log('Results:', results);
+    </script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+{
+  "Light Armor": {
+    "Padded": {
+      "ac": "11 + Dex modifier",
+      "baseAC": 11,
+      "maxDex": null,
+      "stealth": "Disadvantage"
+    },
+    "Leather": {
+      "ac": "11 + Dex modifier",
+      "baseAC": 11,
+      "maxDex": null,
+      "stealth": null
+    },
+    "Studded Leather": {
+      "ac": "12 + Dex modifier",
+      "baseAC": 12,
+      "maxDex": null,
+      "stealth": null
+    }
+  },
+  "Medium Armor": {
+    "Hide": {
+      "ac": "12 + Dex modifier (max 2)",
+      "baseAC": 12,
+      "maxDex": 2,
+      "stealth": null
+    },
+    "Chain Shirt": {
+      "ac": "13 + Dex modifier (max 2)",
+      "baseAC": 13,
+      "maxDex": 2,
+      "stealth": null
+    },
+    "Scale Mail": {
+      "ac": "14 + Dex modifier (max 2)",
+      "baseAC": 14,
+      "maxDex": 2,
+      "stealth": "Disadvantage"
+    },
+    "Breastplate": {
+      "ac": "14 + Dex modifier (max 2)",
+      "baseAC": 14,
+      "maxDex": 2,
+      "stealth": null
+    },
+    "Half Plate": {
+      "ac": "15 + Dex modifier (max 2)",
+      "baseAC": 15,
+      "maxDex": 2,
+      "stealth": "Disadvantage"
+    }
+  },
+  "Heavy Armor": {
+    "Ring Mail": {
+      "ac": "14",
+      "baseAC": 14,
+      "maxDex": 0,
+      "stealth": "Disadvantage"
+    },
+    "Chain Mail": {
+      "ac": "16",
+      "baseAC": 16,
+      "maxDex": 0,
+      "stealth": "Disadvantage"
+    },
+    "Splint": {
+      "ac": "17",
+      "baseAC": 17,
+      "maxDex": 0,
+      "stealth": "Disadvantage"
+    },
+    "Plate": {
+      "ac": "18",
+      "baseAC": 18,
+      "maxDex": 0,
+      "stealth": "Disadvantage"
+    }
+  },
+  "Natural Armor": {
+    "Natural Armor": {
+      "ac": "10 + Dex modifier",
+      "baseAC": 10,
+      "maxDex": null,
+      "stealth": null
+    }
+  },
+  "None": {
+    "Unarmored": {
+      "ac": "10 + Dex modifier",
+      "baseAC": 10,
+      "maxDex": null,
+      "stealth": null
+    }
+  }
+}

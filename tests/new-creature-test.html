@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New Creature Test</title>
+    <script src="../script.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>New Creature Test</h1>
+    
+    <div class="test-section">
+        <h2>Test: Create Blank Creature</h2>
+        <button id="test-create-btn" onclick="testCreateBlankCreature()">Test Create Blank Creature</button>
+        <div id="create-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Current Form Values</h2>
+        <div id="form-values"></div>
+    </div>
+    
+    <!-- Minimal editor structure for testing -->
+    <div style="display: none;">
+        <div id="welcomeScreen"></div>
+        <div id="mainEditor">
+            <div id="creature-editor">
+                <!-- Basic creature fields -->
+                <input type="text" id="creatureName" value="">
+                <input type="text" id="creatureSize" value="Medium">
+                <input type="text" id="creatureType" value="humanoid">
+                <input type="text" id="creatureAlignment" value="neutral">
+                
+                <!-- Stats -->
+                <input type="number" id="armorClass" value="10">
+                <input type="number" id="hitPoints" value="1">
+                <input type="number" id="hitDiceNumber" value="1">
+                <select id="hitDiceType">
+                    <option value="6">d6</option>
+                    <option value="8" selected>d8</option>
+                    <option value="10">d10</option>
+                    <option value="12">d12</option>
+                </select>
+                <input type="text" id="speed" value="30 ft.">
+                
+                <!-- Abilities -->
+                <input type="number" id="strength" value="10">
+                <input type="number" id="dexterity" value="10">
+                <input type="number" id="constitution" value="10">
+                <input type="number" id="intelligence" value="10">
+                <input type="number" id="wisdom" value="10">
+                <input type="number" id="charisma" value="10">
+                
+                <!-- Traits -->
+                <input type="text" id="savingThrows" value="">
+                <input type="text" id="skills" value="">
+                <input type="text" id="vulnerabilities" value="">
+                <input type="text" id="resistances" value="">
+                <input type="text" id="immunities" value="">
+                <input type="text" id="conditionImmunities" value="">
+                <input type="text" id="senses" value="Passive Perception 10">
+                <input type="text" id="languages" value="Common">
+                <input type="text" id="challenge" value="0 (10 XP)">
+                <input type="text" id="proficiencyBonus" value="+2">
+                
+                <!-- Containers for dynamic content -->
+                <div id="specialAbilities"></div>
+                <div id="specialAbilitiesDisplay"></div>
+                <div id="actions"></div>
+                <div id="actionsDisplay"></div>
+                <div id="legendaryActions"></div>
+                <div id="legendaryActionsDisplay"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Mock required functions
+        window.closeModals = function() {
+            console.log('closeModals called');
+        };
+        
+        window.showMainEditor = function() {
+            console.log('showMainEditor called');
+            const editor = document.getElementById('creature-editor');
+            if (editor) {
+                editor.style.display = 'block';
+            }
+        };
+        
+        window.updateAbilityModifiers = function() {
+            console.log('updateAbilityModifiers called');
+        };
+        
+        window.updateArmorClassField = function() {
+            console.log('updateArmorClassField called');
+        };
+        
+        window.calculateHitPoints = function() {
+            console.log('calculateHitPoints called');
+        };
+        
+        window.updateHitPointsDisplay = function() {
+            console.log('updateHitPointsDisplay called');
+        };
+        
+        window.initializeDisplayContent = function() {
+            console.log('initializeDisplayContent called');
+        };
+        
+        function testCreateBlankCreature() {
+            const resultsDiv = document.getElementById('create-results');
+            const formValuesDiv = document.getElementById('form-values');
+            
+            try {
+                resultsDiv.innerHTML = '<p class="info">Testing createBlankCreature...</p>';
+                
+                // First, set some non-default values to verify they get cleared
+                document.getElementById('creatureName').value = 'Old Dragon';
+                document.getElementById('strength').value = '20';
+                document.getElementById('dexterity').value = '18';
+                
+                resultsDiv.innerHTML += '<p class="info">Set initial values (should be cleared)</p>';
+                
+                // Call the function
+                if (typeof createBlankCreature !== 'undefined') {
+                    createBlankCreature();
+                    
+                    // Wait a bit for the timeout in createBlankCreature
+                    setTimeout(() => {
+                        checkResults();
+                    }, 100);
+                } else {
+                    resultsDiv.innerHTML += '<p class="error">❌ createBlankCreature function not found!</p>';
+                }
+                
+            } catch (error) {
+                resultsDiv.innerHTML += `<p class="error">❌ Error: ${error.message}</p>`;
+                console.error('Test error:', error);
+            }
+        }
+        
+        function checkResults() {
+            const resultsDiv = document.getElementById('create-results');
+            const formValuesDiv = document.getElementById('form-values');
+            
+            // Check if values were reset correctly
+            const name = document.getElementById('creatureName').value;
+            const strength = document.getElementById('strength').value;
+            const dexterity = document.getElementById('dexterity').value;
+            const size = document.getElementById('creatureSize').value;
+            const type = document.getElementById('creatureType').value;
+            
+            let results = '';
+            
+            // Test name is blank
+            if (name === '') {
+                results += '<p class="success">✅ Creature name cleared correctly</p>';
+            } else {
+                results += `<p class="error">❌ Creature name not cleared: "${name}"</p>`;
+            }
+            
+            // Test abilities set to 10
+            if (strength === '10') {
+                results += '<p class="success">✅ Strength set to 10</p>';
+            } else {
+                results += `<p class="error">❌ Strength not set to 10: "${strength}"</p>`;
+            }
+            
+            if (dexterity === '10') {
+                results += '<p class="success">✅ Dexterity set to 10</p>';
+            } else {
+                results += `<p class="error">❌ Dexterity not set to 10: "${dexterity}"</p>`;
+            }
+            
+            // Test defaults
+            if (size === 'Medium') {
+                results += '<p class="success">✅ Size set to Medium</p>';
+            } else {
+                results += `<p class="error">❌ Size not set to Medium: "${size}"</p>`;
+            }
+            
+            if (type === 'humanoid') {
+                results += '<p class="success">✅ Type set to humanoid</p>';
+            } else {
+                results += `<p class="error">❌ Type not set to humanoid: "${type}"</p>`;
+            }
+            
+            resultsDiv.innerHTML += results;
+            
+            // Show current form values
+            formValuesDiv.innerHTML = `
+                <p><strong>Name:</strong> "${name}"</p>
+                <p><strong>Size:</strong> "${size}"</p>
+                <p><strong>Type:</strong> "${type}"</p>
+                <p><strong>Strength:</strong> ${strength}</p>
+                <p><strong>Dexterity:</strong> ${dexterity}</p>
+                <p><strong>Constitution:</strong> ${document.getElementById('constitution').value}</p>
+            `;
+        }
+        
+        // Initialize when page loads
+        window.addEventListener('load', function() {
+            console.log('Test page loaded');
+            
+            // Display initial form values
+            const formValuesDiv = document.getElementById('form-values');
+            formValuesDiv.innerHTML = `
+                <p><strong>Name:</strong> "${document.getElementById('creatureName').value}"</p>
+                <p><strong>Size:</strong> "${document.getElementById('creatureSize').value}"</p>
+                <p><strong>Type:</strong> "${document.getElementById('creatureType').value}"</p>
+                <p><strong>Strength:</strong> ${document.getElementById('strength').value}</p>
+                <p><strong>Dexterity:</strong> ${document.getElementById('dexterity').value}</p>
+                <p><strong>Constitution:</strong> ${document.getElementById('constitution').value}</p>
+            `;
+        });
+    </script>
+</body>
+</html>

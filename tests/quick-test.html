@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick Function Test</title>
+    <script src="../script.js"></script>
+</head>
+<body>
+    <h1>Quick Function Test</h1>
+    <div id="test-results"></div>
+    
+    <!-- Minimal required elements for testing -->
+    <div style="display: none;">
+        <input type="text" id="creatureName" value="">
+        <input type="text" id="creatureSize" value="Medium">
+        <input type="text" id="creatureType" value="humanoid">
+        <input type="text" id="creatureAlignment" value="neutral">
+        <input type="number" id="armorClass" value="10">
+        <input type="number" id="hitPoints" value="1">
+        <input type="number" id="hitDiceNumber" value="1">
+        <select id="hitDiceType"><option value="8">d8</option></select>
+        <input type="text" id="speed" value="30 ft.">
+        <input type="number" id="strength" value="10">
+        <input type="number" id="dexterity" value="10">
+        <input type="number" id="constitution" value="10">
+        <input type="number" id="intelligence" value="10">
+        <input type="number" id="wisdom" value="10">
+        <input type="number" id="charisma" value="10">
+        <input type="text" id="savingThrows" value="">
+        <input type="text" id="skills" value="">
+        <input type="text" id="vulnerabilities" value="">
+        <input type="text" id="resistances" value="">
+        <input type="text" id="immunities" value="">
+        <input type="text" id="conditionImmunities" value="">
+        <input type="text" id="senses" value="Passive Perception 10">
+        <input type="text" id="languages" value="Common">
+        <input type="text" id="challenge" value="0 (10 XP)">
+        <input type="text" id="proficiencyBonus" value="+2">
+        <div id="specialAbilities"></div>
+        <div id="specialAbilitiesDisplay"></div>
+        <div id="actions"></div>
+        <div id="actionsDisplay"></div>
+        <div id="legendaryActions"></div>
+        <div id="legendaryActionsDisplay"></div>
+    </div>
+    
+    <script>
+        function testFunctions() {
+            const results = document.getElementById('test-results');
+            let testResults = [];
+            
+            // Test 1: Check if createNewCreature exists
+            if (typeof createNewCreature !== 'undefined') {
+                testResults.push("✅ createNewCreature function exists");
+                
+                try {
+                    createNewCreature();
+                    testResults.push("✅ createNewCreature executed without errors");
+                    
+                    // Check if it set the fields correctly
+                    const name = document.getElementById('creatureName').value;
+                    const strength = document.getElementById('strength').value;
+                    
+                    if (name === '') {
+                        testResults.push("✅ Creature name is blank (correct)");
+                    } else {
+                        testResults.push("❌ Creature name is not blank: " + name);
+                    }
+                    
+                    if (strength === '10') {
+                        testResults.push("✅ Strength set to 10 (correct)");
+                    } else {
+                        testResults.push("❌ Strength not set to 10: " + strength);
+                    }
+                    
+                } catch (error) {
+                    testResults.push("❌ createNewCreature failed: " + error.message);
+                }
+            } else {
+                testResults.push("❌ createNewCreature function not found");
+            }
+            
+            // Test 2: Check if setupHitPointsListeners exists
+            if (typeof setupHitPointsListeners !== 'undefined') {
+                testResults.push("✅ setupHitPointsListeners function exists");
+                
+                try {
+                    setupHitPointsListeners();
+                    testResults.push("✅ setupHitPointsListeners executed without errors");
+                } catch (error) {
+                    testResults.push("❌ setupHitPointsListeners failed: " + error.message);
+                }
+            } else {
+                testResults.push("❌ setupHitPointsListeners function not found");
+            }
+            
+            // Test 3: Check clear functions
+            const clearFunctions = ['clearSpecialAbilities', 'clearActions', 'clearLegendaryActions'];
+            clearFunctions.forEach(funcName => {
+                if (typeof window[funcName] !== 'undefined') {
+                    testResults.push(`✅ ${funcName} function exists`);
+                    
+                    try {
+                        window[funcName]();
+                        testResults.push(`✅ ${funcName} executed without errors`);
+                    } catch (error) {
+                        testResults.push(`❌ ${funcName} failed: ${error.message}`);
+                    }
+                } else {
+                    testResults.push(`❌ ${funcName} function not found`);
+                }
+            });
+            
+            // Display results
+            results.innerHTML = testResults.map(result => `<p>${result}</p>`).join('');
+        }
+        
+        // Run tests when page loads
+        window.addEventListener('load', testFunctions);
+    </script>
+</body>
+</html>

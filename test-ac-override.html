@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AC Override Test</title>
+</head>
+<body>
+    <h1>AC Override Test</h1>
+    <p>Test the AC override functionality:</p>
+    <ol>
+        <li>Visit <a href="http://localhost:4100" target="_blank">http://localhost:4100</a></li>
+        <li>Click "Create New Creature"</li>
+        <li>Click on the "Basic Stats" section to edit it</li>
+        <li>Check the "Override AC" checkbox</li>
+        <li>The AC field should become editable (not grayed out)</li>
+        <li>Try entering a custom AC value (e.g., 15, or even something high like 500)</li>
+        <li>The field should accept the value and display it</li>
+    </ol>
+    
+    <h2>What to check:</h2>
+    <ul>
+        <li>The AC field changes from read-only (grayed out) to editable when override is checked</li>
+        <li>You can type numbers into the AC field when override is checked</li>
+        <li>The label changes from "(Calculated)" to "(Manual)"</li>
+        <li>When you uncheck override, the field becomes read-only again and recalculates</li>
+    </ul>
+    
+    <h2>Debug info:</h2>
+    <p>Check the browser console (F12) for debug messages when toggling the override checkbox.</p>
+</body>
+</html>

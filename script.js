@@ -1,1189 +1,1778 @@
-// Global variables and initialization
-let currentCreature = {};
-let allCreatures = []; // Will store the list of all available creatures
+// D&D Creature Sheet Editor
+// Main JavaScript file for the creature editor application
 
-// Initialize the app when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Show welcome screen initially
-    showWelcomeScreen();
-    loadAllCreatures();
-    // Populate creature dropdowns from JSON
-    loadDropdown('creatureSize', 'dropdowns/creatureSizes.json');
-    loadDropdown('creatureType', 'dropdowns/creatureTypes.json').then(toggleCreatureTypeOther);
-    loadDropdown('creatureAlignment', 'dropdowns/creatureAlignments.json');
-    // Load armor AC formulas
-    loadArmorConfig().then(() => {
-        // Wire up AC dropdowns & calculate
-        document.getElementById('armorCategory').addEventListener('change', populateArmorKinds);
-        document.getElementById('armorKind').addEventListener('change', () => { toggleArmorKindOther(); updateArmorClassField(); });
-        document.getElementById('armorBonus').addEventListener('change', updateArmorClassField);
-        updateArmorClassField();
-    });
-    setupEventListeners();
-});
-// Toggle 'Other' free-form field for creature type
-function toggleCreatureTypeOther() {
-    const sel = document.getElementById('creatureType');
-    const other = document.getElementById('creatureTypeOther');
-    if (sel.value === 'Other') other.style.display = 'inline-block';
-    else other.style.display = 'none';
-}
-// Toggle 'Other' free-form field for armor type
-function toggleArmorTypeOther() {
-    const sel = document.getElementById('armorType');
-    const other = document.getElementById('armorTypeOther');
-    if (sel.value === 'Other') other.style.display = 'inline-block';
-    else other.style.display = 'none';
-}
-// Store armor AC formulas by category
-// Store armor types and AC formulas by category
-let armorConfig = {};
-// Load armor formulas from equipment.json
-async function loadArmorConfig() {
-    try {
-        const resp = await fetch('json/equipment.json');
-        const data = await resp.json();
-        const list = data.Equipment.Armor['Armor List'];
-        // Build config: each category has kinds[] and formulas[]
-        for (const category in list) {
-            const tbl = list[category].table;
-            armorConfig[category] = {
-                kinds: tbl['Armor'],
-                formulas: tbl['Armor Class (AC)']
-            };
-        }
-        // Populate category dropdown
-        const catSelect = document.getElementById('armorCategory');
-        Object.keys(armorConfig).forEach(cat => {
-            const opt = document.createElement('option'); opt.value = cat; opt.text = cat;
-            catSelect.add(opt);
-        });
-        // Add 'Other' option
-        const otherOpt = document.createElement('option'); otherOpt.value='Other'; otherOpt.text='Other'; catSelect.add(otherOpt);
-        // Trigger kinds population
-        populateArmorKinds();
-    } catch (e) {
-        console.error('Failed to load armor config:', e);
-    }
-}
-// Populate 'kind' dropdown when category changes
-function populateArmorKinds() {
-    const cat = document.getElementById('armorCategory').value;
-    const kindSel = document.getElementById('armorKind');
-    kindSel.innerHTML = '';
-    if (cat !== 'Other' && armorConfig[cat]) {
-        armorConfig[cat].kinds.forEach(kind => {
-            const opt = document.createElement('option'); opt.value = kind; opt.text = kind;
-            kindSel.add(opt);
-        });
-        const otherOpt = document.createElement('option'); otherOpt.value='Other'; otherOpt.text='Other'; kindSel.add(otherOpt);
-    } else {
-        const otherOpt = document.createElement('option'); otherOpt.value='Other'; otherOpt.text='Other'; kindSel.add(otherOpt);
-    }
-    toggleArmorKindOther();
-    updateArmorClassField();
-}
-// Toggle freeform for armor kind
-function toggleArmorKindOther() {
-    const sel = document.getElementById('armorKind');
-    const other = document.getElementById('armorKindOther');
-    other.style.display = sel.value === 'Other' ? 'inline-block' : 'none';
-}
-// Calculate and update AC field based on selected armor and Dex mod
-function updateArmorClassField() {
-    const override = document.getElementById('overrideAC');
-    const acInput = document.getElementById('armorClass');
-    if (override.checked) return;
-    const cat = document.getElementById('armorCategory').value;
-    const kindSelect = document.getElementById('armorKind');
-    let formula = '';
-    if (cat !== 'Other' && armorConfig[cat] && kindSelect.selectedIndex >= 0) {
-        formula = armorConfig[cat].formulas[kindSelect.selectedIndex] || '';
-    }
-    if (!formula) return;
-    // parse base number
-    const base = parseInt((formula.match(/^(\d+)/)||['0',])[1],10);
-    let dexMod = calculateModifier(parseInt(document.getElementById('dexterity').value,10));
-    // apply max cap
-    const maxCap = formula.match(/max (\d+)/);
-    if (maxCap) dexMod = Math.min(dexMod, parseInt(maxCap[1],10));
-    const bonus = parseInt(document.getElementById('armorBonus').value,10) || 0;
-    const finalAC = (formula.includes('Dex') ? base + dexMod : base) + bonus;
-    acInput.value = finalAC;
-}
-
-// Show welcome screen
-function showWelcomeScreen() {
-    document.getElementById('welcomeScreen').style.display = 'flex';
-    document.getElementById('mainEditor').style.display = 'none';
-}
-
-// Show main editor
-function showMainEditor() {
-    document.getElementById('welcomeScreen').style.display = 'none';
-    document.getElementById('mainEditor').style.display = 'block';
-    
-    // Initialize editor if not already done
-    if (!document.getElementById('mainEditor').hasAttribute('data-initialized')) {
-        initializeApp();
-        document.getElementById('mainEditor').setAttribute('data-initialized', 'true');
-    }
-}
-
-// Welcome screen functions
-function showCreateOptions() {
-    document.getElementById('createModal').style.display = 'flex';
-}
-
-function showImportOptions() {
-    document.getElementById('importModal').style.display = 'flex';
-}
-
-function closeModals() {
-    document.getElementById('createModal').style.display = 'none';
-    document.getElementById('importModal').style.display = 'none';
-    document.getElementById('templateLibrary').style.display = 'none';
-    document.getElementById('creatureLibraryFull').style.display = 'none';
-}
-
-// Create a blank creature once configs loaded
-// Create a blank creature and show the editor immediately
-function createBlankCreature() {
-    // Close any modals before creating new creature
-    closeModals();
-    createNewCreature();
-    // Show editor
-    showMainEditor();
-}
-
-function showTemplateLibrary() {
-    closeModals();
-    // Show full creature library as template options
-    document.getElementById('creatureLibraryFull').style.display = 'flex';
-    if (allCreatures.length === 0) {
-        loadAllCreatures();
-    }
-}
-
-function showCreatureLibrary() {
-    closeModals();
-    document.getElementById('creatureLibraryFull').style.display = 'flex';
-    if (allCreatures.length === 0) {
-        loadAllCreatures();
-    }
-}
-
-function loadTemplateAndStart(templateName) {
-    closeModals();
-    loadTemplate(templateName);
-    showMainEditor();
-}
-
-// Load all creatures, prioritizing creature-list.json over directory scan
-async function loadAllCreatures() {
-    try {
-        // First, try to load from creature-list.json
-        const response = await fetch('creature-list.json');
-        if (!response.ok) throw new Error('Failed to fetch creature-list.json');
-        
-        const creatures = await response.json();
-        allCreatures = creatures;
-        renderCreatureGrid(creatures);
-        
-    } catch (error) {
-        console.error('Error loading creature-list.json, attempting to scan creatures folder:', error);
-        // Fallback to scanning creatures folder
-        await loadCreaturesFromFolder();
-    }
-}
-
-// Load creatures by scanning the creatures folder
-async function loadCreaturesFromFolder() {
-    try {
-        // Try to fetch the creatures directory to get a list of files
-        // Note: This approach has limited browser support and may not work in all environments
-        const response = await fetch('creatures/');
-        if (!response.ok) throw new Error('Cannot access creatures folder');
-        
-        const html = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const links = doc.querySelectorAll('a[href$=".json"]');
-        
-        if (links.length === 0) {
-            throw new Error('No creature files found in directory');
-        }
-        
-        const creatures = Array.from(links).map(link => {
-            const filename = link.getAttribute('href');
-            const base = filename.replace('.json', '');
-            const parts = base.split('_cr');
-            const name = parts[0].split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-            
-            // Parse CR value properly
-            let cr = '';
-            if (parts[1]) {
-                if (parts[1] === '025') cr = '1/4';
-                else if (parts[1] === '18') cr = '1/8';
-                else if (parts[1] === '14') cr = '1/4';
-                else if (parts[1] === '12') cr = '1/2';
-                else cr = parts[1];
-            }
-            
-            // Determine creature type from name
-            let type = 'unknown';
-            if (name.includes('Dragon')) type = 'dragon';
-            else if (name.includes('Giant') || name.includes('Ogre') || name.includes('Troll')) type = 'giant';
-            else if (name.includes('Devil') || name.includes('Demon') || name.includes('Fiend')) type = 'fiend';
-            else if (name.includes('Elemental')) type = 'elemental';
-            else if (name.includes('Undead') || name.includes('Zombie') || name.includes('Skeleton') || name.includes('Ghost') || name.includes('Wraith') || name.includes('Vampire') || name.includes('Lich') || name.includes('Mummy')) type = 'undead';
-            else if (name.includes('Bear') || name.includes('Wolf') || name.includes('Tiger') || name.includes('Lion') || name.includes('Eagle') || name.includes('Hawk') || name.includes('Snake') || name.includes('Spider') || name.includes('Rat') || name.includes('Cat') || name.includes('Dog') || name.includes('Horse') || name.includes('Elephant') || name.includes('Shark') || name.includes('Whale')) type = 'beast';
-            else if (name.includes('Goblin') || name.includes('Orc') || name.includes('Human') || name.includes('Elf') || name.includes('Dwarf') || name.includes('Guard') || name.includes('Knight') || name.includes('Commoner') || name.includes('Noble') || name.includes('Bandit') || name.includes('Cultist') || name.includes('Acolyte') || name.includes('Priest')) type = 'humanoid';
-            
-            return { name, cr, type, filename };
-        });
-        
-        allCreatures = creatures;
-        renderCreatureGrid(creatures);
-        
-    } catch (error) {
-        console.error('Error loading creatures from folder:', error);
-        // Show error message if both methods fail
-        const grid = document.getElementById('creatureLibraryGrid');
-        if (grid) {
-            grid.innerHTML = '<p class="loading-text">Error loading creature library. Please ensure creature-list.json exists or creatures folder is accessible.</p>';
-        }
-    }
-}
-
-function renderCreatureGrid(creatures) {
-    const grid = document.getElementById('creatureLibraryGrid');
-    grid.innerHTML = '';
-    
-    creatures.forEach(creature => {
-        const item = document.createElement('div');
-        item.className = 'library-item';
-        item.onclick = () => loadCreatureFromLibrary(creature.filename);
-        
-        item.innerHTML = `
-            <strong>${creature.name}</strong>
-            <span class="cr">CR ${creature.cr}</span>
-            <small>${creature.type}</small>
-        `;
-        
-        grid.appendChild(item);
-    });
-}
-
-function filterCreatures() {
-    const searchTerm = document.getElementById('creatureSearch').value.toLowerCase();
-    const filtered = allCreatures.filter(creature => 
-        creature.name.toLowerCase().includes(searchTerm) ||
-        creature.type.toLowerCase().includes(searchTerm)
-    );
-    renderCreatureGrid(filtered);
-}
-
-function filterByCategory(category) {
-    // Update active button
-    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    
-    let filtered = allCreatures;
-    if (category !== 'all') {
-        filtered = allCreatures.filter(creature => creature.type.toLowerCase().includes(category));
-    }
-    renderCreatureGrid(filtered);
-}
-
-async function loadCreatureFromLibrary(filename) {
-    try {
-        const response = await fetch(`creatures/${filename}`);
-        if (!response.ok) throw new Error('Creature file not found');
-        
-        const creature = await response.json();
-        loadCreatureFromData(creature);
-        closeModals();
-        showMainEditor();
-        showNotification(`${creature.name} loaded successfully!`, 'success');
-    } catch (error) {
-        console.error('Error loading creature:', error);
-        showNotification('Error loading creature file', 'error');
-    }
-}
-
-// Initialize the application
-function initializeApp() {
-    updateAbilityModifiers();
-    loadCreatureData();
-    
-    // Add event listeners for ability score changes
-    const abilityInputs = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
-    abilityInputs.forEach(ability => {
-        document.getElementById(ability).addEventListener('input', updateAbilityModifiers);
-    });
-}
-
-// Setup event listeners
-function setupEventListeners() {
-    // Main editor buttons
-    document.getElementById('backToWelcome').addEventListener('click', showWelcomeScreen);
-    // 'New Creature' should act like Blank: reset sheet and stay in editor
-    document.getElementById('newCreature').addEventListener('click', function() {
-        createBlankCreature();
-    });
-    document.getElementById('saveJson').addEventListener('click', saveCreatureAsJson);
-    document.getElementById('loadJsonBtn').addEventListener('click', () => {
-        document.getElementById('loadJson').click();
-    });
-    document.getElementById('loadJson').addEventListener('change', loadCreatureFromJson);
-    document.getElementById('toggleLibrary').addEventListener('click', toggleCreatureLibrary);
-    
-    // After ability and other listeners, add AC update hooks
-    // Listen on armorCategory instead of old armorType ID (legacy armorType removed)
-    const armorCatEl = document.getElementById('armorCategory');
-    if (armorCatEl) armorCatEl.addEventListener('change', updateArmorClassField);
-    document.getElementById('dexterity').addEventListener('input', updateArmorClassField);
-    document.getElementById('overrideAC').addEventListener('change', function(e) {
-        const acInput = document.getElementById('armorClass');
-        acInput.readOnly = !e.target.checked;
-        if (!e.target.checked) updateArmorClassField();
-    });
-
-    // Click-to-edit functionality
-    const editableSections = ['nameSection', 'basicStatsSection', 'abilityScoresSection', 'traitsSection', 'specialAbilitiesSection', 'actionsSection', 'legendaryActionsSection'];
-    editableSections.forEach(sectionId => {
-        const section = document.getElementById(sectionId);
-        
-        // Click to edit
-        section.addEventListener('click', function(event) {
-            editSection(sectionId, event);
-        });
-        
-        // Save on input blur
-        const inputs = section.querySelectorAll('input, textarea');
-        inputs.forEach(input => {
-            input.addEventListener('blur', function() {
-                saveSection(sectionId);
-            });
-        });
-        
-        // Cancel on Esc key
-        section.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                cancelEdit(sectionId);
-            }
-        });
-    });
-}
-
-// Click-to-edit functionality
+// Global variables
+let currentCreature = null;
 let currentEditingSection = null;
 let originalData = {};
 
-// Edit section function
-function editSection(sectionId, event) {
-    // Prevent editing if already editing another section
-    if (currentEditingSection && currentEditingSection !== sectionId) {
-        return;
+// Utility functions
+function toTitleCase(str) {
+    return str.replace(/\w\S*/g, (txt) => {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+}
+
+function getAbilityModifier(score) {
+    return Math.floor((score - 10) / 2);
+}
+
+function getAbilityModifierText(score) {
+    const modifier = getAbilityModifier(score);
+    return modifier >= 0 ? `+${modifier}` : `${modifier}`;
+}
+
+// Local storage keys
+const STORAGE_KEYS = {
+    CURRENT_CREATURE: 'dnd_editor_current_creature',
+    CURRENT_VIEW: 'dnd_editor_current_view',
+    EDITING_SECTION: 'dnd_editor_editing_section',
+    FORM_DATA: 'dnd_editor_form_data'
+};
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded - initializing app');
+    try {
+        initializeApp();
+        setupEventListeners();
+        console.log('App initialization completed');
+    } catch (error) {
+        console.error('Error during app initialization:', error);
     }
+});
+
+function initializeApp() {
+    console.log('Initializing app...');
     
-    // Don't edit if clicking on input elements or buttons
-    if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.tagName === 'BUTTON') {
-        return;
-    }
-    
-    const section = document.getElementById(sectionId);
-    if (!section.classList.contains('editing')) {
-        // Store original data before editing
-        storeOriginalData(sectionId);
+    // Load dropdowns first so they're available when restoring state
+    populateDropdowns().then(() => {
+        // Try to restore previous state
+        restoreCurrentState();
         
-        // Enter edit mode
-        section.classList.add('editing');
-        // Show edit fields, hide display fields explicitly
-        const disp = section.querySelector('.display-content');
-        const edit = section.querySelector('.edit-content');
-        if (disp) disp.style.display = 'none';
-        if (edit) edit.style.display = 'block';
-        currentEditingSection = sectionId;
+        // If no saved state, show welcome screen by default
+        const currentView = localStorage.getItem(STORAGE_KEYS.CURRENT_VIEW);
+        if (!currentView || currentView === 'welcome') {
+            showWelcomeScreen();
+        }
         
-        // Update display if needed
-        if (sectionId === 'abilityScoresSection') {
-            updateAbilityModifiers();
+        // Load creature library for the browse option
+        loadCreatureLibrary();
+        
+        // Set up auto-save
+        setupAutoSave();
+    });
+}
+
+// Screen navigation functions
+function showWelcomeScreen() {
+    console.log('Showing welcome screen');
+    document.getElementById('welcomeScreen').style.display = 'block';
+    document.getElementById('mainEditor').style.display = 'none';
+    closeModals();
+    
+    // Save current view state
+    localStorage.setItem(STORAGE_KEYS.CURRENT_VIEW, 'welcome');
+}
+
+function showMainEditor() {
+    console.log('Showing main editor');
+    document.getElementById('welcomeScreen').style.display = 'none';
+    document.getElementById('mainEditor').style.display = 'block';
+    closeModals();
+    
+    // Save current view state
+    localStorage.setItem(STORAGE_KEYS.CURRENT_VIEW, 'editor');
+    saveCurrentState();
+}
+
+// Modal functions
+function showCreateOptions() {
+    console.log('Showing create options');
+    document.getElementById('createModal').style.display = 'block';
+}
+
+function showImportOptions() {
+    console.log('Showing import options');
+    document.getElementById('importModal').style.display = 'block';
+}
+
+function showCreatureLibrary() {
+    console.log('Showing creature library');
+    document.getElementById('creatureLibraryFull').style.display = 'block';
+    loadCreatureLibrary();
+}
+
+function showTemplateLibrary() {
+    console.log('Showing template library');
+    document.getElementById('templateLibrary').style.display = 'block';
+}
+
+function closeModals() {
+    console.log('Closing all modals');
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        modal.style.display = 'none';
+    });
+}
+
+// Create a blank creature by loading the template
+async function createBlankCreature() {
+    console.log('createBlankCreature called');
+    
+    try {
+        // Clear any saved state first
+        clearSavedState();
+        
+        // Reset editing state
+        currentEditingSection = null;
+        
+        closeModals();
+        
+        // Load the blank creature template
+        await loadCreatureFromLibrary('new_creature_cr0.json');
+        
+    } catch (error) {
+        console.error('Error in createBlankCreature:', error);
+        alert('Error creating blank creature: ' + error.message);
+    }
+}
+
+// Load creature from library
+async function loadCreatureFromLibrary(filename) {
+    console.log('Loading creature from library:', filename);
+    
+    try {
+        // Clear previous state when loading existing creature
+        clearSavedState();
+        
+        const response = await fetch(`./creatures/${filename}`);
+        if (!response.ok) {
+            throw new Error(`Failed to load creature: ${response.statusText}`);
         }
+        
+        const creatureData = await response.json();
+        console.log('Creature data loaded:', creatureData);
+        
+        // Load the creature data into the editor
+        loadCreatureFromData(creatureData);
+        
+        // Switch to main editor
+        showMainEditor();
+        
+        showNotification(`${creatureData.name || 'Creature'} loaded successfully!`, 'success');
+        
+    } catch (error) {
+        console.error('Error loading creature from library:', error);
+        showNotification('Error loading creature file', 'error');
+        throw error;
     }
 }
 
-// Save section function
-function saveSection(sectionId) {
-    const section = document.getElementById(sectionId);
-    
-    // Update display content based on section
-    updateDisplayContent(sectionId);
-    
-    // Exit edit mode
-    // Restore display and hide edit inline
-    const dispSave = section.querySelector('.display-content');
-    const editSave = section.querySelector('.edit-content');
-    if (dispSave) dispSave.style.display = 'block';
-    if (editSave) editSave.style.display = 'none';
-    section.classList.remove('editing');
-    currentEditingSection = null;
-    
-    // Clear original data
-    delete originalData[sectionId];
-    
-    // Update current creature data
-    currentCreature = getCreatureFromForm();
-    
-    showNotification('Section saved successfully!', 'success');
-}
-
-// Cancel edit function
-function cancelEdit(sectionId) {
-    const section = document.getElementById(sectionId);
-    
-    // Restore original data
-    restoreOriginalData(sectionId);
-    
-    // Exit edit mode
-    // Restore display and hide edit inline
-    const dispCancel = section.querySelector('.display-content');
-    const editCancel = section.querySelector('.edit-content');
-    if (dispCancel) dispCancel.style.display = 'block';
-    if (editCancel) editCancel.style.display = 'none';
-    section.classList.remove('editing');
-    currentEditingSection = null;
-    
-    // Clear original data
-    delete originalData[sectionId];
-}
-
-// Store original data before editing
-function storeOriginalData(sectionId) {
-    originalData[sectionId] = {};
-    
-    switch (sectionId) {
-        case 'nameSection':
-            originalData[sectionId] = {
-                name: document.getElementById('creatureName').value,
-                size: document.getElementById('creatureSize').value,
-                type: document.getElementById('creatureType').value,
-                alignment: document.getElementById('creatureAlignment').value
-            };
-            break;
-        case 'basicStatsSection':
-            originalData[sectionId] = {
-                armorClass: document.getElementById('armorClass').value,
-                armorType: document.getElementById('armorType').value,
-                hitPoints: document.getElementById('hitPoints').value,
-                hitDice: document.getElementById('hitDice').value,
-                speed: document.getElementById('speed').value
-            };
-            break;
-        case 'abilityScoresSection':
-            originalData[sectionId] = {
-                strength: document.getElementById('strength').value,
-                dexterity: document.getElementById('dexterity').value,
-                constitution: document.getElementById('constitution').value,
-                intelligence: document.getElementById('intelligence').value,
-                wisdom: document.getElementById('wisdom').value,
-                charisma: document.getElementById('charisma').value
-            };
-            break;
-        case 'traitsSection':
-            originalData[sectionId] = {
-                savingThrows: document.getElementById('savingThrows').value,
-                skills: document.getElementById('skills').value,
-                vulnerabilities: document.getElementById('vulnerabilities').value,
-                resistances: document.getElementById('resistances').value,
-                immunities: document.getElementById('immunities').value,
-                conditionImmunities: document.getElementById('conditionImmunities').value,
-                senses: document.getElementById('senses').value,
-                languages: document.getElementById('languages').value,
-                challenge: document.getElementById('challenge').value,
-                proficiencyBonus: document.getElementById('proficiencyBonus').value
-            };
-            break;
-        case 'specialAbilitiesSection':
-            originalData[sectionId] = {
-                abilities: getSpecialAbilities()
-            };
-            break;
-        case 'actionsSection':
-            originalData[sectionId] = {
-                actions: getActions()
-            };
-            break;
-        case 'legendaryActionsSection':
-            originalData[sectionId] = {
-                legendaryActions: getLegendaryActions()
-            };
-            break;
-    }
-}
-
-// Restore original data if cancelled
-function restoreOriginalData(sectionId) {
-    if (!originalData[sectionId]) return;
-    
-    const data = originalData[sectionId];
-    
-    switch (sectionId) {
-        case 'nameSection':
-            document.getElementById('creatureName').value = data.name;
-            document.getElementById('creatureSize').value = data.size;
-            document.getElementById('creatureType').value = data.type;
-            document.getElementById('creatureAlignment').value = data.alignment;
-            break;
-        case 'basicStatsSection':
-            document.getElementById('armorClass').value = data.armorClass;
-            document.getElementById('armorType').value = data.armorType;
-            document.getElementById('hitPoints').value = data.hitPoints;
-            document.getElementById('hitDice').value = data.hitDice;
-            document.getElementById('speed').value = data.speed;
-            break;
-        case 'abilityScoresSection':
-            document.getElementById('strength').value = data.strength;
-            document.getElementById('dexterity').value = data.dexterity;
-            document.getElementById('constitution').value = data.constitution;
-            document.getElementById('intelligence').value = data.intelligence;
-            document.getElementById('wisdom').value = data.wisdom;
-            document.getElementById('charisma').value = data.charisma;
-            updateAbilityModifiers();
-            break;
-        case 'traitsSection':
-            document.getElementById('savingThrows').value = data.savingThrows;
-            document.getElementById('skills').value = data.skills;
-            document.getElementById('vulnerabilities').value = data.vulnerabilities;
-            document.getElementById('resistances').value = data.resistances;
-            document.getElementById('immunities').value = data.immunities;
-            document.getElementById('conditionImmunities').value = data.conditionImmunities;
-            document.getElementById('senses').value = data.senses;
-            document.getElementById('languages').value = data.languages;
-            document.getElementById('challenge').value = data.challenge;
-            document.getElementById('proficiencyBonus').value = data.proficiencyBonus;
-            break;
-        case 'specialAbilitiesSection':
-            loadSpecialAbilities(data.abilities);
-            break;
-        case 'actionsSection':
-            loadActions(data.actions);
-            break;
-        case 'legendaryActionsSection':
-            loadLegendaryActions(data.legendaryActions);
-            break;
-    }
-}
-
-// Update display content after saving
-function updateDisplayContent(sectionId) {
-    switch (sectionId) {
-        case 'nameSection': {
-            const name = document.getElementById('creatureName').value;
-            const size = document.getElementById('creatureSize').value;
-            // Use freeform if 'Other' selected
-            const typeSelect = document.getElementById('creatureType').value;
-            const type = typeSelect === 'Other'
-                ? (document.getElementById('creatureTypeOther').value.trim() || 'Other')
-                : typeSelect;
-            const alignment = document.getElementById('creatureAlignment').value;
-            document.getElementById('creatureNameDisplay').textContent = name;
-            document.getElementById('creatureTypeDisplay').innerHTML = `<em>${size} ${type}, ${alignment}</em>`;
-            break;
-        }
-            
-        case 'basicStatsSection':
-            const ac = document.getElementById('armorClass').value;
-            const acType = document.getElementById('armorType').value;
-            const hp = document.getElementById('hitPoints').value;
-            const hd = document.getElementById('hitDice').value;
-            const speed = document.getElementById('speed').value;
-            
-            document.getElementById('armorClassDisplay').textContent = `${ac}${acType ? ` (${acType})` : ''}`;
-            document.getElementById('hitPointsDisplay').textContent = `${hp}${hd ? ` (${hd})` : ''}`;
-            document.getElementById('speedDisplay').textContent = speed;
-            break;
-            
-        case 'abilityScoresSection':
-            const abilities = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
-            const displayIds = ['strDisplay', 'dexDisplay', 'conDisplay', 'intDisplay', 'wisDisplay', 'chaDisplay'];
-            
-            abilities.forEach((ability, index) => {
-                const score = document.getElementById(ability).value;
-                const modifier = calculateModifier(parseInt(score));
-                const modifierText = modifier >= 0 ? `(+${modifier})` : `(${modifier})`;
-                document.getElementById(displayIds[index]).textContent = `${score} ${modifierText}`;
-            });
-            break;
-            
-        case 'traitsSection':
-            updateTraitDisplay('savingThrows', 'savingThrowsDisplay', 'savingThrowsLine');
-            updateTraitDisplay('skills', 'skillsDisplay', 'skillsLine');
-            updateTraitDisplay('vulnerabilities', 'vulnerabilitiesDisplay', 'vulnerabilitiesLine');
-            updateTraitDisplay('resistances', 'resistancesDisplay', 'resistancesLine');
-            updateTraitDisplay('immunities', 'immunitiesDisplay', 'immunitiesLine');
-            updateTraitDisplay('conditionImmunities', 'conditionImmunitiesDisplay', 'conditionImmunitiesLine');
-            updateTraitDisplay('senses', 'sensesDisplay', 'sensesLine');
-            updateTraitDisplay('languages', 'languagesDisplay', 'languagesLine');
-            
-            const challenge = document.getElementById('challenge').value;
-            const profBonus = document.getElementById('proficiencyBonus').value;
-            document.getElementById('challengeDisplay').textContent = challenge;
-            document.getElementById('proficiencyBonusDisplay').textContent = profBonus;
-            break;
-            
-        case 'specialAbilitiesSection':
-            updateSpecialAbilitiesDisplay();
-            break;
-            
-        case 'actionsSection':
-            updateActionsDisplay();
-            break;
-            
-        case 'legendaryActionsSection':
-            updateLegendaryActionsDisplay();
-            break;
-    }
-}
-
-// Helper function to update trait display
-function updateTraitDisplay(inputId, displayId, lineId) {
-    const value = document.getElementById(inputId).value;
-    const displayElement = document.getElementById(displayId);
-    const lineElement = document.getElementById(lineId);
-    
-    if (value.trim()) {
-        displayElement.textContent = value;
-        lineElement.style.display = 'block';
+// Helper function to safely set element values
+function setElementValue(elementId, value) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.value = value;
     } else {
-        lineElement.style.display = 'none';
+        console.warn(`Element with id '${elementId}' not found`);
+    }
+}
+
+function setElementChecked(elementId, checked) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.checked = checked;
+    } else {
+        console.warn(`Element with id '${elementId}' not found`);
+    }
+}
+
+// Load creature data into the form
+function loadCreatureFromData(data) {
+    console.log('Loading creature data into form:', data);
+    
+    try {
+        currentCreature = data;
+        
+        // Basic Info
+        setElementValue('creatureName', data.name || '');
+        setElementValue('creatureSize', data.size || 'Medium');
+        setElementValue('creatureType', data.type || 'humanoid');
+        setElementValue('creatureAlignment', data.alignment || 'neutral');
+        
+        // Basic Stats
+        setElementValue('armorClass', data.armor_class || data.armorClass || 10);
+        
+        // Handle AC override
+        const overrideAC = data.overrideAC || false;
+        setElementChecked('overrideAC', overrideAC);
+        
+        // Handle armor data - for legacy files, try to guess armor type from AC and armor description
+        const armorType = data.armorType || 'none';
+        const armorSubtype = data.armorSubtype || 'unarmored';
+        const armorModifier = data.armorModifier || 0;
+        const hasShield = data.hasShield || false;
+        const shieldModifier = data.shieldModifier || 0;
+        
+        setElementValue('armorType', armorType);
+        setElementValue('armorSubtype', armorSubtype);
+        setElementValue('armorModifier', armorModifier);
+        setElementChecked('hasShield', hasShield);
+        setElementValue('shieldModifier', shieldModifier);
+        
+        setElementValue('hitPoints', data.hit_points || data.hitPoints || 1);
+        setElementValue('speed', data.speed || '30 ft.');
+        
+        // Update armor subtypes and calculate AC after setting values
+        setTimeout(() => {
+            updateArmorSubtypes();
+            setElementValue('armorSubtype', armorSubtype);
+            
+            // Set up the AC override state
+            toggleACOverride();
+            
+            // For legacy files, don't recalculate AC, keep the original value
+            if (!data.armorType && !data.armorSubtype) {
+                const acInput = document.getElementById('armorClass');
+                if (acInput) acInput.value = data.armor_class || data.armorClass || 10;
+            } else if (!overrideAC) {
+                calculateAndUpdateAC();
+            }
+        }, 100);
+        
+        // Ability Scores - handle both snake_case and camelCase, and nested abilities object
+        const abilities = data.abilities || data;
+        setElementValue('strength', abilities.strength || abilities.str || 10);
+        setElementValue('dexterity', abilities.dexterity || abilities.dex || 10);
+        setElementValue('constitution', abilities.constitution || abilities.con || 10);
+        setElementValue('intelligence', abilities.intelligence || abilities.int || 10);
+        setElementValue('wisdom', abilities.wisdom || abilities.wis || 10);
+        setElementValue('charisma', abilities.charisma || abilities.cha || 10);
+        
+        // Skills and Traits
+        setElementValue('savingThrows', data.saving_throws || data.savingThrows || '');
+        setElementValue('skills', data.skills || '');
+        setElementValue('vulnerabilities', data.damage_vulnerabilities || data.damageVulnerabilities || '');
+        setElementValue('resistances', data.damage_resistances || data.damageResistances || '');
+        setElementValue('immunities', data.damage_immunities || data.damageImmunities || '');
+        setElementValue('conditionImmunities', data.condition_immunities || data.conditionImmunities || '');
+        setElementValue('senses', data.senses || '');
+        setElementValue('languages', data.languages || '');
+        setElementValue('challenge', data.challenge_rating || data.challengeRating || '0');
+        setElementValue('proficiencyBonus', data.proficiency_bonus || data.proficiencyBonus || '+2');
+        
+        // Load dynamic sections
+        loadSpecialAbilities(data.special_abilities || data.specialAbilities || []);
+        loadActions(data.actions || []);
+        loadLegendaryActions(data.legendary_actions || data.legendaryActions || []);
+        
+        // Update calculated fields
+        updateDisplay();
+        updateAllDisplays();
+        
+        // Save current state
+        saveCurrentState();
+        
+        console.log('Creature data loaded successfully');
+        
+    } catch (error) {
+        console.error('Error loading creature data:', error);
+        throw error;
+    }
+}
+
+// Load special abilities
+function loadSpecialAbilities(abilities) {
+    const container = document.getElementById('specialAbilities');
+    const display = document.getElementById('specialAbilitiesDisplay');
+    
+    if (!container || !display) return;
+    
+    // Clear existing content
+    container.innerHTML = '';
+    
+    if (!abilities || abilities.length === 0) {
+        display.innerHTML = '<p class="empty-section">No special abilities defined. Click to add.</p>';
+        return;
+    }
+    
+    // Load abilities into edit section
+    abilities.forEach(ability => {
+        addSpecialAbilityItem(ability.name || '', ability.uses || '', ability.description || '');
+    });
+    
+    // Update display
+    updateSpecialAbilitiesDisplay();
+}
+
+// Load actions
+function loadActions(actions) {
+    const container = document.getElementById('actions');
+    const display = document.getElementById('actionsDisplay');
+    
+    if (!container || !display) return;
+    
+    // Clear existing content
+    container.innerHTML = '';
+    
+    if (!actions || actions.length === 0) {
+        display.innerHTML = '<p class="empty-section">No actions defined. Click to add.</p>';
+        return;
+    }
+    
+    // Load actions into edit section
+    actions.forEach(action => {
+        addActionItem(action.name || '', action.description || '');
+    });
+    
+    // Update display
+    updateActionsDisplay();
+}
+
+// Load legendary actions
+function loadLegendaryActions(legendaryActions) {
+    const container = document.getElementById('legendaryActions');
+    const display = document.getElementById('legendaryActionsDisplay');
+    
+    if (!container || !display) return;
+    
+    // Clear existing content
+    container.innerHTML = '';
+    
+    if (!legendaryActions || legendaryActions.length === 0) {
+        display.innerHTML = '<p class="empty-section">No legendary actions defined. Click to add.</p>';
+        return;
+    }
+    
+    // Load legendary actions into edit section
+    legendaryActions.forEach(action => {
+        addLegendaryActionItem(action.name || '', action.uses || '', action.description || '');
+    });
+    
+    // Update display
+    updateLegendaryActionsDisplay();
+}
+
+// Add special ability item
+function addSpecialAbilityItem(name = '', uses = '', description = '') {
+    const container = document.getElementById('specialAbilities');
+    if (!container) return;
+    
+    const item = document.createElement('div');
+    item.className = 'ability-item';
+    item.innerHTML = `
+        <input type="text" class="ability-name" placeholder="Ability Name" value="${name}">
+        <span class="ability-uses">(<input type="text" class="ability-use-count" placeholder="uses" value="${uses}">)</span>
+        <button class="btn btn-small" onclick="removeElement(this.parentElement)" style="float: right; background: #dc3545; color: white;">Remove</button>
+        <textarea class="ability-description" placeholder="Ability description">${description}</textarea>
+    `;
+    container.appendChild(item);
+    
+    // Add auto-save event listeners to the new inputs
+    const inputs = item.querySelectorAll('input, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('input', debounce(saveCurrentState, 1000));
+        input.addEventListener('change', saveCurrentState);
+        input.addEventListener('blur', () => {
+            // Auto-save and update display when clicking off field
+            saveCurrentState();
+            updateDisplay();
+            updateAllDisplays();
+        });
+    });
+}
+
+// Add action item
+function addActionItem(name = '', description = '') {
+    const container = document.getElementById('actions');
+    if (!container) return;
+    
+    const item = document.createElement('div');
+    item.className = 'action-item';
+    item.innerHTML = `
+        <input type="text" class="action-name" placeholder="Action Name" value="${name}">
+        <button class="btn btn-small" onclick="removeElement(this.parentElement)" style="float: right; background: #dc3545; color: white;">Remove</button>
+        <textarea class="action-description" placeholder="Action description">${description}</textarea>
+    `;
+    container.appendChild(item);
+    
+    // Add auto-save event listeners to the new inputs
+    const inputs = item.querySelectorAll('input, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('input', debounce(saveCurrentState, 1000));
+        input.addEventListener('change', saveCurrentState);
+        input.addEventListener('blur', () => {
+            // Auto-save and update display when clicking off field
+            saveCurrentState();
+            updateDisplay();
+            updateAllDisplays();
+        });
+    });
+}
+
+// Add legendary action item
+function addLegendaryActionItem(name = '', uses = '', description = '') {
+    const container = document.getElementById('legendaryActions');
+    if (!container) return;
+    
+    const item = document.createElement('div');
+    item.className = 'legendary-action-item';
+    item.innerHTML = `
+        <input type="text" class="legendary-action-name" placeholder="Action Name" value="${name}">
+        <span class="ability-uses">(<input type="text" class="legendary-action-use-count" placeholder="uses" value="${uses}">)</span>
+        <button class="btn btn-small" onclick="removeElement(this.parentElement)" style="float: right; background: #dc3545; color: white;">Remove</button>
+        <textarea class="legendary-action-description" placeholder="Action description">${description}</textarea>
+    `;
+    container.appendChild(item);
+    
+    // Add auto-save event listeners to the new inputs
+    const inputs = item.querySelectorAll('input, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('input', debounce(saveCurrentState, 1000));
+        input.addEventListener('change', saveCurrentState);
+        input.addEventListener('blur', () => {
+            // Auto-save and update display when clicking off field
+            saveCurrentState();
+            updateDisplay();
+            updateAllDisplays();
+        });
+    });
+}
+
+// Add new special ability
+function addSpecialAbility() {
+    addSpecialAbilityItem();
+    saveCurrentState();
+}
+
+// Add new action
+function addAction() {
+    addActionItem();
+    saveCurrentState();
+}
+
+// Add new legendary action
+function addLegendaryAction() {
+    addLegendaryActionItem();
+    saveCurrentState();
+}
+
+// Remove element helper
+function removeElement(element) {
+    if (element && element.parentNode) {
+        element.parentNode.removeChild(element);
+        saveCurrentState();
     }
 }
 
 // Update special abilities display
 function updateSpecialAbilitiesDisplay() {
-    const abilities = getSpecialAbilities();
-    const displayContainer = document.getElementById('specialAbilitiesDisplay');
+    const container = document.getElementById('specialAbilities');
+    const display = document.getElementById('specialAbilitiesDisplay');
     
-    displayContainer.innerHTML = '';
+    if (!container || !display) return;
     
+    const abilities = container.querySelectorAll('.ability-item');
+    
+    if (abilities.length === 0) {
+        display.innerHTML = '<p class="empty-section">No special abilities defined. Click to add.</p>';
+        return;
+    }
+    
+    let html = '';
     abilities.forEach(ability => {
-        if (ability.name || ability.description) {
-            const abilityDiv = document.createElement('div');
-            abilityDiv.className = 'ability-display';
-            
-            const nameDisplay = document.createElement('div');
-            nameDisplay.className = 'ability-name-display';
-            nameDisplay.innerHTML = `<strong>${ability.name}${ability.uses ? ` (${ability.uses})` : ''}.</strong>`;
-            
-            const descDisplay = document.createElement('div');
-            descDisplay.className = 'ability-description-display';
-            descDisplay.textContent = ability.description;
-            
-            abilityDiv.appendChild(nameDisplay);
-            abilityDiv.appendChild(descDisplay);
-            displayContainer.appendChild(abilityDiv);
+        const name = ability.querySelector('.ability-name')?.value || '';
+        const uses = ability.querySelector('.ability-use-count')?.value || '';
+        const description = ability.querySelector('.ability-description')?.value || '';
+        
+        if (name || description) {
+            const usesText = uses ? ` (${uses})` : '';
+            html += `
+                <div class="ability-display">
+                    <div class="ability-name-display"><strong>${name}${usesText}.</strong></div>
+                    <div class="ability-description-display">${description}</div>
+                </div>
+            `;
         }
     });
+    
+    display.innerHTML = html || '<p class="empty-section">No special abilities defined. Click to add.</p>';
 }
 
 // Update actions display
 function updateActionsDisplay() {
-    const actions = getActions();
-    const displayContainer = document.getElementById('actionsDisplay');
+    const container = document.getElementById('actions');
+    const display = document.getElementById('actionsDisplay');
     
-    displayContainer.innerHTML = '';
+    if (!container || !display) return;
     
+    const actions = container.querySelectorAll('.action-item');
+    
+    if (actions.length === 0) {
+        display.innerHTML = '<p class="empty-section">No actions defined. Click to add.</p>';
+        return;
+    }
+    
+    let html = '';
     actions.forEach(action => {
-        if (action.name || action.description) {
-            const actionDiv = document.createElement('div');
-            actionDiv.className = 'action-display';
-            
-            const nameDisplay = document.createElement('div');
-            nameDisplay.className = 'action-name-display';
-            nameDisplay.innerHTML = `<strong>${action.name}.</strong>`;
-            
-            const descDisplay = document.createElement('div');
-            descDisplay.className = 'action-description-display';
-            descDisplay.textContent = action.description;
-            
-            actionDiv.appendChild(nameDisplay);
-            actionDiv.appendChild(descDisplay);
-            displayContainer.appendChild(actionDiv);
+        const name = action.querySelector('.action-name')?.value || '';
+        const description = action.querySelector('.action-description')?.value || '';
+        
+        if (name || description) {
+            html += `
+                <div class="action-display">
+                    <div class="action-name-display"><strong>${name}.</strong></div>
+                    <div class="action-description-display">${description}</div>
+                </div>
+            `;
         }
     });
+    
+    display.innerHTML = html || '<p class="empty-section">No actions defined. Click to add.</p>';
 }
 
 // Update legendary actions display
 function updateLegendaryActionsDisplay() {
-    const legendaryActions = getLegendaryActions();
-    const displayContainer = document.getElementById('legendaryActionsDisplay');
+    const container = document.getElementById('legendaryActions');
+    const display = document.getElementById('legendaryActionsDisplay');
     
-    displayContainer.innerHTML = '';
+    if (!container || !display) return;
     
-    legendaryActions.forEach(action => {
-        if (action.name || action.description) {
-            const actionDiv = document.createElement('div');
-            actionDiv.className = 'legendary-action-display';
-            
-            const nameDisplay = document.createElement('div');
-            nameDisplay.className = 'legendary-action-name-display';
-            nameDisplay.innerHTML = `<strong>${action.name}.</strong>`;
-            
-            const descDisplay = document.createElement('div');
-            descDisplay.className = 'legendary-action-description-display';
-            descDisplay.textContent = action.description;
-            
-            actionDiv.appendChild(nameDisplay);
-            actionDiv.appendChild(descDisplay);
-            displayContainer.appendChild(actionDiv);
-        }
-    });
-}
-
-// Initialize display content when creature is loaded
-function initializeDisplayContent() {
-    updateDisplayContent('nameSection');
-    updateDisplayContent('basicStatsSection');
-    updateDisplayContent('abilityScoresSection');
-    updateDisplayContent('traitsSection');
-    updateDisplayContent('specialAbilitiesSection');
-    updateDisplayContent('actionsSection');
-    updateDisplayContent('legendaryActionsSection');
-}
-
-// Load creature data from object
-function loadCreatureFromData(creature) {
-    // Update form fields with creature data
-    document.getElementById('creatureName').value = creature.name || '';
-    document.getElementById('creatureSize').value = creature.size || '';
-    document.getElementById('creatureType').value = creature.type || '';
-    document.getElementById('creatureAlignment').value = creature.alignment || '';
-    
-    document.getElementById('armorClass').value = creature.armor_class || '';
-    // Set armor category and kind based on armor_type
-    const catSelect = document.getElementById('armorCategory');
-    const kindSelect = document.getElementById('armorKind');
-    const otherInput = document.getElementById('armorKindOther');
-    const armorType = creature.armor_type || '';
-    let found = false;
-    for (const cat in armorConfig) {
-        if (armorConfig[cat].kinds.includes(armorType)) {
-            catSelect.value = cat;
-            populateArmorKinds();
-            kindSelect.value = armorType;
-            found = true;
-            break;
-        }
-    }
-    if (!found) {
-        catSelect.value = 'Other';
-        populateArmorKinds();
-        kindSelect.value = 'Other';
-        otherInput.value = armorType;
-        otherInput.style.display = 'inline-block';
-    }
-    // Set bonus if available
-    document.getElementById('armorBonus').value = creature.armor_bonus || '0';
-    updateArmorClassField();
-    document.getElementById('hitPoints').value = creature.hit_points || '';
-    document.getElementById('hitDice').value = creature.hit_dice || '';
-    document.getElementById('speed').value = creature.speed || '';
-    
-    // Ability scores
-    document.getElementById('strength').value = creature.strength || 10;
-    document.getElementById('dexterity').value = creature.dexterity || 10;
-    document.getElementById('constitution').value = creature.constitution || 10;
-    document.getElementById('intelligence').value = creature.intelligence || 10;
-    document.getElementById('wisdom').value = creature.wisdom || 10;
-    document.getElementById('charisma').value = creature.charisma || 10;
-    
-    // Traits
-    document.getElementById('savingThrows').value = creature.saving_throws || '';
-    document.getElementById('skills').value = creature.skills || '';
-    document.getElementById('vulnerabilities').value = creature.vulnerabilities || '';
-    document.getElementById('resistances').value = creature.resistances || '';
-    document.getElementById('immunities').value = creature.immunities || '';
-    document.getElementById('conditionImmunities').value = creature.condition_immunities || '';
-    document.getElementById('senses').value = creature.senses || '';
-    document.getElementById('languages').value = creature.languages || '';
-    document.getElementById('challenge').value = creature.challenge || '';
-    document.getElementById('proficiencyBonus').value = creature.proficiency_bonus || '';
-    
-    // Load special abilities
-    loadSpecialAbilities(creature.special_abilities || []);
-    
-    // Load actions
-    loadActions(creature.actions || []);
-    
-    // Load legendary actions
-    loadLegendaryActions(creature.legendary_actions || []);
-    
-    // Update display content
-    updateAbilityModifiers();
-    initializeDisplayContent();
-    
-    // Store current creature
-    currentCreature = creature;
-}
-
-// Calculate ability modifier
-function calculateModifier(score) {
-    return Math.floor((score - 10) / 2);
-}
-
-// Update ability modifiers
-function updateAbilityModifiers() {
-    const abilities = [
-        { id: 'strength', modId: 'strMod' },
-        { id: 'dexterity', modId: 'dexMod' },
-        { id: 'constitution', modId: 'conMod' },
-        { id: 'intelligence', modId: 'intMod' },
-        { id: 'wisdom', modId: 'wisMod' },
-        { id: 'charisma', modId: 'chaMod' }
-    ];
-    
-    abilities.forEach(ability => {
-        const scoreElement = document.getElementById(ability.id);
-        const modElement = document.getElementById(ability.modId);
-        
-        if (scoreElement && modElement) {
-            const score = parseInt(scoreElement.value) || 10;
-            const modifier = calculateModifier(score);
-            const modifierText = modifier >= 0 ? `(+${modifier})` : `(${modifier})`;
-            modElement.textContent = modifierText;
-        }
-    });
-}
-
-// Get special abilities from form
-function getSpecialAbilities() {
-    const abilities = [];
-    const abilityItems = document.querySelectorAll('#specialAbilities .ability-item');
-    
-    abilityItems.forEach(item => {
-        const name = item.querySelector('.ability-name')?.value || '';
-        const uses = item.querySelector('.ability-use-count')?.value || '';
-        const description = item.querySelector('.ability-description')?.value || '';
-        
-        if (name || description) {
-            abilities.push({ name, uses, description });
-        }
-    });
-    
-    return abilities;
-}
-
-// Get actions from form
-function getActions() {
-    const actions = [];
-    const actionItems = document.querySelectorAll('#actions .action-item');
-    
-    actionItems.forEach(item => {
-        const name = item.querySelector('.action-name')?.value || '';
-        const description = item.querySelector('.action-description')?.value || '';
-        
-        if (name || description) {
-            actions.push({ name, description });
-        }
-    });
-    
-    return actions;
-}
-
-// Get legendary actions from form
-function getLegendaryActions() {
-    const legendaryActions = [];
-    const actionItems = document.querySelectorAll('#legendaryActions .legendary-action-item');
-    
-    actionItems.forEach(item => {
-        const name = item.querySelector('.legendary-action-name')?.value || '';
-        const description = item.querySelector('.legendary-action-description')?.value || '';
-        
-        if (name || description) {
-            legendaryActions.push({ name, description });
-        }
-    });
-    
-    return legendaryActions;
-}
-
-// Load special abilities into form
-function loadSpecialAbilities(abilities) {
-    const container = document.getElementById('specialAbilities');
-    container.innerHTML = '';
-    
-    abilities.forEach(ability => {
-        addSpecialAbility(ability);
-    });
-    
-    if (abilities.length === 0) {
-        addSpecialAbility();
-    }
-}
-
-// Load actions into form
-function loadActions(actions) {
-    const container = document.getElementById('actions');
-    container.innerHTML = '';
-    
-    actions.forEach(action => {
-        addAction(action);
-    });
+    const actions = container.querySelectorAll('.legendary-action-item');
     
     if (actions.length === 0) {
-        addAction();
+        display.innerHTML = '<p class="empty-section">No legendary actions defined. Click to add.</p>';
+        return;
     }
-}
-
-// Load legendary actions into form
-function loadLegendaryActions(legendaryActions) {
-    const container = document.getElementById('legendaryActions');
-    container.innerHTML = '';
     
-    legendaryActions.forEach(action => {
-        addLegendaryAction(action);
+    let html = '';
+    actions.forEach(action => {
+        const name = action.querySelector('.legendary-action-name')?.value || '';
+        const uses = action.querySelector('.legendary-action-use-count')?.value || '';
+        const description = action.querySelector('.legendary-action-description')?.value || '';
+        
+        if (name || description) {
+            const usesText = uses ? ` (${uses})` : '';
+            html += `
+                <div class="legendary-action-display">
+                    <div class="legendary-action-name-display"><strong>${name}${usesText}.</strong></div>
+                    <div class="legendary-action-description-display">${description}</div>
+                </div>
+            `;
+        }
     });
     
-    if (legendaryActions.length === 0) {
-        addLegendaryAction();
+    display.innerHTML = html || '<p class="empty-section">No legendary actions defined. Click to add.</p>';
+}
+
+// Populate dropdown menus
+async function populateDropdowns() {
+    console.log('Populating dropdowns...');
+    
+    // Load creature sizes from JSON file
+    try {
+        const sizesResponse = await fetch('./dropdowns/creaturesizes.json');
+        if (sizesResponse.ok) {
+            const sizes = await sizesResponse.json();
+            populateDropdown('creatureSize', sizes);
+        } else {
+            console.warn('Could not load creature sizes, using fallback');
+            const fallbackSizes = ['Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan'];
+            populateDropdown('creatureSize', fallbackSizes);
+        }
+    } catch (error) {
+        console.error('Error loading creature sizes:', error);
+        const fallbackSizes = ['Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan'];
+        populateDropdown('creatureSize', fallbackSizes);
+    }
+    
+    // Load creature types from JSON file
+    try {
+        const typesResponse = await fetch('./dropdowns/creatureTypes.json');
+        if (typesResponse.ok) {
+            const types = await typesResponse.json();
+            populateDropdown('creatureType', types);
+        } else {
+            console.warn('Could not load creature types, using fallback');
+            const fallbackTypes = ['Aberration', 'Beast', 'Celestial', 'Construct', 'Dragon', 'Elemental', 'Fey', 'Fiend', 'Giant', 'Humanoid', 'Monstrosity', 'Ooze', 'Plant', 'Undead'];
+            populateDropdown('creatureType', fallbackTypes);
+        }
+    } catch (error) {
+        console.error('Error loading creature types:', error);
+        const fallbackTypes = ['Aberration', 'Beast', 'Celestial', 'Construct', 'Dragon', 'Elemental', 'Fey', 'Fiend', 'Giant', 'Humanoid', 'Monstrosity', 'Ooze', 'Plant', 'Undead'];
+        populateDropdown('creatureType', fallbackTypes);
+    }
+    
+    // Load alignments from JSON file
+    try {
+        const alignmentsResponse = await fetch('./dropdowns/creatureAlignments.json');
+        if (alignmentsResponse.ok) {
+            const alignments = await alignmentsResponse.json();
+            populateDropdown('creatureAlignment', alignments);
+        } else {
+            console.warn('Could not load creature alignments, using fallback');
+            const fallbackAlignments = ['Lawful Good', 'Neutral Good', 'Chaotic Good', 'Lawful Neutral', 'True Neutral', 'Chaotic Neutral', 'Lawful Evil', 'Neutral Evil', 'Chaotic Evil'];
+            populateDropdown('creatureAlignment', fallbackAlignments);
+        }
+    } catch (error) {
+        console.error('Error loading creature alignments:', error);
+        const fallbackAlignments = ['Lawful Good', 'Neutral Good', 'Chaotic Good', 'Lawful Neutral', 'True Neutral', 'Chaotic Neutral', 'Lawful Evil', 'Neutral Evil', 'Chaotic Evil'];
+        populateDropdown('creatureAlignment', fallbackAlignments);
+    }
+    
+    // Load armor categories from JSON file
+    try {
+        console.log('Loading armor categories...');
+        const armorCategoriesResponse = await fetch('./dropdowns/armorCategories.json');
+        console.log('Armor categories response:', armorCategoriesResponse.status);
+        if (armorCategoriesResponse.ok) {
+            const armorCategories = await armorCategoriesResponse.json();
+            console.log('Armor categories loaded:', armorCategories);
+            populateDropdown('armorType', armorCategories);
+            console.log('Armor type dropdown populated');
+        } else {
+            console.warn('Could not load armor categories, using fallback');
+            const fallbackCategories = ['None', 'Natural Armor', 'Light Armor', 'Medium Armor', 'Heavy Armor'];
+            populateDropdown('armorType', fallbackCategories);
+        }
+    } catch (error) {
+        console.error('Error loading armor categories:', error);
+        const fallbackCategories = ['None', 'Natural Armor', 'Light Armor', 'Medium Armor', 'Heavy Armor'];
+        populateDropdown('armorType', fallbackCategories);
+    }
+    
+    // Load detailed armor data for calculations
+    try {
+        const armorDataResponse = await fetch('./dropdowns/armorTypes.json');
+        if (armorDataResponse.ok) {
+            const armorData = await armorDataResponse.json();
+            window.armorData = armorData; // Store globally for calculations
+            setupArmorEventListeners();
+        } else {
+            console.warn('Could not load armor data, using fallback');
+            setupFallbackArmor();
+        }
+    } catch (error) {
+        console.error('Error loading armor data:', error);
+        setupFallbackArmor();
     }
 }
 
-// Add special ability
-function addSpecialAbility(ability = {}) {
-    const container = document.getElementById('specialAbilities');
-    const div = document.createElement('div');
-    div.className = 'ability-item';
-    div.innerHTML = `
-        <input type="text" class="ability-name" placeholder="Ability Name" value="${ability.name || ''}">
-        <span class="ability-uses">(<input type="text" class="ability-use-count" placeholder="uses" value="${ability.uses || ''}">)</span>
-        <button class="btn btn-small" onclick="removeElement(this.parentElement)" style="float: right; background: #dc3545; color: white;">Remove</button>
-        <textarea class="ability-description" placeholder="Ability description">${ability.description || ''}</textarea>
-    `;
-    container.appendChild(div);
-}
-
-// Add action
-function addAction(action = {}) {
-    const container = document.getElementById('actions');
-    const div = document.createElement('div');
-    div.className = 'action-item';
-    div.innerHTML = `
-        <input type="text" class="action-name" placeholder="Action Name" value="${action.name || ''}">
-        <button class="btn btn-small" onclick="removeElement(this.parentElement)" style="float: right; background: #dc3545; color: white;">Remove</button>
-        <textarea class="action-description" placeholder="Action description">${action.description || ''}</textarea>
-    `;
-    container.appendChild(div);
-}
-
-// Add legendary action
-function addLegendaryAction(action = {}) {
-    const container = document.getElementById('legendaryActions');
-    const div = document.createElement('div');
-    div.className = 'legendary-action-item';
-    div.innerHTML = `
-        <input type="text" class="legendary-action-name" placeholder="Action Name" value="${action.name || ''}">
-        <button class="btn btn-small" onclick="removeElement(this.parentElement)" style="float: right; background: #dc3545; color: white;">Remove</button>
-        <textarea class="legendary-action-description" placeholder="Action description">${action.description || ''}</textarea>
-    `;
-    container.appendChild(div);
-}
-
-// Remove element
-function removeElement(element) {
-    element.remove();
-}
-
-// Get creature data from form
-function getCreatureFromForm() {
-    return {
-        name: document.getElementById('creatureName').value,
-        size: document.getElementById('creatureSize').value,
-        type: (function() {
-            const sel = document.getElementById('creatureType');
-            return sel.value === 'Other' ? document.getElementById('creatureTypeOther').value : sel.value;
-        })(),
-        alignment: document.getElementById('creatureAlignment').value,
-        armor_class: document.getElementById('armorClass').value,
-        armor_type: (function() {
-            const kindSel = document.getElementById('armorKind');
-            const other = document.getElementById('armorKindOther');
-            if (!kindSel) return '';
-            return kindSel.value === 'Other' ? (other.value || '') : kindSel.value;
-        })(),
-        hit_points: document.getElementById('hitPoints').value,
-        hit_dice: document.getElementById('hitDice').value,
-        speed: document.getElementById('speed').value,
-        strength: parseInt(document.getElementById('strength').value) || 10,
-        dexterity: parseInt(document.getElementById('dexterity').value) || 10,
-        constitution: parseInt(document.getElementById('constitution').value) || 10,
-        intelligence: parseInt(document.getElementById('intelligence').value) || 10,
-        wisdom: parseInt(document.getElementById('wisdom').value) || 10,
-        charisma: parseInt(document.getElementById('charisma').value) || 10,
-        saving_throws: document.getElementById('savingThrows').value,
-        skills: document.getElementById('skills').value,
-        vulnerabilities: document.getElementById('vulnerabilities').value,
-        resistances: document.getElementById('resistances').value,
-        immunities: document.getElementById('immunities').value,
-        condition_immunities: document.getElementById('conditionImmunities').value,
-        senses: document.getElementById('senses').value,
-        languages: document.getElementById('languages').value,
-        challenge: document.getElementById('challenge').value,
-        proficiency_bonus: document.getElementById('proficiencyBonus').value,
-        special_abilities: getSpecialAbilities(),
-        actions: getActions(),
-        legendary_actions: getLegendaryActions()
-    };
-}
-
-// Create new creature
-function createNewCreature() {
-    const blankCreature = {
-        name: 'New Creature',
-        size: 'Medium',
-        type: 'humanoid',
-        alignment: 'neutral',
-        armor_class: 10,
-        armor_type: '',
-        hit_points: 1,
-        hit_dice: '1d8',
-        speed: '30 ft.',
-        strength: 10,
-        dexterity: 10,
-        constitution: 10,
-        intelligence: 10,
-        wisdom: 10,
-        charisma: 10,
-        saving_throws: '',
-        skills: '',
-        vulnerabilities: '',
-        resistances: '',
-        immunities: '',
-        condition_immunities: '',
-        senses: 'passive Perception 10',
-        languages: 'Common',
-        challenge: '1/4 (50 XP)',
-        proficiency_bonus: '+2',
-        special_abilities: [],
-        actions: [],
-        legendary_actions: []
-    };
+function populateDropdown(elementId, options) {
+    console.log(`Populating dropdown ${elementId} with options:`, options);
+    const select = document.getElementById(elementId);
+    if (!select) {
+        console.warn(`Element with id '${elementId}' not found`);
+        return;
+    }
     
-    loadCreatureFromData(blankCreature);
+    select.innerHTML = '';
+    options.forEach((option, index) => {
+        console.log(`Adding option ${index}: ${option}`);
+        const optionEl = document.createElement('option');
+        optionEl.value = option.toLowerCase();
+        optionEl.textContent = option;
+        select.appendChild(optionEl);
+    });
+    console.log(`Dropdown ${elementId} now has ${select.options.length} options`);
 }
 
-// Load creature data (for initialization)
-function loadCreatureData() {
-    // Initialize with a default creature if none exists
-    if (!currentCreature.name) {
-        createNewCreature();
+// Auto-save and update function for blur events
+function autoSaveAndUpdate() {
+    saveCurrentState();
+    updateDisplay();
+    updateAllDisplays();
+    
+    // Special case: preserve AC override state after updates
+    const overrideACCheckbox = document.getElementById('overrideAC');
+    if (overrideACCheckbox && overrideACCheckbox.checked) {
+        const armorClassInput = document.getElementById('armorClass');
+        if (armorClassInput) {
+            armorClassInput.readOnly = false;
+        }
     }
 }
 
-// Save creature as JSON
-function saveCreatureAsJson() {
-    const creature = getCreatureFromForm();
-    const dataStr = JSON.stringify(creature, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+// Armor-related functions
+function setupArmorEventListeners() {
+    const armorTypeSelect = document.getElementById('armorType');
+    const overrideACCheckbox = document.getElementById('overrideAC');
+    const armorClassInput = document.getElementById('armorClass');
     
-    const exportFileDefaultName = `${creature.name.toLowerCase().replace(/\s+/g, '_')}_cr${creature.challenge.split(' ')[0].replace('/', '')}.json`;
+    if (armorTypeSelect) {
+        armorTypeSelect.addEventListener('change', updateArmorSubtypes);
+        armorTypeSelect.addEventListener('blur', autoSaveAndUpdate);
+    }
     
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
-}
-
-// Load creature from JSON file
-function loadCreatureFromJson(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const creature = JSON.parse(e.target.result);
-                loadCreatureFromData(creature);
-                showNotification(`${creature.name} loaded successfully!`, 'success');
-            } catch (error) {
-                showNotification('Error loading JSON file', 'error');
-                console.error('Error parsing JSON:', error);
+    if (overrideACCheckbox) {
+        overrideACCheckbox.addEventListener('change', toggleACOverride);
+        overrideACCheckbox.addEventListener('blur', autoSaveAndUpdate);
+    }
+    
+    if (armorClassInput) {
+        armorClassInput.addEventListener('input', function() {
+            // Only allow positive integers when in manual mode
+            const overrideACCheckbox = document.getElementById('overrideAC');
+            if (overrideACCheckbox && overrideACCheckbox.checked) {
+                // Ensure only positive integers
+                let value = parseInt(armorClassInput.value);
+                if (isNaN(value) || value < 1) {
+                    armorClassInput.value = 1;
+                } else if (value > 1000) {
+                    armorClassInput.value = 1000;
+                }
+                updateBasicStatsDisplay();
             }
-        };
-        reader.readAsText(file);
+        });
+        armorClassInput.addEventListener('change', function() {
+            const overrideACCheckbox = document.getElementById('overrideAC');
+            if (overrideACCheckbox && overrideACCheckbox.checked) {
+                updateBasicStatsDisplay();
+            }
+        });
+        armorClassInput.addEventListener('blur', autoSaveAndUpdate);
+    }
+    
+    // Populate initial subtypes (this will also set up the subtype event listeners)
+    updateArmorSubtypes();
+}
+
+function updateArmorSubtypes() {
+    const armorTypeSelect = document.getElementById('armorType');
+    const armorSubtypeSelect = document.getElementById('armorSubtype');
+    
+    if (!armorTypeSelect || !armorSubtypeSelect || !window.armorData) {
+        return;
+    }
+    
+    const selectedType = armorTypeSelect.value;
+    let subtypes = {};
+    
+    // Map dropdown values to armor data keys
+    switch(selectedType) {
+        case 'none':
+            subtypes = window.armorData["None"] || {};
+            break;
+        case 'natural armor':
+            subtypes = window.armorData["Natural Armor"] || {};
+            break;
+        case 'light armor':
+            subtypes = window.armorData["Light Armor"] || {};
+            break;
+        case 'medium armor':
+            subtypes = window.armorData["Medium Armor"] || {};
+            break;
+        case 'heavy armor':
+            subtypes = window.armorData["Heavy Armor"] || {};
+            break;
+        default:
+            subtypes = {};
+    }
+    
+    armorSubtypeSelect.innerHTML = '';
+    if (Object.keys(subtypes).length > 0) {
+        Object.keys(subtypes).forEach(subtype => {
+            const optionEl = document.createElement('option');
+            optionEl.value = subtype.toLowerCase();
+            optionEl.textContent = subtype;
+            armorSubtypeSelect.appendChild(optionEl);
+        });
+    } else {
+        // Fallback option
+        const optionEl = document.createElement('option');
+        optionEl.value = 'unarmored';
+        optionEl.textContent = 'Unarmored';
+        armorSubtypeSelect.appendChild(optionEl);
+    }
+    
+    // Re-attach event listeners after updating the dropdown content
+    // Remove any existing listeners first
+    const newArmorSubtypeSelect = armorSubtypeSelect.cloneNode(true);
+    armorSubtypeSelect.parentNode.replaceChild(newArmorSubtypeSelect, armorSubtypeSelect);
+    
+    // Add fresh event listeners
+    newArmorSubtypeSelect.addEventListener('change', function() {
+        console.log('Armor subtype changed to:', newArmorSubtypeSelect.value);
+        calculateAndUpdateAC();
+    });
+    newArmorSubtypeSelect.addEventListener('blur', autoSaveAndUpdate);
+    
+    // Calculate AC after updating subtypes
+    calculateAndUpdateAC();
+}
+
+function calculateAndUpdateAC() {
+    const armorClassInput = document.getElementById('armorClass');
+    const overrideACCheckbox = document.getElementById('overrideAC');
+    
+    if (!armorClassInput) return;
+    
+    // Check if AC override is enabled
+    if (overrideACCheckbox && overrideACCheckbox.checked) {
+        // When in manual mode, just ensure the field is editable and update display
+        armorClassInput.readOnly = false;
+        updateBasicStatsDisplay();
+        return;
+    }
+    
+    // Continue with calculated AC
+    const armorTypeSelect = document.getElementById('armorType');
+    const armorSubtypeSelect = document.getElementById('armorSubtype');
+    const armorModifierSelect = document.getElementById('armorModifier');
+    const hasShieldCheckbox = document.getElementById('hasShield');
+    const shieldModifierSelect = document.getElementById('shieldModifier');
+    const dexterityInput = document.getElementById('dexterity');
+    
+    if (!armorTypeSelect || !armorSubtypeSelect || !dexterityInput || !window.armorData) {
+        return;
+    }
+    
+    // Make sure AC field is read-only for calculated mode
+    armorClassInput.readOnly = true;
+    
+    const selectedType = armorTypeSelect.value;
+    const selectedSubtype = armorSubtypeSelect.value;
+    const armorModifier = parseInt(armorModifierSelect?.value) || 0;
+    const hasShield = hasShieldCheckbox?.checked || false;
+    const shieldModifier = parseInt(shieldModifierSelect?.value) || 0;
+    const dexScore = parseInt(dexterityInput.value) || 10;
+    const dexModifier = getAbilityModifier(dexScore);
+    
+    let totalAC = 10; // Default unarmored AC
+    let armorData = null;
+    
+    // Map dropdown values to armor data
+    switch(selectedType) {
+        case 'none':
+            armorData = window.armorData["None"];
+            break;
+        case 'natural armor':
+            armorData = window.armorData["Natural Armor"];
+            break;
+        case 'light armor':
+            armorData = window.armorData["Light Armor"];
+            break;
+        case 'medium armor':
+            armorData = window.armorData["Medium Armor"];
+            break;
+        case 'heavy armor':
+            armorData = window.armorData["Heavy Armor"];
+            break;
+    }
+    
+    if (armorData) {
+        // Find the subtype (check both exact match and case-insensitive)
+        let armorInfo = null;
+        for (const [key, value] of Object.entries(armorData)) {
+            if (key.toLowerCase() === selectedSubtype) {
+                armorInfo = value;
+                break;
+            }
+        }
+        
+        if (armorInfo) {
+            totalAC = armorInfo.baseAC;
+            
+            // Apply dexterity modifier based on armor type
+            if (armorInfo.maxDex === null) {
+                // Light armor or natural - full dex modifier
+                totalAC += dexModifier;
+            } else if (armorInfo.maxDex > 0) {
+                // Medium armor - limited dex modifier
+                totalAC += Math.min(dexModifier, armorInfo.maxDex);
+            }
+            // Heavy armor - no dex modifier (maxDex = 0)
+        } else {
+            // Fallback: if no specific armor subtype found, use basic calculations
+            if (selectedType === 'none') {
+                totalAC = 10 + dexModifier; // Unarmored
+            } else if (selectedType === 'natural armor') {
+                totalAC = 10 + dexModifier; // Natural armor base
+            } else {
+                // For other armor types without specific subtypes, use base + dex
+                totalAC = 10 + dexModifier;
+            }
+        }
+    } else {
+        // No armor data available, fall back to unarmored
+        totalAC = 10 + dexModifier;
+    }
+    
+    // Add shield bonus (base +2 AC plus any shield modifier)
+    if (hasShield) {
+        totalAC += 2 + shieldModifier;
+    }
+    
+    // Add armor modifier (for magical armor or special bonuses)
+    totalAC += armorModifier;
+    
+    armorClassInput.value = totalAC;
+    
+    // Update the display
+    updateBasicStatsDisplay();
+}
+
+function setupFallbackArmor() {
+    console.log('Setting up fallback armor...');
+    const armorSubtypeSelect = document.getElementById('armorSubtype');
+    
+    // Don't overwrite the armor type dropdown if it already has options
+    // Only set up the subtype dropdown and fallback data
+    if (armorSubtypeSelect) {
+        armorSubtypeSelect.innerHTML = '<option value="unarmored">Unarmored</option>';
+    }
+    
+    // Create comprehensive fallback data that matches the original file structure
+    window.armorData = {
+        "None": {
+            "Unarmored": {
+                "ac": "10 + Dex modifier",
+                "baseAC": 10,
+                "maxDex": null,
+                "stealth": null
+            }
+        },
+        "Natural Armor": {
+            "Natural Armor": {
+                "ac": "10 + Dex modifier",
+                "baseAC": 10,
+                "maxDex": null,
+                "stealth": null
+            }
+        },
+        "Light Armor": {
+            "Padded": {
+                "ac": "11 + Dex modifier",
+                "baseAC": 11,
+                "maxDex": null,
+                "stealth": "Disadvantage"
+            },
+            "Leather": {
+                "ac": "11 + Dex modifier",
+                "baseAC": 11,
+                "maxDex": null,
+                "stealth": null
+            },
+            "Studded Leather": {
+                "ac": "12 + Dex modifier",
+                "baseAC": 12,
+                "maxDex": null,
+                "stealth": null
+            }
+        },
+        "Medium Armor": {
+            "Hide": {
+                "ac": "12 + Dex modifier (max 2)",
+                "baseAC": 12,
+                "maxDex": 2,
+                "stealth": null
+            },
+            "Chain Shirt": {
+                "ac": "13 + Dex modifier (max 2)",
+                "baseAC": 13,
+                "maxDex": 2,
+                "stealth": null
+            },
+            "Scale Mail": {
+                "ac": "14 + Dex modifier (max 2)",
+                "baseAC": 14,
+                "maxDex": 2,
+                "stealth": "Disadvantage"
+            }
+        },
+        "Heavy Armor": {
+            "Ring Mail": {
+                "ac": "14",
+                "baseAC": 14,
+                "maxDex": 0,
+                "stealth": "Disadvantage"
+            },
+            "Chain Mail": {
+                "ac": "16",
+                "baseAC": 16,
+                "maxDex": 0,
+                "stealth": "Disadvantage"
+            },
+            "Plate": {
+                "ac": "18",
+                "baseAC": 18,
+                "maxDex": 0,
+                "stealth": "Disadvantage"
+            }
+        }
+    };
+    
+    console.log('Fallback armor data set:', Object.keys(window.armorData));
+    setupArmorEventListeners();
+}
+
+// ...existing code...
+
+function updateAbilityModifiers() {
+    const abilities = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
+    const shortNames = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+    
+    abilities.forEach((ability, index) => {
+        const input = document.getElementById(ability);
+        const modifierEl = document.getElementById(`${shortNames[index]}Mod`);
+        
+        if (input && modifierEl) {
+            const score = parseInt(input.value) || 10;
+            const modifier = getAbilityModifier(score);
+            modifierEl.textContent = modifier >= 0 ? `(+${modifier})` : `(${modifier})`;
+        }
+    });
+    
+    // Update displays
+    updateAbilityScoresDisplay();
+}
+
+function updateProficiencyBonus() {
+    const crInput = document.getElementById('challenge');
+    const pbInput = document.getElementById('proficiencyBonus');
+    
+    if (crInput && pbInput) {
+        const cr = crInput.value;
+        const pb = calculateProficiencyBonus(cr);
+        pbInput.value = `+${pb}`;
+    }
+    
+    updateTraitsDisplay();
+}
+
+function updateDisplay() {
+    try {
+        updateAbilityModifiers();
+        updateProficiencyBonus();
+        updateAllDisplays();
+        
+    } catch (error) {
+        console.error('Error updating display:', error);
     }
 }
 
-// Toggle creature library
-function toggleCreatureLibrary() {
-    const library = document.getElementById('creatureLibrary');
-    library.style.display = library.style.display === 'none' ? 'block' : 'none';
+// Update all display sections
+function updateAllDisplays() {
+    updateNameDisplay();
+    updateBasicStatsDisplay();
+    updateAbilityScoresDisplay();
+    updateTraitsDisplay();
+    updateSpecialAbilitiesDisplay();
+    updateActionsDisplay();
+    updateLegendaryActionsDisplay();
 }
 
-// Load template
-function loadTemplate(templateName) {
-    // This would typically load from a template file
-    console.log('Loading template:', templateName);
-    showNotification(`Loading ${templateName} template...`, 'info');
-}
-
-// Show notification
-function showNotification(message, type = 'info') {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
-        color: white;
-        padding: 12px 24px;
-        border-radius: 4px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        z-index: 1000;
-        animation: slideIn 0.3s ease-out;
-    `;
+// Update name display
+function updateNameDisplay() {
+    const nameEl = document.getElementById('creatureNameDisplay');
+    const typeEl = document.getElementById('creatureTypeDisplay');
     
+    if (nameEl) {
+        const name = document.getElementById('creatureName')?.value || 'Unnamed Creature';
+        nameEl.textContent = name;
+    }
+    
+    if (typeEl) {
+        const size = document.getElementById('creatureSize')?.value || 'Medium';
+        const alignment = document.getElementById('creatureAlignment')?.value || 'neutral';
+        
+        // Get the correct type value (handle "Other" option)
+        const typeSelect = document.getElementById('creatureType');
+        const typeOther = document.getElementById('creatureTypeOther');
+        let type;
+        
+        if (typeSelect?.value === 'other' && typeOther?.value) {
+            type = typeOther.value;
+        } else {
+            type = typeSelect?.value || 'humanoid';
+        }
+        
+        typeEl.innerHTML = `<em>${toTitleCase(size)} ${type}, ${toTitleCase(alignment)}</em>`;
+    }
+}
+
+// Update basic stats display
+function updateBasicStatsDisplay() {
+    const acEl = document.getElementById('armorClassDisplay');
+    const hpEl = document.getElementById('hitPointsDisplay');
+    const speedEl = document.getElementById('speedDisplay');
+    
+    if (acEl) {
+        const ac = document.getElementById('armorClass')?.value || '10';
+        acEl.textContent = ac;
+    }
+    
+    if (hpEl) {
+        const hp = document.getElementById('hitPoints')?.value || '1';
+        hpEl.textContent = hp;
+    }
+    
+    if (speedEl) {
+        const speed = document.getElementById('speed')?.value || '30 ft.';
+        speedEl.textContent = speed;
+    }
+}
+
+// Update ability scores display
+function updateAbilityScoresDisplay() {
+    const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+    const fullNames = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
+    
+    abilities.forEach((ability, index) => {
+        const displayEl = document.getElementById(`${ability}Display`);
+        const inputEl = document.getElementById(fullNames[index]);
+        
+        if (displayEl && inputEl) {
+            const score = parseInt(inputEl.value) || 10;
+            const modifier = getAbilityModifier(score);
+            const modifierText = modifier >= 0 ? `+${modifier}` : `${modifier}`;
+            displayEl.textContent = `${score} (${modifierText})`;
+        }
+    });
+}
+
+// Update traits display
+function updateTraitsDisplay() {
+    const traits = [
+        { id: 'savingThrows', displayId: 'savingThrowsDisplay', lineId: 'savingThrowsLine' },
+        { id: 'skills', displayId: 'skillsDisplay', lineId: 'skillsLine' },
+        { id: 'vulnerabilities', displayId: 'vulnerabilitiesDisplay', lineId: 'vulnerabilitiesLine' },
+        { id: 'resistances', displayId: 'resistancesDisplay', lineId: 'resistancesLine' },
+        { id: 'immunities', displayId: 'immunitiesDisplay', lineId: 'immunitiesLine' },
+        { id: 'conditionImmunities', displayId: 'conditionImmunitiesDisplay', lineId: 'conditionImmunitiesLine' },
+        { id: 'senses', displayId: 'sensesDisplay', lineId: 'sensesLine' },
+        { id: 'languages', displayId: 'languagesDisplay', lineId: 'languagesLine' }
+    ];
+    
+    traits.forEach(trait => {
+        const inputEl = document.getElementById(trait.id);
+        const displayEl = document.getElementById(trait.displayId);
+        const lineEl = document.getElementById(trait.lineId);
+        
+        if (inputEl && displayEl) {
+            const value = inputEl.value.trim();
+            displayEl.textContent = value;
+            
+            if (lineEl) {
+                lineEl.style.display = value ? 'block' : 'none';
+            }
+        }
+    });
+    
+    // Update challenge rating
+    const challengeEl = document.getElementById('challengeDisplay');
+    const proficiencyEl = document.getElementById('proficiencyBonusDisplay');
+    
+    if (challengeEl) {
+        const challenge = document.getElementById('challenge')?.value || '0';
+        challengeEl.textContent = challenge;
+    }
+    
+    if (proficiencyEl) {
+        const proficiency = document.getElementById('proficiencyBonus')?.value || '+2';
+        proficiencyEl.textContent = proficiency;
+    }
+}
+
+// Show notification message
+function showNotification(message, type = 'info') {
+    console.log(`Notification (${type}): ${message}`);
+    
+    // Simple notification using a temporary div
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed; top: 20px; right: 20px; z-index: 10000;
+        background: ${type === 'error' ? '#dc3545' : type === 'success' ? '#28a745' : '#007bff'};
+        color: white; padding: 12px 20px; border-radius: 4px;
+        font-family: Arial, sans-serif; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    `;
+    notification.textContent = message;
     document.body.appendChild(notification);
     
-    // Remove after 3 seconds
+    // Auto-remove after 3 seconds
     setTimeout(() => {
-        notification.remove();
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
     }, 3000);
 }
 
-// Add CSS animation for notifications
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-`;
-document.head.appendChild(style);
-// Helper to load dropdown options from JSON
-async function loadDropdown(selectId, jsonPath) {
+// Save current state to localStorage
+function saveCurrentState() {
     try {
-        const resp = await fetch(jsonPath);
-        const items = await resp.json();
-        const sel = document.getElementById(selectId);
-        sel.innerHTML = '';
-        items.forEach(item => {
-            const opt = document.createElement('option');
-            opt.value = item;
-            opt.text = item;
-            sel.add(opt);
-        });
-    } catch (e) {
-        console.error(`Failed to load dropdown ${selectId} from ${jsonPath}:`, e);
+        // Save current view
+        const isMainEditorVisible = document.getElementById('mainEditor').style.display !== 'none';
+        localStorage.setItem(STORAGE_KEYS.CURRENT_VIEW, isMainEditorVisible ? 'editor' : 'welcome');
+        
+        // Save current creature data
+        if (currentCreature) {
+            localStorage.setItem(STORAGE_KEYS.CURRENT_CREATURE, JSON.stringify(currentCreature));
+        }
+        
+        // Save current editing section
+        if (currentEditingSection) {
+            localStorage.setItem(STORAGE_KEYS.EDITING_SECTION, currentEditingSection);
+        }
+        
+        // Save current form data
+        const formData = collectFormData();
+        localStorage.setItem(STORAGE_KEYS.FORM_DATA, JSON.stringify(formData));
+        
+        console.log('State saved to localStorage');
+    } catch (error) {
+        console.error('Error saving state to localStorage:', error);
     }
+}
+
+// Restore state from localStorage
+function restoreCurrentState() {
+    try {
+        // Restore current view
+        const savedView = localStorage.getItem(STORAGE_KEYS.CURRENT_VIEW);
+        if (savedView === 'editor') {
+            // Restore creature data first
+            const savedCreature = localStorage.getItem(STORAGE_KEYS.CURRENT_CREATURE);
+            if (savedCreature) {
+                currentCreature = JSON.parse(savedCreature);
+                
+                // Restore form data
+                const savedFormData = localStorage.getItem(STORAGE_KEYS.FORM_DATA);
+                if (savedFormData) {
+                    const formData = JSON.parse(savedFormData);
+                    loadFormData(formData);
+                } else {
+                    loadCreatureFromData(currentCreature);
+                }
+                
+                // Show main editor
+                showMainEditor();
+                
+                // Restore editing section if any
+                const savedEditingSection = localStorage.getItem(STORAGE_KEYS.EDITING_SECTION);
+                if (savedEditingSection) {
+                    setTimeout(() => {
+                        editSection(savedEditingSection);
+                    }, 100);
+                }
+                
+                console.log('State restored from localStorage');
+            }
+        }
+    } catch (error) {
+        console.error('Error restoring state from localStorage:', error);
+        // Clear corrupted data
+        clearSavedState();
+    }
+}
+
+// Collect current form data
+function collectFormData() {
+    const formData = {};
+    
+    // Basic info
+    formData.name = document.getElementById('creatureName')?.value || '';
+    formData.size = document.getElementById('creatureSize')?.value || 'Medium';
+    
+    // Handle creature type (check for "other" option)
+    const creatureTypeSelect = document.getElementById('creatureType');
+    const creatureTypeOther = document.getElementById('creatureTypeOther');
+    if (creatureTypeSelect?.value === 'other' && creatureTypeOther?.value) {
+        formData.type = creatureTypeOther.value;
+        formData.typeIsOther = true;
+    } else {
+        formData.type = creatureTypeSelect?.value || 'humanoid';
+        formData.typeIsOther = false;
+    }
+    
+    formData.alignment = document.getElementById('creatureAlignment')?.value || 'neutral';
+    
+    // Basic stats
+    formData.armorClass = document.getElementById('armorClass')?.value || 10;
+    formData.overrideAC = document.getElementById('overrideAC')?.checked || false;
+    formData.armorType = document.getElementById('armorType')?.value || 'none';
+    formData.armorSubtype = document.getElementById('armorSubtype')?.value || 'unarmored';
+    formData.armorModifier = parseInt(document.getElementById('armorModifier')?.value) || 0;
+    formData.hasShield = document.getElementById('hasShield')?.checked || false;
+    formData.shieldModifier = parseInt(document.getElementById('shieldModifier')?.value) || 0;
+    formData.hitPoints = document.getElementById('hitPoints')?.value || 1;
+    formData.speed = document.getElementById('speed')?.value || '30 ft.';
+    
+    // Ability scores
+    formData.abilities = {
+        strength: document.getElementById('strength')?.value || 10,
+        dexterity: document.getElementById('dexterity')?.value || 10,
+        constitution: document.getElementById('constitution')?.value || 10,
+        intelligence: document.getElementById('intelligence')?.value || 10,
+        wisdom: document.getElementById('wisdom')?.value || 10,
+        charisma: document.getElementById('charisma')?.value || 10
+    };
+    
+    // Traits
+    formData.savingThrows = document.getElementById('savingThrows')?.value || '';
+    formData.skills = document.getElementById('skills')?.value || '';
+    formData.vulnerabilities = document.getElementById('vulnerabilities')?.value || '';
+    formData.resistances = document.getElementById('resistances')?.value || '';
+    formData.immunities = document.getElementById('immunities')?.value || '';
+    formData.conditionImmunities = document.getElementById('conditionImmunities')?.value || '';
+    formData.senses = document.getElementById('senses')?.value || '';
+    formData.languages = document.getElementById('languages')?.value || '';
+    formData.challenge = document.getElementById('challenge')?.value || '0';
+    formData.proficiencyBonus = document.getElementById('proficiencyBonus')?.value || '+2';
+    
+    // Special abilities
+    formData.specialAbilities = collectSpecialAbilities();
+    
+    // Actions
+    formData.actions = collectActions();
+    
+    // Legendary actions
+    formData.legendaryActions = collectLegendaryActions();
+    
+    return formData;
+}
+
+// Collect special abilities from form
+function collectSpecialAbilities() {
+    const abilities = [];
+    const container = document.getElementById('specialAbilities');
+    if (container) {
+        const items = container.querySelectorAll('.ability-item');
+        items.forEach(item => {
+            const name = item.querySelector('.ability-name')?.value || '';
+            const uses = item.querySelector('.ability-use-count')?.value || '';
+            const description = item.querySelector('.ability-description')?.value || '';
+            if (name || description) {
+                abilities.push({ name, uses, description });
+            }
+        });
+    }
+    return abilities;
+}
+
+// Collect actions from form
+function collectActions() {
+    const actions = [];
+    const container = document.getElementById('actions');
+    if (container) {
+        const items = container.querySelectorAll('.action-item');
+        items.forEach(item => {
+            const name = item.querySelector('.action-name')?.value || '';
+            const description = item.querySelector('.action-description')?.value || '';
+            if (name || description) {
+                actions.push({ name, description });
+            }
+        });
+    }
+    return actions;
+}
+
+// Collect legendary actions from form
+function collectLegendaryActions() {
+    const actions = [];
+    const container = document.getElementById('legendaryActions');
+    if (container) {
+        const items = container.querySelectorAll('.legendary-action-item');
+        items.forEach(item => {
+            const name = item.querySelector('.legendary-action-name')?.value || '';
+            const uses = item.querySelector('.legendary-action-use-count')?.value || '';
+            const description = item.querySelector('.legendary-action-description')?.value || '';
+            if (name || description) {
+                actions.push({ name, uses, description });
+            }
+        });
+    }
+    return actions;
+}
+
+// Load form data
+function loadFormData(formData) {
+    // Basic info
+    setElementValue('creatureName', formData.name);
+    setElementValue('creatureSize', formData.size);
+    
+    // Handle creature type (check if it was "other")
+    if (formData.typeIsOther) {
+        setElementValue('creatureType', 'other');
+        setElementValue('creatureTypeOther', formData.type);
+        // Show the other input
+        const otherInput = document.getElementById('creatureTypeOther');
+        if (otherInput) otherInput.style.display = 'block';
+    } else {
+        setElementValue('creatureType', formData.type);
+        // Hide the other input
+        const otherInput = document.getElementById('creatureTypeOther');
+        if (otherInput) {
+            otherInput.style.display = 'none';
+            otherInput.value = '';
+        }
+    }
+    
+    setElementValue('creatureAlignment', formData.alignment);
+    
+    // Basic stats
+    setElementValue('armorClass', formData.armorClass);
+    setElementChecked('overrideAC', formData.overrideAC || false);
+    setElementValue('armorType', formData.armorType);
+    setElementValue('armorSubtype', formData.armorSubtype);
+    setElementValue('armorModifier', formData.armorModifier || 0);
+    setElementChecked('hasShield', formData.hasShield);
+    setElementValue('shieldModifier', formData.shieldModifier || 0);
+    setElementValue('hitPoints', formData.hitPoints);
+    setElementValue('speed', formData.speed);
+    
+    // Update armor subtypes after setting armor type
+    setTimeout(() => {
+        updateArmorSubtypes();
+        setElementValue('armorSubtype', formData.armorSubtype);
+        calculateAndUpdateAC();
+    }, 100);
+    
+    // Ability scores
+    if (formData.abilities) {
+        setElementValue('strength', formData.abilities.strength);
+        setElementValue('dexterity', formData.abilities.dexterity);
+        setElementValue('constitution', formData.abilities.constitution);
+        setElementValue('intelligence', formData.abilities.intelligence);
+        setElementValue('wisdom', formData.abilities.wisdom);
+        setElementValue('charisma', formData.abilities.charisma);
+    }
+    
+    // Traits
+    setElementValue('savingThrows', formData.savingThrows);
+    setElementValue('skills', formData.skills);
+    setElementValue('vulnerabilities', formData.vulnerabilities);
+    setElementValue('resistances', formData.resistances);
+    setElementValue('immunities', formData.immunities);
+    setElementValue('conditionImmunities', formData.conditionImmunities);
+    setElementValue('senses', formData.senses);
+    setElementValue('languages', formData.languages);
+    setElementValue('challenge', formData.challenge);
+    setElementValue('proficiencyBonus', formData.proficiencyBonus);
+    
+    // Load dynamic sections
+    loadSpecialAbilities(formData.specialAbilities || []);
+    loadActions(formData.actions || []);
+    loadLegendaryActions(formData.legendaryActions || []);
+    
+    // Set up AC override state after loading data
+    setTimeout(() => {
+        toggleACOverride();
+        if (!formData.overrideAC) {
+            calculateAndUpdateAC();
+        }
+    }, 50);
+    
+    // Update displays
+    updateDisplay();
+    updateAllDisplays();
+}
+
+// Clear saved state
+function clearSavedState() {
+    try {
+        localStorage.removeItem(STORAGE_KEYS.CURRENT_CREATURE);
+        localStorage.removeItem(STORAGE_KEYS.CURRENT_VIEW);
+        localStorage.removeItem(STORAGE_KEYS.EDITING_SECTION);
+        localStorage.removeItem(STORAGE_KEYS.FORM_DATA);
+        console.log('Saved state cleared');
+    } catch (error) {
+        console.error('Error clearing saved state:', error);
+    }
+}
+
+// Auto-save functionality
+function setupAutoSave() {
+    // Save state when form changes
+    const autoSaveElements = [
+        'creatureName', 'creatureSize', 'creatureType', 'creatureTypeOther', 'creatureAlignment',
+        'armorClass', 'overrideAC', 'armorType', 'armorSubtype', 'armorModifier', 'hasShield', 'shieldModifier', 'hitPoints', 'speed',
+        'strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma',
+        'savingThrows', 'skills', 'vulnerabilities', 'resistances', 'immunities',
+        'conditionImmunities', 'senses', 'languages', 'challenge', 'proficiencyBonus'
+    ];
+    
+    autoSaveElements.forEach(elementId => {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.addEventListener('input', debounce(saveCurrentState, 1000));
+            element.addEventListener('change', saveCurrentState);
+            element.addEventListener('blur', () => {
+                // Auto-save and update display when clicking off field
+                saveCurrentState();
+                updateDisplay();
+                updateAllDisplays();
+            });
+        }
+    });
+    
+    // Special event listeners for AC calculation
+    const dexterityInput = document.getElementById('dexterity');
+    const hasShieldCheckbox = document.getElementById('hasShield');
+    const armorModifierSelect = document.getElementById('armorModifier');
+    const shieldModifierSelect = document.getElementById('shieldModifier');
+    
+    if (dexterityInput) {
+        dexterityInput.addEventListener('input', calculateAndUpdateAC);
+        dexterityInput.addEventListener('change', calculateAndUpdateAC);
+    }
+    
+    if (hasShieldCheckbox) {
+        hasShieldCheckbox.addEventListener('change', calculateAndUpdateAC);
+    }
+    
+    if (armorModifierSelect) {
+        armorModifierSelect.addEventListener('change', calculateAndUpdateAC);
+    }
+    
+    if (shieldModifierSelect) {
+        shieldModifierSelect.addEventListener('change', calculateAndUpdateAC);
+    }
+    
+    // Save state when switching views
+    document.getElementById('backToWelcome')?.addEventListener('click', () => {
+        localStorage.setItem(STORAGE_KEYS.CURRENT_VIEW, 'welcome');
+        saveCurrentState();
+    });
+}
+
+// Debounce function to limit auto-save frequency
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Edit section functionality
+function editSection(sectionId) {
+    console.log('Editing section:', sectionId);
+    
+    // If another section is already being edited, save it first
+    if (currentEditingSection && currentEditingSection !== sectionId) {
+        saveSection(currentEditingSection);
+    }
+    
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    
+    // Hide display content and show edit content
+    const displayContent = section.querySelector('.display-content');
+    const editContent = section.querySelector('.edit-content');
+    
+    if (displayContent) displayContent.style.display = 'none';
+    if (editContent) editContent.style.display = 'block';
+    
+    currentEditingSection = sectionId;
+    
+    // Save editing state
+    localStorage.setItem(STORAGE_KEYS.EDITING_SECTION, sectionId);
+    saveCurrentState();
+}
+
+function saveSection(sectionId) {
+    console.log('Saving section:', sectionId);
+    
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    
+    // Show display content and hide edit content
+    const displayContent = section.querySelector('.display-content');
+    const editContent = section.querySelector('.edit-content');
+    
+    if (displayContent) displayContent.style.display = 'block';
+    if (editContent) editContent.style.display = 'none';
+    
+    // Update displays
+    updateDisplay();
+    
+    currentEditingSection = null;
+    
+    // Clear editing state and save current state
+    localStorage.removeItem(STORAGE_KEYS.EDITING_SECTION);
+    saveCurrentState();
+    
+    showNotification('Section saved successfully!', 'success');
+}
+
+function cancelEdit(sectionId) {
+    console.log('Cancelling edit for section:', sectionId);
+    
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    
+    // Show display content and hide edit content
+    const displayContent = section.querySelector('.display-content');
+    const editContent = section.querySelector('.edit-content');
+    
+    if (displayContent) displayContent.style.display = 'block';
+    if (editContent) editContent.style.display = 'none';
+    
+    // Restore original values if needed
+    // TODO: Implement proper restore functionality
+    
+    currentEditingSection = null;
+    
+    // Clear editing state
+    localStorage.removeItem(STORAGE_KEYS.EDITING_SECTION);
+}
+
+// Toggle creature type other input
+function toggleCreatureTypeOther() {
+    const typeSelect = document.getElementById('creatureType');
+    const otherInput = document.getElementById('creatureTypeOther');
+    
+    if (!typeSelect || !otherInput) return;
+    
+    if (typeSelect.value === 'other') {
+        otherInput.style.display = 'block';
+        otherInput.focus();
+    } else {
+        otherInput.style.display = 'none';
+        otherInput.value = '';
+    }
+    
+    // Update display and save state when toggling
+    updateDisplay();
+    saveCurrentState();
+}
+
+// Toggle AC override
+function toggleACOverride() {
+    console.log('toggleACOverride called');
+    const overrideACCheckbox = document.getElementById('overrideAC');
+    const armorClassInput = document.getElementById('armorClass');
+    
+    console.log('Override checkbox:', overrideACCheckbox?.checked);
+    console.log('Armor class input:', armorClassInput);
+    console.log('Current readOnly state:', armorClassInput?.readOnly);
+    
+    if (!overrideACCheckbox || !armorClassInput) return;
+    
+    if (overrideACCheckbox.checked) {
+        console.log('Making AC field editable');
+        // Make AC field editable
+        armorClassInput.readOnly = false;
+        console.log('After setting readOnly=false:', armorClassInput.readOnly);
+        armorClassInput.focus();
+        
+        // Update the label to show it's manual
+        const calculatedLabel = document.querySelector('.calculated-label');
+        if (calculatedLabel) {
+            calculatedLabel.textContent = '(Manual)';
+        }
+    } else {
+        console.log('Making AC field read-only');
+        // Make AC field read-only and recalculate
+        armorClassInput.readOnly = true;
+        
+        // Update the label back to calculated
+        const calculatedLabel = document.querySelector('.calculated-label');
+        if (calculatedLabel) {
+            calculatedLabel.textContent = '(Calculated)';
+        }
+        
+        // Recalculate AC
+        calculateAndUpdateAC();
+    }
+}
+
+// Setup event listeners
+function setupEventListeners() {
+    console.log('Setting up event listeners...');
+    
+    // Main editor buttons
+    const backBtn = document.getElementById('backToWelcome');
+    if (backBtn) {
+        backBtn.addEventListener('click', () => {
+            saveCurrentState();
+            showWelcomeScreen();
+        });
+    }
+    
+    const newBtn = document.getElementById('newCreature');
+    if (newBtn) {
+        newBtn.addEventListener('click', () => {
+            clearSavedState(); // Clear previous state when creating new
+            createBlankCreature();
+        });
+    }
+    
+    // Modal close buttons
+    document.querySelectorAll('.close, .close-btn').forEach(btn => {
+        btn.addEventListener('click', closeModals);
+    });
+    
+    // Close modals when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target.classList.contains('modal')) {
+            closeModals();
+        }
+    });
+    
+    // Auto-save and exit edit mode when clicking outside of editable sections
+    document.addEventListener('click', function(event) {
+        // Check if click is outside any editable section
+        const editableSection = event.target.closest('.editable-section');
+        
+        // If we're currently editing a section and clicked outside all editable sections
+        if (currentEditingSection && !editableSection) {
+            // Save the current editing section and exit edit mode
+            saveSection(currentEditingSection);
+        }
+    });
+    
+    // Set up ability score listeners
+    setupAbilityScoreListeners();
+    
+    // Set up other form listeners
+    setupFormListeners();
+    
+    // Set up auto-save
+    setupAutoSave();
+    
+    console.log('Event listeners setup completed');
+}
+
+function setupAbilityScoreListeners() {
+    const abilities = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
+    
+    abilities.forEach(ability => {
+        const input = document.getElementById(ability);
+        if (input) {
+            input.addEventListener('input', updateDisplay);
+            input.addEventListener('change', updateDisplay);
+        }
+    });
+}
+
+function setupFormListeners() {
+    // Basic info listeners
+    const basicFields = ['creatureName', 'creatureSize', 'creatureType', 'creatureAlignment'];
+    basicFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.addEventListener('change', updateDisplay);
+        }
+    });
+    
+    // Challenge rating listener
+    const crInput = document.getElementById('challenge');
+    if (crInput) {
+        crInput.addEventListener('change', updateDisplay);
+    }
+    
+    // All other form fields
+    const allFields = ['armorClass', 'hitPoints', 'speed', 'savingThrows', 'skills', 'vulnerabilities', 'resistances', 'immunities', 'conditionImmunities', 'senses', 'languages'];
+    allFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.addEventListener('change', updateDisplay);
+        }
+    });
 }

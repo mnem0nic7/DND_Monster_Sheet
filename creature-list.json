@@ -1,5 +1,11 @@
 [
   {
+    "name": "New Creature",
+    "cr": "0",
+    "type": "humanoid",
+    "filename": "new_creature_cr0.json"
+  },
+  {
     "name": "Goblin",
     "cr": "1/4",
     "type": "humanoid",
