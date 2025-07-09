@@ -1,3 +1,68 @@
+.speed-table {
+  width: 320px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  margin: 8px 0 0 0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.speed-table th, .speed-table td {
+  border: 1px solid #d0d0d0;
+  padding: 6px 10px;
+  text-align: left;
+  background: #fafbfc;
+}
+.speed-table th {
+  background: #f0f2f5;
+  font-weight: 600;
+  font-size: 1em;
+  border-bottom: 2px solid #d0d0d0;
+}
+.speed-table tr:last-child td {
+  background: #f7f7fa;
+}
+.speed-table input[type="number"] {
+  width: 60px;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  padding: 2px 4px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.speed-table select, .speed-table input[type="text"] {
+  width: 100px;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  padding: 2px 4px;
+}
+.speed-table .distance-cell {
+  white-space: nowrap;
+}
+.speed-table .distance-cell input {
+  display: inline-block;
+  vertical-align: middle;
+}
+.speed-table .distance-cell span {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+.speed-table button {
+  padding: 2px 10px;
+  font-size: 0.97em;
+  border-radius: 3px;
+  border: 1px solid #bbb;
+  background: #f5f5f5;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.speed-table button:hover {
+  background: #e0e0e0;
+}
+/* Speed Table (Grid) Styles */
+/* Removed duplicate .speed-table rules to ensure only the embedded table style is applied */
 /* Reset and base styles */
 * {
     margin: 0;

@@ -1,4 +1,5 @@
 // D&D Creature Sheet Editor
+console.log('JS file loaded at', new Date().toISOString());
 // Main JavaScript file for the creature editor application
 
 // Global variables
@@ -32,13 +33,351 @@ const STORAGE_KEYS = {
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOMContentLoaded - initializing app');
+    console.log('DOMContentLoaded - initializing app', new Date().toISOString());
+
+    // --- Speed Types UI ---
+    const speedInputsContainer = document.getElementById('speedInputsContainer');
+
+    // --- New Speed Input UI ---
+    if (speedInputsContainer) {
+        let speedTypes = [];
+        fetch('./dropdowns/speedTypes.json')
+            .then(res => {
+                if (!res.ok) throw new Error('Failed to load speedTypes.json');
+                return res.json();
+            })
+            .catch(() => ['Walk', 'Fly', 'Swim', 'Climb', 'Burrow'])
+            .then(types => {
+                speedTypes = types;
+                renderSpeedInputs();
+            });
+
+        function renderSpeedInputs() {
+            // Only use the new array structure
+            let speeds = [];
+            try {
+                const val = document.getElementById('speed')?.value || '[]';
+                speeds = JSON.parse(val);
+                if (!Array.isArray(speeds)) speeds = [];
+            } catch {
+                speeds = [];
+            }
+
+            // Render as a grid (editable table)
+            const table = document.createElement('table');
+            table.className = 'speed-table';
+            // Table header
+            const thead = document.createElement('thead');
+            const headRow = document.createElement('tr');
+            ['Type', 'Distance', ''].forEach(h => {
+                const th = document.createElement('th');
+                th.textContent = h;
+                headRow.appendChild(th);
+            });
+            thead.appendChild(headRow);
+            table.appendChild(thead);
+            // Table body
+            const tbody = document.createElement('tbody');
+            // Editable rows for each speed
+            speeds.forEach((entry, idx) => {
+                const row = document.createElement('tr');
+                // Type cell (dropdown or text input for custom)
+                const typeCell = document.createElement('td');
+                let isOther = entry.type === 'Other' || entry.type === '' || entry.type === undefined;
+                const typeSelect = document.createElement('select');
+                typeSelect.style.marginRight = '8px';
+                typeSelect.innerHTML = '';
+                
+                // Get list of already used types (excluding current entry)
+                const usedTypes = speeds.map((s, i) => i !== idx ? s.type : null).filter(t => t && t !== 'Other');
+                
+                // Add standard types that aren't already used
+                speedTypes.forEach(t => {
+                    if (!usedTypes.includes(t)) {
+                        const opt = document.createElement('option');
+                        opt.value = t;
+                        opt.textContent = t;
+                        if (t === entry.type) opt.selected = true;
+                        typeSelect.appendChild(opt);
+                    }
+                });
+                // Add 'Other' option (always available)
+                const otherOpt = document.createElement('option');
+                otherOpt.value = 'Other';
+                otherOpt.textContent = 'Other';
+                if (isOther) otherOpt.selected = true;
+                typeSelect.appendChild(otherOpt);
+                // Custom type input
+                const typeInput = document.createElement('input');
+                typeInput.type = 'text';
+                typeInput.placeholder = 'Type';
+                typeInput.style.display = isOther ? '' : 'none';
+                typeInput.value = entry.customType || '';
+                typeSelect.addEventListener('change', () => {
+                    if (typeSelect.value === 'Other') {
+                        typeInput.style.display = '';
+                        typeInput.focus();
+                    } else {
+                        typeInput.style.display = 'none';
+                        speeds[idx] = { type: typeSelect.value, distance: entry.distance };
+                        document.getElementById('speed').value = JSON.stringify(speeds);
+                        renderSpeedInputs();
+                        autoSaveAndUpdate && autoSaveAndUpdate();
+                    }
+                });
+                typeInput.addEventListener('input', () => {
+                    speeds[idx] = { type: 'Other', customType: typeInput.value, distance: entry.distance };
+                    document.getElementById('speed').value = JSON.stringify(speeds);
+                    autoSaveAndUpdate && autoSaveAndUpdate();
+                });
+                typeCell.appendChild(typeSelect);
+                typeCell.appendChild(typeInput);
+                row.appendChild(typeCell);
+                // Distance cell
+                const valueCell = document.createElement('td');
+                valueCell.className = 'distance-cell';
+                const valueInput = document.createElement('input');
+                valueInput.type = 'number';
+                valueInput.placeholder = 'Distance';
+                valueInput.min = 0;
+                valueInput.style.marginRight = '2px';
+                valueInput.value = entry.distance || '';
+                // 'ft.' label
+                const ftLabel = document.createElement('span');
+                ftLabel.textContent = 'ft.';
+                ftLabel.style.marginLeft = '4px';
+                valueCell.appendChild(valueInput);
+                valueCell.appendChild(ftLabel);
+                valueInput.addEventListener('input', () => {
+                    let dist = valueInput.value.trim();
+                    if (!/^\d+$/.test(dist)) return;
+                    if (isOther) {
+                        speeds[idx] = { type: 'Other', customType: typeInput.value, distance: dist };
+                    } else {
+                        speeds[idx] = { type: typeSelect.value, distance: dist };
+                    }
+                    document.getElementById('speed').value = JSON.stringify(speeds);
+                    autoSaveAndUpdate && autoSaveAndUpdate();
+                });
+                row.appendChild(valueCell);
+                // Remove button cell
+                const removeCell = document.createElement('td');
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.textContent = 'Remove';
+                removeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent event bubbling
+                    e.preventDefault(); // Prevent default behavior
+                    speeds.splice(idx, 1);
+                    document.getElementById('speed').value = JSON.stringify(speeds);
+                    renderSpeedInputs();
+                    // Update the display to show the change
+                    updateBasicStatsDisplay();
+                    // Just save state without triggering display updates that might exit edit mode
+                    saveCurrentState();
+                });
+                removeCell.appendChild(removeBtn);
+                row.appendChild(removeCell);
+                tbody.appendChild(row);
+            });
+            // Always show a blank row for adding new speed
+            function renderAddRow() {
+                const addRow = document.createElement('tr');
+                // Type select
+                const typeCell = document.createElement('td');
+                const typeSelect = document.createElement('select');
+                typeSelect.style.marginRight = '8px';
+                typeSelect.innerHTML = '';
+                
+                // Get list of already used types
+                const usedTypes = speeds.map(s => s.type).filter(t => t && t !== 'Other');
+                
+                // Add blank default option
+                const blankOpt = document.createElement('option');
+                blankOpt.value = '';
+                blankOpt.textContent = '-- Select Speed Type --';
+                blankOpt.selected = true;
+                typeSelect.appendChild(blankOpt);
+                
+                // Add standard types that aren't already used
+                speedTypes.forEach(t => {
+                    if (!usedTypes.includes(t)) {
+                        const opt = document.createElement('option');
+                        opt.value = t;
+                        opt.textContent = t;
+                        typeSelect.appendChild(opt);
+                    }
+                });
+                // Add 'Other' option (always available for custom types)
+                const otherOpt = document.createElement('option');
+                otherOpt.value = 'Other';
+                otherOpt.textContent = 'Other';
+                typeSelect.appendChild(otherOpt);
+                // Custom type input
+                const typeInput = document.createElement('input');
+                typeInput.type = 'text';
+                typeInput.placeholder = 'Type';
+                typeInput.style.display = 'none';
+                typeSelect.addEventListener('change', () => {
+                    typeInput.style.display = typeSelect.value === 'Other' ? '' : 'none';
+                    if (typeSelect.value !== 'Other') {
+                        valueInput.focus();
+                    }
+                });
+                typeCell.appendChild(typeSelect);
+                typeCell.appendChild(typeInput);
+                addRow.appendChild(typeCell);
+                // Value input cell
+                const valueCell = document.createElement('td');
+                valueCell.className = 'distance-cell';
+                const valueInput = document.createElement('input');
+                valueInput.type = 'number';
+                valueInput.placeholder = 'Distance';
+                valueInput.min = 0;
+                valueInput.style.marginRight = '2px';
+                valueInput.value = '30';
+                // 'ft.' label
+                const ftLabel = document.createElement('span');
+                ftLabel.textContent = 'ft.';
+                ftLabel.style.marginLeft = '4px';
+                valueCell.appendChild(valueInput);
+                valueCell.appendChild(ftLabel);
+                addRow.appendChild(valueCell);
+                // Add cell (empty, but for layout)
+                addRow.appendChild(document.createElement('td'));
+                // When both type and value are set, auto-add
+                function tryAutoAdd() {
+                    let type = typeSelect.value;
+                    let customType = typeInput.value.trim();
+                    let dist = valueInput.value.trim();
+                    
+                    // Don't add if no type is selected (blank option)
+                    if (!type || type === '') return;
+                    if (type === 'Other' && !customType) return;
+                    if (!/^\d+$/.test(dist)) return;
+                    
+                    if (type === 'Other') {
+                        speeds.push({ type: 'Other', customType, distance: dist });
+                    } else {
+                        speeds.push({ type, distance: dist });
+                    }
+                    document.getElementById('speed').value = JSON.stringify(speeds);
+                    renderSpeedInputs();
+                    autoSaveAndUpdate && autoSaveAndUpdate();
+                }
+                
+                // Auto-add when type changes (but only for non-Other types)
+                typeSelect.addEventListener('change', () => {
+                    if (typeSelect.value !== 'Other' && typeSelect.value !== '') {
+                        tryAutoAdd();
+                    }
+                });
+                
+                // For custom types, only auto-add when user finishes typing (blur event)
+                typeInput.addEventListener('blur', tryAutoAdd);
+                
+                // Auto-add when distance changes
+                valueInput.addEventListener('input', tryAutoAdd);
+                tbody.appendChild(addRow);
+            }
+            renderAddRow();
+            table.appendChild(tbody);
+            speedInputsContainer.innerHTML = '';
+            speedInputsContainer.appendChild(table);
+        }
+        
+        // Add event listener for re-rendering speed inputs
+        speedInputsContainer.addEventListener('renderSpeedInputs', renderSpeedInputs);
+        
+        function removeSpeed(idx) {
+            let speeds = [];
+            try {
+                speeds = JSON.parse(document.getElementById('speed')?.value || '[]');
+                if (!Array.isArray(speeds)) speeds = [];
+            } catch {
+                speeds = [];
+            }
+            speeds.splice(idx, 1);
+            document.getElementById('speed').value = JSON.stringify(speeds);
+            renderSpeedInputs();
+            // Update the display to show the change
+            updateBasicStatsDisplay();
+            // Just save state without triggering display updates that might exit edit mode
+            saveCurrentState();
+        }
+        renderSpeedInputs();
+    }
+
+    // --- Traits UI ---
+    const traitsInputsContainer = document.getElementById('traitsInputsContainer');
+    if (traitsInputsContainer) {
+        const traitFields = [
+            { id: 'savingThrows', json: './dropdowns/savingThrows.json', label: 'Saving Throws' },
+            { id: 'skills', json: './dropdowns/skills.json', label: 'Skills' },
+            { id: 'vulnerabilities', json: './dropdowns/damageTypes.json', label: 'Vulnerabilities' },
+            { id: 'resistances', json: './dropdowns/damageTypes.json', label: 'Resistances' },
+            { id: 'immunities', json: './dropdowns/damageTypes.json', label: 'Immunities' },
+            { id: 'conditionImmunities', json: './dropdowns/conditionImmunities.json', label: 'Condition Immunities' },
+            { id: 'senses', json: './dropdowns/senses.json', label: 'Senses' },
+            { id: 'languages', json: './dropdowns/languages.json', label: 'Languages' }
+        ];
+
+        traitFields.forEach(field => {
+            fetch(field.json)
+                .then(res => res.json())
+                .then(options => {
+                    const label = document.createElement('label');
+                    label.textContent = field.label;
+                    const select = document.createElement('select');
+                    select.id = field.id;
+                    select.multiple = true;
+                    options.forEach(opt => {
+                        const option = document.createElement('option');
+                        option.value = opt;
+                        option.textContent = opt;
+                        select.appendChild(option);
+                    });
+                    traitsInputsContainer.appendChild(label);
+                    traitsInputsContainer.appendChild(select);
+                });
+        });
+    }
+
+
     try {
         initializeApp();
         setupEventListeners();
-        console.log('App initialization completed');
+        console.log('App initialization completed', new Date().toISOString());
     } catch (error) {
         console.error('Error during app initialization:', error);
+    }
+
+    // Fallback: re-attach listeners after 1 second in case of timing issues
+    setTimeout(() => {
+        console.log('Fallback: re-running setupEventListeners after 1s');
+        setupEventListeners();
+    }, 1000);
+
+    // Attach event listeners for New Creature button and card
+    const newBtn = document.getElementById('newCreature');
+    if (newBtn) {
+        newBtn.addEventListener('click', function() {
+            createBlankCreatureInline();
+        });
+    }
+    const newCard = document.getElementById('newCard');
+    if (newCard) {
+        newCard.addEventListener('click', function() {
+            createBlankCreatureInline();
+        });
+    }
+
+    // Attach event listener for Back to Start button
+    const backToWelcomeBtn = document.getElementById('backToWelcome');
+    if (backToWelcomeBtn) {
+        backToWelcomeBtn.addEventListener('click', function() {
+            showWelcomeScreen();
+        });
     }
 });
 
@@ -205,7 +544,7 @@ function loadCreatureFromData(data) {
         setElementValue('armorClass', data.armor_class || data.armorClass || 10);
         
         // Handle AC override
-        const overrideAC = data.overrideAC || false;
+        const overrideAC = data.armorType || false;
         setElementChecked('overrideAC', overrideAC);
         
         // Handle armor data - for legacy files, try to guess armor type from AC and armor description
@@ -222,7 +561,29 @@ function loadCreatureFromData(data) {
         setElementValue('shieldModifier', shieldModifier);
         
         setElementValue('hitPoints', data.hit_points || data.hitPoints || 1);
-        setElementValue('speed', data.speed || '30 ft.');
+        
+        // Handle HP override
+        const overrideHP = data.overrideHP || false;
+        setElementChecked('overrideHP', overrideHP);
+        
+        setElementValue('hitDiceCount', data.hit_dice_count || data.hitDiceCount || 1);
+        setElementValue('hitDiceType', data.hit_dice_type || data.hitDiceType || 'd8');
+        // Handle speeds array structure
+        if (Array.isArray(data.speeds)) {
+            setElementValue('speed', JSON.stringify(data.speeds));
+        } else if (data.speed) {
+            // Convert legacy speed string to array format
+            const speedStr = data.speed.trim();
+            if (speedStr) {
+                // For now, assume it's a basic walk speed
+                const walkSpeed = speedStr.replace(/\D/g, '') || '30';
+                setElementValue('speed', JSON.stringify([{type: 'Walk', distance: walkSpeed}]));
+            } else {
+                setElementValue('speed', '[]');
+            }
+        } else {
+            setElementValue('speed', '[]');
+        }
         
         // Update armor subtypes and calculate AC after setting values
         setTimeout(() => {
@@ -232,12 +593,20 @@ function loadCreatureFromData(data) {
             // Set up the AC override state
             toggleACOverride();
             
+            // Set up the HP override state
+            toggleHPOverride();
+            
             // For legacy files, don't recalculate AC, keep the original value
             if (!data.armorType && !data.armorSubtype) {
                 const acInput = document.getElementById('armorClass');
                 if (acInput) acInput.value = data.armor_class || data.armorClass || 10;
             } else if (!overrideAC) {
                 calculateAndUpdateAC();
+            }
+            
+            // For new files or when HP override is not set, calculate HP
+            if (!overrideHP) {
+                calculateAndUpdateHP();
             }
         }, 100);
         
@@ -736,17 +1105,110 @@ function setupArmorEventListeners() {
     
     // Populate initial subtypes (this will also set up the subtype event listeners)
     updateArmorSubtypes();
+    
+    // Set up HP-related event listeners
+    setupHPEventListeners();
+}
+
+function setupHPEventListeners() {
+    const overrideHPCheckbox = document.getElementById('overrideHP');
+    const hitPointsInput = document.getElementById('hitPoints');
+    const hitDiceCountInput = document.getElementById('hitDiceCount');
+    const hitDiceTypeSelect = document.getElementById('hitDiceType');
+    const constitutionInput = document.getElementById('constitution');
+    
+    if (overrideHPCheckbox) {
+        overrideHPCheckbox.addEventListener('change', toggleHPOverride);
+        overrideHPCheckbox.addEventListener('blur', autoSaveAndUpdate);
+    }
+    
+    if (hitPointsInput) {
+        hitPointsInput.addEventListener('input', function() {
+            // Only allow positive integers when in manual mode
+            const overrideHPCheckbox = document.getElementById('overrideHP');
+            if (overrideHPCheckbox && overrideHPCheckbox.checked) {
+                // Ensure only positive integers
+                let value = parseInt(hitPointsInput.value);
+                if (isNaN(value) || value < 1) {
+                    hitPointsInput.value = 1;
+                } else if (value > 9999) {
+                    hitPointsInput.value = 9999;
+                }
+                updateBasicStatsDisplay();
+            }
+        });
+        hitPointsInput.addEventListener('change', function() {
+            const overrideHPCheckbox = document.getElementById('overrideHP');
+            if (overrideHPCheckbox && overrideHPCheckbox.checked) {
+                updateBasicStatsDisplay();
+            }
+        });
+        hitPointsInput.addEventListener('blur', autoSaveAndUpdate);
+    }
+    
+    // Add listeners for hit dice changes to trigger HP recalculation
+    if (hitDiceCountInput) {
+        hitDiceCountInput.addEventListener('input', function() {
+            const overrideHPCheckbox = document.getElementById('overrideHP');
+            if (!overrideHPCheckbox || !overrideHPCheckbox.checked) {
+                calculateAndUpdateHP();
+            } else {
+                updateBasicStatsDisplay();
+            }
+        });
+        hitDiceCountInput.addEventListener('change', function() {
+            const overrideHPCheckbox = document.getElementById('overrideHP');
+            if (!overrideHPCheckbox || !overrideHPCheckbox.checked) {
+                calculateAndUpdateHP();
+            } else {
+                updateBasicStatsDisplay();
+            }
+        });
+    }
+    
+    if (hitDiceTypeSelect) {
+        hitDiceTypeSelect.addEventListener('change', function() {
+            const overrideHPCheckbox = document.getElementById('overrideHP');
+            if (!overrideHPCheckbox || !overrideHPCheckbox.checked) {
+                calculateAndUpdateHP();
+            } else {
+                updateBasicStatsDisplay();
+            }
+        });
+    }
+    
+    if (constitutionInput) {
+        constitutionInput.addEventListener('input', function() {
+            const overrideHPCheckbox = document.getElementById('overrideHP');
+            if (!overrideHPCheckbox || !overrideHPCheckbox.checked) {
+                calculateAndUpdateHP();
+            }
+        });
+        constitutionInput.addEventListener('change', function() {
+            const overrideHPCheckbox = document.getElementById('overrideHP');
+            if (!overrideHPCheckbox || !overrideHPCheckbox.checked) {
+                calculateAndUpdateHP();
+            }
+        });
+    }
 }
 
 function updateArmorSubtypes() {
     const armorTypeSelect = document.getElementById('armorType');
     const armorSubtypeSelect = document.getElementById('armorSubtype');
-    
+    const armorModifierRow = document.getElementById('armorModifierRow');
     if (!armorTypeSelect || !armorSubtypeSelect || !window.armorData) {
         return;
     }
-    
-    const selectedType = armorTypeSelect.value;
+    const selectedType = (armorTypeSelect.value || '').toLowerCase();
+    // Show/hide armor modifier row based on type
+    if (armorModifierRow) {
+        if (selectedType === 'light armor' || selectedType === 'medium armor' || selectedType === 'heavy armor') {
+            armorModifierRow.style.display = '';
+        } else {
+            armorModifierRow.style.display = 'none';
+        }
+    }
     let subtypes = {};
     
     // Map dropdown values to armor data keys
@@ -904,8 +1366,11 @@ function calculateAndUpdateAC() {
         totalAC += 2 + shieldModifier;
     }
     
-    // Add armor modifier (for magical armor or special bonuses)
-    totalAC += armorModifier;
+    // Add armor modifier (for magical armor or special bonuses) only for light, medium, or heavy armor
+    const selectedTypeLower = (selectedType || '').toLowerCase();
+    if (selectedTypeLower === 'light armor' || selectedTypeLower === 'medium armor' || selectedTypeLower === 'heavy armor') {
+        totalAC += armorModifier;
+    }
     
     armorClassInput.value = totalAC;
     
@@ -1007,7 +1472,197 @@ function setupFallbackArmor() {
     setupArmorEventListeners();
 }
 
-// ...existing code...
+// --- Speed Types UI implementation has been consolidated into the main DOMContentLoaded block ---
+document.addEventListener('DOMContentLoaded', function() {
+
+    const speedInputsContainer = document.getElementById('speedInputsContainer');
+    const addSpeedTypeCombo = document.getElementById('addSpeedTypeCombo');
+    if (!speedInputsContainer || !addSpeedTypeCombo) return;
+
+    // Load speed types from JSON
+    fetch('./dropdowns/speedTypes.json')
+        .then(res => {
+            if (!res.ok) throw new Error('Failed to load speedTypes.json');
+            return res.json();
+        })
+        .then(speedTypes => {
+            function populateCombo() {
+                addSpeedTypeCombo.innerHTML = '';
+                speedTypes.forEach(t => {
+                    const opt = document.createElement('option');
+                    opt.value = t;
+                    opt.textContent = t;
+                    addSpeedTypeCombo.appendChild(opt);
+                });
+                // Freeform option
+                const freeOpt = document.createElement('option');
+                freeOpt.value = '';
+                freeOpt.textContent = 'Other...';
+                addSpeedTypeCombo.appendChild(freeOpt);
+            }
+            populateCombo();
+
+            addSpeedTypeCombo.addEventListener('change', () => {
+                let speedData = [];
+                try {
+                    speedData = JSON.parse(document.getElementById('speed')?.value || '[]');
+                } catch {
+                    speedData = [];
+                }
+                let type = addSpeedTypeCombo.value;
+                if (type === '') {
+                    type = prompt('Enter custom speed type:') || '';
+                    if (!type) return;
+                }
+                speedData.push({type, value: ''});
+                document.getElementById('speed').value = JSON.stringify(speedData);
+                renderSpeedInputs();
+                autoSaveAndUpdate && autoSaveAndUpdate();
+                addSpeedTypeCombo.selectedIndex = 0;
+            });
+        })
+        .catch(err => {
+            console.error('Could not load speedTypes.json:', err);
+            // fallback to hardcoded types
+            const fallbackTypes = ['Walk', 'Fly', 'Swim', 'Climb', 'Burrow'];
+            function populateCombo() {
+                addSpeedTypeCombo.innerHTML = '';
+                fallbackTypes.forEach(t => {
+                    const opt = document.createElement('option');
+                    opt.value = t;
+                    opt.textContent = t;
+                    addSpeedTypeCombo.appendChild(opt);
+                });
+                const freeOpt = document.createElement('option');
+                freeOpt.value = '';
+                freeOpt.textContent = 'Other...';
+                addSpeedTypeCombo.appendChild(freeOpt);
+            }
+            populateCombo();
+        });
+
+    addSpeedTypeCombo.addEventListener('change', () => {
+        let speedData = [];
+        try {
+            speedData = JSON.parse(document.getElementById('speed')?.value || '[]');
+        } catch {
+            speedData = [];
+        }
+        let type = addSpeedTypeCombo.value;
+        if (type === '') {
+            type = prompt('Enter custom speed type:') || '';
+            if (!type) return;
+        }
+        speedData.push({type, value: ''});
+        document.getElementById('speed').value = JSON.stringify(speedData);
+        renderSpeedInputs();
+        autoSaveAndUpdate && autoSaveAndUpdate();
+        addSpeedTypeCombo.selectedIndex = 0;
+    });
+
+    function renderSpeedInputs() {
+        // Get current value
+        let speedData = [];
+        try {
+            speedData = JSON.parse(document.getElementById('speed')?.value || '[]');
+        } catch {
+            const legacy = document.getElementById('speed')?.value || '';
+            if (legacy) speedData = [{type: '', value: legacy}];
+        }
+        speedInputsContainer.innerHTML = '';
+        speedData.forEach((entry, idx) => {
+            const row = document.createElement('div');
+            row.className = 'speed-row';
+            // Type select/input
+            const typeSelect = document.createElement('select');
+            speedTypes.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t;
+                opt.textContent = t;
+                if (entry.type === t) opt.selected = true;
+                typeSelect.appendChild(opt);
+            });
+            // Freeform option
+            const freeOpt = document.createElement('option');
+            freeOpt.value = '';
+            freeOpt.textContent = 'Other...';
+            typeSelect.appendChild(freeOpt);
+            // Freeform input
+            const typeInput = document.createElement('input');
+            typeInput.type = 'text';
+            typeInput.placeholder = 'Type';
+            typeInput.value = entry.type && !speedTypes.includes(entry.type) ? entry.type : '';
+            typeInput.style.display = typeSelect.value === '' ? '' : 'none';
+            typeSelect.addEventListener('change', () => {
+                if (typeSelect.value === '') {
+                    typeInput.style.display = '';
+                } else {
+                    typeInput.style.display = 'none';
+                    typeInput.value = '';
+                }
+                updateSpeed(idx, typeSelect.value === '' ? typeInput.value : typeSelect.value, null);
+            });
+            typeInput.addEventListener('input', () => {
+                updateSpeed(idx, typeInput.value, null);
+            });
+            // Value input
+            const valueInput = document.createElement('input');
+            valueInput.type = 'text';
+            valueInput.placeholder = 'Distance (e.g. 30 ft.)';
+            valueInput.value = entry.value;
+            valueInput.addEventListener('input', () => {
+                updateSpeed(idx, null, valueInput.value);
+            });
+            // Remove button
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.textContent = 'Remove';
+            removeBtn.addEventListener('click', () => {
+                removeSpeed(idx);
+            });
+            row.appendChild(typeSelect);
+            row.appendChild(typeInput);
+            row.appendChild(valueInput);
+            row.appendChild(removeBtn);
+            speedInputsContainer.appendChild(row);
+        });
+    }
+    function updateSpeed(idx, type, value) {
+        let speedData = [];
+        try {
+            speedData = JSON.parse(document.getElementById('speed')?.value || '[]');
+        } catch {
+            speedData = [];
+        }
+        if (!speedData[idx]) return;
+        if (type !== null) speedData[idx].type = type;
+        if (value !== null) speedData[idx].value = value;
+        document.getElementById('speed').value = JSON.stringify(speedData);
+        renderSpeedInputs();
+        autoSaveAndUpdate && autoSaveAndUpdate();
+    }
+    function removeSpeed(idx) {
+        let speedData = [];
+        try {
+            speedData = JSON.parse(document.getElementById('speed')?.value || '[]');
+        } catch {
+            speedData = [];
+        }
+        speedData.splice(idx, 1);
+        document.getElementById('speed').value = JSON.stringify(speedData);
+        renderSpeedInputs();
+        autoSaveAndUpdate && autoSaveAndUpdate();
+    }
+    
+    // On load, convert legacy string if needed
+    const speedInput = document.getElementById('speed');
+    if (speedInput && speedInput.value && speedInput.value[0] !== '[') {
+        // Convert to array
+        speedInput.value = JSON.stringify([{type: '', value: speedInput.value}]);
+    }
+    
+    renderSpeedInputs();
+});
 
 function updateAbilityModifiers() {
     const abilities = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
@@ -1096,22 +1751,155 @@ function updateNameDisplay() {
 function updateBasicStatsDisplay() {
     const acEl = document.getElementById('armorClassDisplay');
     const hpEl = document.getElementById('hitPointsDisplay');
+    const hitDiceEl = document.getElementById('hitDiceDisplay');
     const speedEl = document.getElementById('speedDisplay');
-    
-    if (acEl) {
-        const ac = document.getElementById('armorClass')?.value || '10';
-        acEl.textContent = ac;
+    // Speed display
+    if (speedEl) {
+        let speedStr = '';
+        try {
+            const speeds = JSON.parse(document.getElementById('speed')?.value || '[]');
+            if (Array.isArray(speeds) && speeds.length > 0) {
+                speedStr = speeds.map(s => {
+                    let type = s.type === 'Other' ? (s.customType || 'Other') : s.type;
+                    let dist = s.distance ? s.distance + ' ft.' : '';
+                    return type && type.toLowerCase() !== 'walk' ? `${type} ${dist}` : dist;
+                }).filter(Boolean).join(', ');
+            }
+        } catch { speedStr = ''; }
+        speedEl.textContent = speedStr || '—';
+    }
+    const ac = document.getElementById('armorClass')?.value || '10';
+    acEl.textContent = ac;
+    // Armor Type, Modifier, and Subtype display
+    const armorType = document.getElementById('armorType')?.value || '';
+    const armorSubtype = document.getElementById('armorSubtype')?.value || '';
+    const armorModifier = parseInt(document.getElementById('armorModifier')?.value) || 0;
+    const armorSubtypeDisplay = document.getElementById('armorSubtypeDisplay');
+    if (armorSubtypeDisplay) {
+        if (armorSubtype && armorSubtype !== 'none') {
+            // Capitalize subtype and type in title case
+            const subtypeCap = toTitleCase(armorSubtype);
+            // Modifier text
+            const modText = armorModifier > 0 ? `+${armorModifier} ` : (armorModifier < 0 ? `${armorModifier} ` : '');
+            // Armor type (title case, skip if 'none')
+            let typeCap = '';
+            if (armorType && armorType.toLowerCase() !== 'none') {
+                typeCap = toTitleCase(armorType);
+            }
+            // Compose display: (Armor Type, +X Subtype, AC without shield)
+            let display = '(';
+            if (typeCap) display += typeCap;
+            if (typeCap && (modText || subtypeCap)) display += ', ';
+            if (modText) display += modText;
+            if (subtypeCap) display += subtypeCap;
+            // Add AC without shield if shield is present
+            const hasShield = document.getElementById('hasShield')?.checked;
+            if (hasShield) {
+                // Calculate AC without shield (same logic as before)
+                const armorType = document.getElementById('armorType')?.value || '';
+                const armorSubtype = document.getElementById('armorSubtype')?.value || '';
+                const armorModifier = parseInt(document.getElementById('armorModifier')?.value) || 0;
+                const shieldModifier = parseInt(document.getElementById('shieldModifier')?.value) || 0;
+                const dexScore = parseInt(document.getElementById('dexterity')?.value) || 10;
+                const dexModifier = getAbilityModifier(dexScore);
+                let totalAC = 10;
+                let armorData = null;
+                switch((armorType || '').toLowerCase()) {
+                    case 'none':
+                        armorData = window.armorData && window.armorData["None"];
+                        break;
+                    case 'natural armor':
+                        armorData = window.armorData && window.armorData["Natural Armor"];
+                        break;
+                    case 'light armor':
+                        armorData = window.armorData && window.armorData["Light Armor"];
+                        break;
+                    case 'medium armor':
+                        armorData = window.armorData && window.armorData["Medium Armor"];
+                        break;
+                    case 'heavy armor':
+                        armorData = window.armorData && window.armorData["Heavy Armor"];
+                        break;
+                }
+                if (armorData) {
+                    let armorInfo = null;
+                    for (const [key, value] of Object.entries(armorData)) {
+                        if (key.toLowerCase() === armorSubtype) {
+                            armorInfo = value;
+                            break;
+                        }
+                    }
+                    if (armorInfo) {
+                        totalAC = armorInfo.baseAC;
+                        if (armorInfo.maxDex === null) {
+                            totalAC += dexModifier;
+                        } else if (armorInfo.maxDex > 0) {
+                            totalAC += Math.min(dexModifier, armorInfo.maxDex);
+                        }
+                    } else {
+                        totalAC = 10 + dexModifier;
+                    }
+                } else {
+                    totalAC = 10 + dexModifier;
+                }
+                // Only add armor modifier for light/medium/heavy
+                const typeLower = (armorType || '').toLowerCase();
+                if (typeLower === 'light armor' || typeLower === 'medium armor' || typeLower === 'heavy armor') {
+                    totalAC += armorModifier;
+                }
+                // Do NOT add shield bonus
+                display += `, ${totalAC} without shield`;
+            }
+            display += ')';
+            armorSubtypeDisplay.textContent = display;
+            armorSubtypeDisplay.style.display = '';
+        } else {
+            armorSubtypeDisplay.textContent = '';
+            armorSubtypeDisplay.style.display = 'none';
+        }
     }
     
+    // Shield display (remove in display mode)
+    const shieldDisplay = document.getElementById('shieldDisplay');
+    if (shieldDisplay) {
+        shieldDisplay.textContent = '';
+        shieldDisplay.style.display = 'none';
+    }
+
     if (hpEl) {
         const hp = document.getElementById('hitPoints')?.value || '1';
         hpEl.textContent = hp;
     }
     
-    if (speedEl) {
-        const speed = document.getElementById('speed')?.value || '30 ft.';
-        speedEl.textContent = speed;
+    if (hitDiceEl) {
+        const hitDiceCount = document.getElementById('hitDiceCount')?.value || '1';
+        const hitDiceType = document.getElementById('hitDiceType')?.value || 'd8';
+        const overrideHP = document.getElementById('overrideHP')?.checked;
+        let modText = '';
+        if (!overrideHP) {
+            const constitutionScore = parseInt(document.getElementById('constitution')?.value) || 10;
+            const constitutionModifier = getAbilityModifier(constitutionScore);
+            if (constitutionModifier !== 0) {
+                const totalBonus = constitutionModifier * parseInt(hitDiceCount);
+                modText = totalBonus >= 0 ? `+${totalBonus}` : `${totalBonus}`;
+            }
+        }
+        hitDiceEl.textContent = `(${hitDiceCount}${hitDiceType}${modText ? ' ' + modText : ''})`;
     }
+
+    // Update the hit points formula label
+    const hitPointsFormulaLabel = document.getElementById('hitPointsFormulaLabel');
+    if (hitPointsFormulaLabel) {
+        const hitDiceCount = parseInt(document.getElementById('hitDiceCount')?.value) || 1;
+        const hitDiceType = document.getElementById('hitDiceType')?.value || 'd8';
+        const constitutionScore = parseInt(document.getElementById('constitution')?.value) || 10;
+        const constitutionModifier = getAbilityModifier(constitutionScore);
+        const totalBonus = constitutionModifier * hitDiceCount;
+        const bonusText = totalBonus >= 0 ? `+${totalBonus}` : `${totalBonus}`;
+        hitPointsFormulaLabel.textContent = `(${hitDiceCount}${hitDiceType} ${bonusText})`;
+    }
+
+    // (removed old speed display logic)
 }
 
 // Update ability scores display
@@ -1136,7 +1924,7 @@ function updateAbilityScoresDisplay() {
 function updateTraitsDisplay() {
     const traits = [
         { id: 'savingThrows', displayId: 'savingThrowsDisplay', lineId: 'savingThrowsLine' },
-        { id: 'skills', displayId: 'skillsDisplay', lineId: 'skillsLine' },
+               { id: 'skills', displayId: 'skillsDisplay', lineId: 'skillsLine' },
         { id: 'vulnerabilities', displayId: 'vulnerabilitiesDisplay', lineId: 'vulnerabilitiesLine' },
         { id: 'resistances', displayId: 'resistancesDisplay', lineId: 'resistancesLine' },
         { id: 'immunities', displayId: 'immunitiesDisplay', lineId: 'immunitiesLine' },
@@ -1225,6 +2013,19 @@ function saveCurrentState() {
     }
 }
 
+// Clear saved state from localStorage
+function clearSavedState() {
+    try {
+        localStorage.removeItem(STORAGE_KEYS.CURRENT_CREATURE);
+        localStorage.removeItem(STORAGE_KEYS.CURRENT_VIEW);
+        localStorage.removeItem(STORAGE_KEYS.EDITING_SECTION);
+        localStorage.removeItem(STORAGE_KEYS.FORM_DATA);
+        console.log('Saved state cleared from localStorage');
+    } catch (error) {
+        console.error('Error clearing saved state:', error);
+    }
+}
+
 // Restore state from localStorage
 function restoreCurrentState() {
     try {
@@ -1266,6 +2067,19 @@ function restoreCurrentState() {
     }
 }
 
+// Clear saved state from localStorage
+function clearSavedState() {
+    try {
+        localStorage.removeItem(STORAGE_KEYS.CURRENT_CREATURE);
+        localStorage.removeItem(STORAGE_KEYS.CURRENT_VIEW);
+        localStorage.removeItem(STORAGE_KEYS.EDITING_SECTION);
+        localStorage.removeItem(STORAGE_KEYS.FORM_DATA);
+        console.log('Saved state cleared from localStorage');
+    } catch (error) {
+        console.error('Error clearing saved state:', error);
+    }
+}
+
 // Collect current form data
 function collectFormData() {
     const formData = {};
@@ -1296,7 +2110,16 @@ function collectFormData() {
     formData.hasShield = document.getElementById('hasShield')?.checked || false;
     formData.shieldModifier = parseInt(document.getElementById('shieldModifier')?.value) || 0;
     formData.hitPoints = document.getElementById('hitPoints')?.value || 1;
-    formData.speed = document.getElementById('speed')?.value || '30 ft.';
+    formData.overrideHP = document.getElementById('overrideHP')?.checked || false;
+    formData.hitDiceCount = parseInt(document.getElementById('hitDiceCount')?.value) || 1;
+    formData.hitDiceType = document.getElementById('hitDiceType')?.value || 'd8';
+    // Handle speeds array
+    try {
+        const speedsData = JSON.parse(document.getElementById('speed')?.value || '[]');
+        formData.speeds = Array.isArray(speedsData) ? speedsData : [];
+    } catch {
+        formData.speeds = [];
+    }
     
     // Ability scores
     formData.abilities = {
@@ -1419,7 +2242,15 @@ function loadFormData(formData) {
     setElementChecked('hasShield', formData.hasShield);
     setElementValue('shieldModifier', formData.shieldModifier || 0);
     setElementValue('hitPoints', formData.hitPoints);
-    setElementValue('speed', formData.speed);
+    setElementChecked('overrideHP', formData.overrideHP || false);
+    setElementValue('hitDiceCount', formData.hitDiceCount || 1);
+    setElementValue('hitDiceType', formData.hitDiceType || 'd8');
+    // Handle speeds array
+    if (formData.speeds) {
+        setElementValue('speed', JSON.stringify(formData.speeds));
+    } else {
+        setElementValue('speed', '[]');
+    }
     
     // Update armor subtypes after setting armor type
     setTimeout(() => {
@@ -1461,6 +2292,20 @@ function loadFormData(formData) {
         if (!formData.overrideAC) {
             calculateAndUpdateAC();
         }
+        
+        // Set up HP override state after loading data
+        toggleHPOverride();
+        if (!formData.overrideHP) {
+            calculateAndUpdateHP();
+        }
+        
+        // Re-render speed inputs after form data is loaded
+        const speedInputsContainer = document.getElementById('speedInputsContainer');
+        if (speedInputsContainer) {
+            // Trigger a small event to re-render speed inputs
+            const event = new CustomEvent('renderSpeedInputs');
+            speedInputsContainer.dispatchEvent(event);
+        }
     }, 50);
     
     // Update displays
@@ -1468,311 +2313,117 @@ function loadFormData(formData) {
     updateAllDisplays();
 }
 
-// Clear saved state
-function clearSavedState() {
+// Show inline editor on welcome screen
+function showInlineEditor() {
+    console.log('Showing inline editor');
+    
+    // Get the main editor content
+    const mainEditor = document.getElementById('mainEditor');
+    const inlineEditorForm = document.getElementById('inlineEditorForm');
+    const inlineEditor = document.getElementById('inlineEditor');
+    
+    if (!mainEditor || !inlineEditorForm || !inlineEditor) {
+        console.error('Required elements not found');
+        return;
+    }
+    
+    // Clone the main editor content (but not the header)
+    const editorContent = mainEditor.querySelector('.editor-content');
+    if (editorContent) {
+        // Clone the editor content
+        const clonedContent = editorContent.cloneNode(true);
+        
+        // Clear any existing content
+        inlineEditorForm.innerHTML = '';
+        
+        // Add a close button
+        const closeButton = document.createElement('button');
+        closeButton.className = 'btn btn-secondary';
+        closeButton.textContent = '← Back to Options';
+        closeButton.style.marginBottom = '20px';
+        closeButton.onclick = hideInlineEditor;
+        
+        // Add elements to inline editor
+        inlineEditorForm.appendChild(closeButton);
+        inlineEditorForm.appendChild(clonedContent);
+        
+        // Show the inline editor
+        inlineEditor.style.display = 'block';
+        
+        // Scroll to the editor
+        inlineEditor.scrollIntoView({ behavior: 'smooth' });
+    } else {
+        console.error('Editor content not found');
+    }
+}
+
+// Hide inline editor
+function hideInlineEditor() {
+    console.log('Hiding inline editor');
+    const inlineEditor = document.getElementById('inlineEditor');
+    if (inlineEditor) {
+        inlineEditor.style.display = 'none';
+    }
+    
+    // Ensure we return to the welcome screen
+    showWelcomeScreen();
+}
+
+// Create blank creature for inline editor
+async function createBlankCreatureInline() {
+    console.log('createBlankCreatureInline called');
+    
     try {
-        localStorage.removeItem(STORAGE_KEYS.CURRENT_CREATURE);
-        localStorage.removeItem(STORAGE_KEYS.CURRENT_VIEW);
-        localStorage.removeItem(STORAGE_KEYS.EDITING_SECTION);
-        localStorage.removeItem(STORAGE_KEYS.FORM_DATA);
-        console.log('Saved state cleared');
+        // Clear any saved state first
+        clearSavedState();
+        
+        // Reset editing state
+        currentEditingSection = null;
+        
+        closeModals();
+        
+        // Load the blank creature template data
+        const response = await fetch('./creatures/new_creature_cr0.json');
+        if (!response.ok) {
+            throw new Error(`Failed to load creature: ${response.statusText}`);
+        }
+
+        const creatureData = await response.json();
+        console.log('Creature data loaded for inline editor:', creatureData);
+        
+        // Temporarily show the main editor to ensure DOM is populated
+        const mainEditor = document.getElementById('mainEditor');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        
+        // Store original display states
+        const originalMainDisplay = mainEditor.style.display;
+        const originalWelcomeDisplay = welcomeScreen.style.display;
+        
+        // Temporarily show main editor to populate DOM
+        mainEditor.style.display = 'block';
+        
+        // Load the creature data into the main editor
+        loadCreatureFromData(creatureData);
+        
+        // Small delay to ensure the editor is fully loaded
+        setTimeout(() => {
+            // Now show the inline editor (which will clone the main editor content)
+            showInlineEditor();
+            
+            // Restore original display states
+            mainEditor.style.display = originalMainDisplay;
+            welcomeScreen.style.display = originalWelcomeDisplay;
+            
+            // Ensure welcome screen is visible
+            if (welcomeScreen.style.display === 'none') {
+                welcomeScreen.style.display = 'block';
+            }
+            
+            showNotification(`New creature ready for editing!`, 'success');
+        }, 100);
+        
     } catch (error) {
-        console.error('Error clearing saved state:', error);
+        console.error('Error in createBlankCreatureInline:', error);
+        showNotification('Error creating blank creature: ' + error.message, 'error');
     }
-}
-
-// Auto-save functionality
-function setupAutoSave() {
-    // Save state when form changes
-    const autoSaveElements = [
-        'creatureName', 'creatureSize', 'creatureType', 'creatureTypeOther', 'creatureAlignment',
-        'armorClass', 'overrideAC', 'armorType', 'armorSubtype', 'armorModifier', 'hasShield', 'shieldModifier', 'hitPoints', 'speed',
-        'strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma',
-        'savingThrows', 'skills', 'vulnerabilities', 'resistances', 'immunities',
-        'conditionImmunities', 'senses', 'languages', 'challenge', 'proficiencyBonus'
-    ];
-    
-    autoSaveElements.forEach(elementId => {
-        const element = document.getElementById(elementId);
-        if (element) {
-            element.addEventListener('input', debounce(saveCurrentState, 1000));
-            element.addEventListener('change', saveCurrentState);
-            element.addEventListener('blur', () => {
-                // Auto-save and update display when clicking off field
-                saveCurrentState();
-                updateDisplay();
-                updateAllDisplays();
-            });
-        }
-    });
-    
-    // Special event listeners for AC calculation
-    const dexterityInput = document.getElementById('dexterity');
-    const hasShieldCheckbox = document.getElementById('hasShield');
-    const armorModifierSelect = document.getElementById('armorModifier');
-    const shieldModifierSelect = document.getElementById('shieldModifier');
-    
-    if (dexterityInput) {
-        dexterityInput.addEventListener('input', calculateAndUpdateAC);
-        dexterityInput.addEventListener('change', calculateAndUpdateAC);
-    }
-    
-    if (hasShieldCheckbox) {
-        hasShieldCheckbox.addEventListener('change', calculateAndUpdateAC);
-    }
-    
-    if (armorModifierSelect) {
-        armorModifierSelect.addEventListener('change', calculateAndUpdateAC);
-    }
-    
-    if (shieldModifierSelect) {
-        shieldModifierSelect.addEventListener('change', calculateAndUpdateAC);
-    }
-    
-    // Save state when switching views
-    document.getElementById('backToWelcome')?.addEventListener('click', () => {
-        localStorage.setItem(STORAGE_KEYS.CURRENT_VIEW, 'welcome');
-        saveCurrentState();
-    });
-}
-
-// Debounce function to limit auto-save frequency
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-// Edit section functionality
-function editSection(sectionId) {
-    console.log('Editing section:', sectionId);
-    
-    // If another section is already being edited, save it first
-    if (currentEditingSection && currentEditingSection !== sectionId) {
-        saveSection(currentEditingSection);
-    }
-    
-    const section = document.getElementById(sectionId);
-    if (!section) return;
-    
-    // Hide display content and show edit content
-    const displayContent = section.querySelector('.display-content');
-    const editContent = section.querySelector('.edit-content');
-    
-    if (displayContent) displayContent.style.display = 'none';
-    if (editContent) editContent.style.display = 'block';
-    
-    currentEditingSection = sectionId;
-    
-    // Save editing state
-    localStorage.setItem(STORAGE_KEYS.EDITING_SECTION, sectionId);
-    saveCurrentState();
-}
-
-function saveSection(sectionId) {
-    console.log('Saving section:', sectionId);
-    
-    const section = document.getElementById(sectionId);
-    if (!section) return;
-    
-    // Show display content and hide edit content
-    const displayContent = section.querySelector('.display-content');
-    const editContent = section.querySelector('.edit-content');
-    
-    if (displayContent) displayContent.style.display = 'block';
-    if (editContent) editContent.style.display = 'none';
-    
-    // Update displays
-    updateDisplay();
-    
-    currentEditingSection = null;
-    
-    // Clear editing state and save current state
-    localStorage.removeItem(STORAGE_KEYS.EDITING_SECTION);
-    saveCurrentState();
-    
-    showNotification('Section saved successfully!', 'success');
-}
-
-function cancelEdit(sectionId) {
-    console.log('Cancelling edit for section:', sectionId);
-    
-    const section = document.getElementById(sectionId);
-    if (!section) return;
-    
-    // Show display content and hide edit content
-    const displayContent = section.querySelector('.display-content');
-    const editContent = section.querySelector('.edit-content');
-    
-    if (displayContent) displayContent.style.display = 'block';
-    if (editContent) editContent.style.display = 'none';
-    
-    // Restore original values if needed
-    // TODO: Implement proper restore functionality
-    
-    currentEditingSection = null;
-    
-    // Clear editing state
-    localStorage.removeItem(STORAGE_KEYS.EDITING_SECTION);
-}
-
-// Toggle creature type other input
-function toggleCreatureTypeOther() {
-    const typeSelect = document.getElementById('creatureType');
-    const otherInput = document.getElementById('creatureTypeOther');
-    
-    if (!typeSelect || !otherInput) return;
-    
-    if (typeSelect.value === 'other') {
-        otherInput.style.display = 'block';
-        otherInput.focus();
-    } else {
-        otherInput.style.display = 'none';
-        otherInput.value = '';
-    }
-    
-    // Update display and save state when toggling
-    updateDisplay();
-    saveCurrentState();
-}
-
-// Toggle AC override
-function toggleACOverride() {
-    console.log('toggleACOverride called');
-    const overrideACCheckbox = document.getElementById('overrideAC');
-    const armorClassInput = document.getElementById('armorClass');
-    
-    console.log('Override checkbox:', overrideACCheckbox?.checked);
-    console.log('Armor class input:', armorClassInput);
-    console.log('Current readOnly state:', armorClassInput?.readOnly);
-    
-    if (!overrideACCheckbox || !armorClassInput) return;
-    
-    if (overrideACCheckbox.checked) {
-        console.log('Making AC field editable');
-        // Make AC field editable
-        armorClassInput.readOnly = false;
-        console.log('After setting readOnly=false:', armorClassInput.readOnly);
-        armorClassInput.focus();
-        
-        // Update the label to show it's manual
-        const calculatedLabel = document.querySelector('.calculated-label');
-        if (calculatedLabel) {
-            calculatedLabel.textContent = '(Manual)';
-        }
-    } else {
-        console.log('Making AC field read-only');
-        // Make AC field read-only and recalculate
-        armorClassInput.readOnly = true;
-        
-        // Update the label back to calculated
-        const calculatedLabel = document.querySelector('.calculated-label');
-        if (calculatedLabel) {
-            calculatedLabel.textContent = '(Calculated)';
-        }
-        
-        // Recalculate AC
-        calculateAndUpdateAC();
-    }
-}
-
-// Setup event listeners
-function setupEventListeners() {
-    console.log('Setting up event listeners...');
-    
-    // Main editor buttons
-    const backBtn = document.getElementById('backToWelcome');
-    if (backBtn) {
-        backBtn.addEventListener('click', () => {
-            saveCurrentState();
-            showWelcomeScreen();
-        });
-    }
-    
-    const newBtn = document.getElementById('newCreature');
-    if (newBtn) {
-        newBtn.addEventListener('click', () => {
-            clearSavedState(); // Clear previous state when creating new
-            createBlankCreature();
-        });
-    }
-    
-    // Modal close buttons
-    document.querySelectorAll('.close, .close-btn').forEach(btn => {
-        btn.addEventListener('click', closeModals);
-    });
-    
-    // Close modals when clicking outside
-    window.addEventListener('click', function(event) {
-        if (event.target.classList.contains('modal')) {
-            closeModals();
-        }
-    });
-    
-    // Auto-save and exit edit mode when clicking outside of editable sections
-    document.addEventListener('click', function(event) {
-        // Check if click is outside any editable section
-        const editableSection = event.target.closest('.editable-section');
-        
-        // If we're currently editing a section and clicked outside all editable sections
-        if (currentEditingSection && !editableSection) {
-            // Save the current editing section and exit edit mode
-            saveSection(currentEditingSection);
-        }
-    });
-    
-    // Set up ability score listeners
-    setupAbilityScoreListeners();
-    
-    // Set up other form listeners
-    setupFormListeners();
-    
-    // Set up auto-save
-    setupAutoSave();
-    
-    console.log('Event listeners setup completed');
-}
-
-function setupAbilityScoreListeners() {
-    const abilities = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
-    
-    abilities.forEach(ability => {
-        const input = document.getElementById(ability);
-        if (input) {
-            input.addEventListener('input', updateDisplay);
-            input.addEventListener('change', updateDisplay);
-        }
-    });
-}
-
-function setupFormListeners() {
-    // Basic info listeners
-    const basicFields = ['creatureName', 'creatureSize', 'creatureType', 'creatureAlignment'];
-    basicFields.forEach(fieldId => {
-        const field = document.getElementById(fieldId);
-        if (field) {
-            field.addEventListener('change', updateDisplay);
-        }
-    });
-    
-    // Challenge rating listener
-    const crInput = document.getElementById('challenge');
-    if (crInput) {
-        crInput.addEventListener('change', updateDisplay);
-    }
-    
-    // All other form fields
-    const allFields = ['armorClass', 'hitPoints', 'speed', 'savingThrows', 'skills', 'vulnerabilities', 'resistances', 'immunities', 'conditionImmunities', 'senses', 'languages'];
-    allFields.forEach(fieldId => {
-        const field = document.getElementById(fieldId);
-        if (field) {
-            field.addEventListener('change', updateDisplay);
-        }
-    });
 }

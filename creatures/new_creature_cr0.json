@@ -11,8 +11,11 @@
   "hasShield": false,
   "shieldModifier": 0,
   "hitPoints": 1,
+  "overrideHP": false,
+  "hitDiceCount": 1,
+  "hitDiceType": "d8",
   "hitDice": "1d8",
-  "speed": "30 ft.",
+  "speeds": [],
   "abilities": {
     "strength": 10,
     "dexterity": 10,

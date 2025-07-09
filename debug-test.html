@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Test</title>
+</head>
+<body>
+    <h1>Debug Test</h1>
+    <button id="testBtn">Test Button</button>
+    <div id="newCard" style="padding: 20px; border: 1px solid #ccc; margin: 10px; cursor: pointer; background: #f0f0f0;">
+        <h3>New</h3>
+        <p>Click to create new creature</p>
+    </div>
+    
+    <script>
+        console.log('Debug script loaded');
+        
+        // Test function
+        function testFunction() {
+            console.log('Test function called');
+            alert('Test function works!');
+        }
+        
+        // When DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded');
+            
+            // Test button
+            const testBtn = document.getElementById('testBtn');
+            if (testBtn) {
+                console.log('Test button found');
+                testBtn.addEventListener('click', testFunction);
+            }
+            
+            // Test the newCard
+            const newCard = document.getElementById('newCard');
+            if (newCard) {
+                console.log('New card found');
+                newCard.addEventListener('click', function() {
+                    console.log('New card clicked');
+                    alert('New card clicked!');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

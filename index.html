@@ -16,7 +16,7 @@
                 <p class="welcome-subtitle">Create, edit, and manage D&D creature stat blocks</p>
 
                 <div class="welcome-options">
-                    <div id="newCard" class="option-card" onclick="createBlankCreature()"> <!-- New: directly create blank creature -->
+                    <div id="newCard" class="option-card"> <!-- New: directly create blank creature -->
                         <div class="option-icon" title="OwlBear Icon">
                             <img src="owlbear_icon_1.png" alt="OwlBear Icon" />
                         </div>
@@ -35,6 +35,16 @@
                             <img src="giffon_icon.png" alt="Griffon Icon" />
                         </div>
                         <h3>Browse</h3>
+                    </div>
+                </div>
+                
+                <!-- Inline Editor Section (Initially Hidden) -->
+                <div id="inlineEditor" style="display: none;">
+                    <div class="inline-editor-content">
+                        <h2>Create New Creature</h2>
+                        <div id="inlineEditorForm">
+                            <!-- The main editor content will be loaded here -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -227,12 +237,14 @@
                     <div class="display-content">
                         <div class="stat-line">
                             <strong>Armor Class</strong> <span id="armorClassDisplay">10</span>
+                            <span id="armorSubtypeDisplay" style="display:none;"></span>
+                            <span id="shieldDisplay" style="display:none;"></span>
                         </div>
                         <div class="stat-line">
-                            <strong>Hit Points</strong> <span id="hitPointsDisplay">1</span>
+                            <strong>Hit Points</strong> <span id="hitPointsDisplay">1</span> <span id="hitDiceDisplay">(1d8)</span>
                         </div>
                         <div class="stat-line">
-                            <strong>Speed</strong> <span id="speedDisplay">30 ft.</span>
+                            <strong>Speed</strong> <span id="speedDisplay"></span>
                         </div>
                     </div>
                     <div class="edit-content" style="display: none;">
@@ -253,7 +265,7 @@
                             <span class="label">Armor Subtype</span>
                             <select id="armorSubtype"></select>
                         </div>
-                        <div class="stat-row">
+                        <div class="stat-row" id="armorModifierRow">
                             <span class="label">Armor Modifier</span>
                             <select id="armorModifier">
                                 <option value="0">+0</option>
@@ -277,11 +289,32 @@
                         </div>
                         <div class="stat-row">
                             <span class="label">Hit Points</span>
-                            <input type="number" id="hitPoints" value="1">
+                            <input type="number" id="hitPoints" value="1" min="1" readonly>
+                            <span class="calculated-label" id="hitPointsFormulaLabel">(1d8 + (0 * 1))</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="label">Override HP</span>
+                            <input type="checkbox" id="overrideHP">
+                        </div>
+                        <div class="stat-row">
+                            <span class="label">Hit Dice Count</span>
+                            <input type="number" id="hitDiceCount" placeholder="Number of dice" value="1" min="1">
+                        </div>
+                        <div class="stat-row">
+                            <span class="label">Hit Dice Type</span>
+                            <select id="hitDiceType">
+                                <option value="d4">d4</option>
+                                <option value="d6">d6</option>
+                                <option value="d8" selected>d8</option>
+                                <option value="d10">d10</option>
+                                <option value="d12">d12</option>
+                                <option value="d20">d20</option>
+                            </select>
                         </div>
                         <div class="stat-row">
                             <span class="label">Speed</span>
-                            <input type="text" id="speed" placeholder="speed" value="30 ft.">
+                            <input type="hidden" id="speed" value="[]">
+                            <div id="speedInputsContainer"></div>
                         </div>
                     </div>
                 </div>
@@ -320,32 +353,32 @@
                         <div class="ability-scores">
                             <div class="ability">
                                 <label>STR</label>
-                                <input type="number" id="strength" value="10">
+                                <input type="number" id="strength" min="0" value="10">
                                 <span class="modifier" id="strMod">(+0)</span>
                             </div>
                             <div class="ability">
                                 <label>DEX</label>
-                                <input type="number" id="dexterity" value="10">
+                                <input type="number" id="dexterity" min="0" value="10">
                                 <span class="modifier" id="dexMod">(+0)</span>
                             </div>
                             <div class="ability">
                                 <label>CON</label>
-                                <input type="number" id="constitution" value="10">
+                                <input type="number" id="constitution" min="0" value="10">
                                 <span class="modifier" id="conMod">(+0)</span>
                             </div>
                             <div class="ability">
                                 <label>INT</label>
-                                <input type="number" id="intelligence" value="10">
+                                <input type="number" id="intelligence" min="0" value="10">
                                 <span class="modifier" id="intMod">(+0)</span>
                             </div>
                             <div class="ability">
                                 <label>WIS</label>
-                                <input type="number" id="wisdom" value="10">
+                                <input type="number" id="wisdom" min="0" value="10">
                                 <span class="modifier" id="wisMod">(+0)</span>
                             </div>
                             <div class="ability">
                                 <label>CHA</label>
-                                <input type="number" id="charisma" value="10">
+                                <input type="number" id="charisma" min="0" value="10">
                                 <span class="modifier" id="chaMod">(+0)</span>
                             </div>
                         </div>
@@ -385,43 +418,8 @@
                         </div>
                     </div>
                     <div class="edit-content" style="display: none;">
-                        <div class="trait-row">
-                            <span class="label">Saving Throws</span>
-                            <input type="text" id="savingThrows" placeholder="saving throws" value="">
-                        </div>
-                        <div class="trait-row">
-                            <span class="label">Skills</span>
-                            <input type="text" id="skills" placeholder="skills" value="">
-                        </div>
-                        <div class="trait-row">
-                            <span class="label">Damage Vulnerabilities</span>
-                            <input type="text" id="vulnerabilities" placeholder="vulnerabilities" value="">
-                        </div>
-                        <div class="trait-row">
-                            <span class="label">Damage Resistances</span>
-                            <input type="text" id="resistances" placeholder="resistances" value="">
-                        </div>
-                        <div class="trait-row">
-                            <span class="label">Damage Immunities</span>
-                            <input type="text" id="immunities" placeholder="immunities" value="">
-                        </div>
-                        <div class="trait-row">
-                            <span class="label">Condition Immunities</span>
-                            <input type="text" id="conditionImmunities" placeholder="condition immunities" value="">
-                        </div>
-                        <div class="trait-row">
-                            <span class="label">Senses</span>
-                            <input type="text" id="senses" placeholder="senses" value="">
-                        </div>
-                        <div class="trait-row">
-                            <span class="label">Languages</span>
-                            <input type="text" id="languages" placeholder="languages" value="">
-                        </div>
-                        <div class="trait-row">
-                            <span class="label">Challenge</span>
-                            <input type="text" id="challenge" placeholder="challenge rating" value="0">
-                            <span class="label">Proficiency Bonus</span>
-                            <input type="text" id="proficiencyBonus" placeholder="proficiency bonus" value="+2">
+                        <div id="traitsInputsContainer">
+                            <!-- Table-style dropdowns will be dynamically rendered here -->
                         </div>
                     </div>
                 </div>

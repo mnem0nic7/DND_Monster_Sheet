@@ -134,7 +134,12 @@ function loadCreatureFromData(data) {
         // Basic Stats
         setElementValue('armorClass', data.armor_class || data.armorClass || 10);
         setElementValue('hitPoints', data.hit_points || data.hitPoints || 1);
-        setElementValue('speed', data.speed || '30 ft.');
+        // Support new speeds array structure
+        if (Array.isArray(data.speeds)) {
+            setElementValue('speed', JSON.stringify(data.speeds));
+        } else {
+            setElementValue('speed', '[]');
+        }
         
         // Ability Scores - handle both snake_case and camelCase, and nested abilities object
         const abilities = data.abilities || data;
@@ -272,8 +277,19 @@ function updateBasicStatsDisplay() {
     }
     
     if (speedEl) {
-        const speed = document.getElementById('speed')?.value || '30 ft.';
-        speedEl.textContent = speed;
+        let speedStr = '';
+        try {
+            const val = document.getElementById('speed')?.value || '[]';
+            const speeds = JSON.parse(val);
+            if (Array.isArray(speeds) && speeds.length > 0) {
+                speedStr = speeds.map(s => {
+                    let type = s.type === 'Other' ? (s.customType || 'Other') : s.type;
+                    let dist = s.distance ? s.distance + ' ft.' : '';
+                    return type && type.toLowerCase() !== 'walk' ? `${type} ${dist}` : dist;
+                }).filter(Boolean).join(', ');
+            }
+        } catch { speedStr = ''; }
+        speedEl.textContent = speedStr || '—';
     }
 }
 
